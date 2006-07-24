@@ -72,7 +72,7 @@ class Color
     end
     
     def rgbhex_to_rgb(value)
-      rg, blue = value.hex.divmod(256)
+      rg, blue = value.sub(/#/,'').hex.divmod(256)
       red, green = rg.divmod(256)
       return red, green, blue
     end
@@ -131,7 +131,7 @@ class Color
       return [0.0, 0.0, value] if delta.zero? # gray, no chroma
       saturation = delta / max
       hue = figure_hue_for(rgb)
-      hue, saturation, value
+      return hue, saturation, value
     end
         
     def rgb_to_cmyk(rgb=[])

@@ -1,0 +1,20 @@
+require 'rake'
+# require 'rake/clean'
+# require 'rake/gempackagetask'
+# require 'rake/rdoctask'
+require 'rake/testtask'
+
+$:.unshift(File.dirname(__FILE__) + "/lib")
+require 'color'
+
+NAME = "color"
+VERS = "0.01"
+
+desc "Default Task"
+task :default => [ :test ]
+
+Rake::TestTask.new do |t|
+  t.test_files = FileList['test/*_test.rb']
+  t.warning = true
+  t.verbose = false
+end
