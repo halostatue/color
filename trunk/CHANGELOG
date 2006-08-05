@@ -1,3 +1,8 @@
+=== 0.1.0, 5 August 2006
+* added hsl (degree, percent, percent) interface
+* removed rgb instance variable, color is managed internally as hsl floating point
+* tests!
+
 === 24 July 2006
 * Initial import of code written 23 July.
 * Adding LICENSE, README, CHANGELOG files.
