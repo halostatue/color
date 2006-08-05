@@ -1,47 +1,59 @@
 class Color
   
-  attr_accessor :rgb
+  # attr_accessor :rgb
   attr_accessor :hue
   attr_accessor :saturation
   attr_accessor :lightness
     
   def initialize(values, mode=:rgb)
-    @rgb = case mode
+    rgb = case mode
     when :hsl
       Color.hsl_to_rgb(values)
     when :rgb
       values = [values].flatten
       case values.size
       when 1
-        Color.rgbhex_to_rgb(values.first.sub(/#/,''))
+        Color.rgbhex_to_rgb(values.first)
       else
         values
       end
     when :cmyk
       Color.cmyk_to_rgb(values)
     end
-    @rgb.each {|n| n.coerce(0).max.coerce(255).min }
-    @hue, @saturation, @lightness = Color.rgb_to_hsl(@rgb)
+    rgb.collect! {|n| n.coerce(0).max.coerce(255).min }
+    @hue, @saturation, @lightness = Color.rgb_to_hsl(rgb)
   end
   
   def hue=(value)
+    value = value.abs >= 1 ? (value/360.0) : value
     @hue = value
     @hue += 1 if @hue < 0 # color is _perceived_ as a wheel, not a continuum
     @hue -= 1 if @hue > 1
-    @rgb = Color.hsl_to_rgb(self.hsl)
+  end
+  
+  def hue
+    (@hue * 360).round
+  end
+  
+  def saturation
+    (@saturation * 100).round
   end
   
   def saturation=(value)
-    @saturation = value.coerce(0.0).max.coerce(1.0).min
-    @rgb = Color.hsl_to_rgb(self.hsl)
+    @saturation = value.abs >= 1 ? (value / 100.0) : value
+    @saturation = @saturation.coerce(0.0).max.coerce(1.0).min
+  end
+  
+  def lightness
+    (@lightness * 100).round
   end
   
   def lightness=(value)
-    @lightness = value.coerce(0.0).max.coerce(1.0).min
-    @rgb = Color.hsl_to_rgb(self.hsl)
+    @lightness = value.abs >= 1 ? (value / 100.0) : value
+    @lightness = @lightness.coerce(0.0).max.coerce(1.0).min
   end
   
-  def mix_with(color, percent_as_decimal)
+  def mix_with(color, percent_as_decimal=0.5)
     target = color.to_hsl
     deltas = []
     self.hsl.each_with_index {|val, i| deltas[i] = target[i] - val }
@@ -55,7 +67,13 @@ class Color
     [@hue, @saturation, @lightness]
   end
   
-  alias_method :to_hsl, :hsl
+  def to_hsl
+    [(@hue * 360.0).round, (@saturation * 100.0).round, (@lightness * 100.0).round]
+  end
+    
+  def to_rgb
+    Color.hsl_to_rgb(hsl)
+  end
   
   def to_hex
     Color.rgb_to_rgbhex(@rgb)
@@ -103,9 +121,19 @@ class Color
       return hue, saturation, lightness
     end
     
+    def rgb_to_hsl_human(rgb=[])
+      h,s,l = Color.rgb_to_hsl(rgb)
+      return (h * 360).round, (s * 100).round, (l * 100).round
+    end
+    
     def hsl_to_rgb(hsl=[])
       h, s, l = hsl
-      return [l,l,l].collect {|l| (l * 255.0).to_i } if s.zero?
+      if h > 1 || s > 1 || l > 1
+        h = h / 360.0
+        s = s * 0.01
+        l = l * 0.01
+      end
+      return [l,l,l].collect {|l| (l * 255.0).round } if s.zero? # gray, no chroma
       v2 = (l < 0.5) ? (l * (1 + s)) : (l + s) - (s * l)
       v1 = 2.0 * l - v2
       rgb = [h+(1/3.0), h, h-(1/3.0)]
@@ -125,14 +153,14 @@ class Color
       return rgb.collect {|n| (n * 255.0).round }
     end
     
-    def rgb_to_hsv(rgb=[])
-      r, g, b, min, max, delta = rgb_to_values(rgb)
-      value = max
-      return [0.0, 0.0, value] if delta.zero? # gray, no chroma
-      saturation = delta / max
-      hue = figure_hue_for(rgb)
-      return hue, saturation, value
-    end
+    # def rgb_to_hsv(rgb=[])
+    #   r, g, b, min, max, delta = rgb_to_values(rgb)
+    #   value = max
+    #   return [0.0, 0.0, value] if delta.zero? # gray, no chroma
+    #   saturation = delta / max
+    #   hue = figure_hue_for(rgb)
+    #   return hue, saturation, value
+    # end
         
     def rgb_to_cmyk(rgb=[])
       cmy = rgb.collect {|n| 1 - (n / 255.0)}
@@ -147,13 +175,13 @@ class Color
     end
     
     private
-    def rgb_to_float(rgb=[])
+    def rgb_to_values(rgb=[])
       rgb.collect! {|n| n / 255.0 }
       rgb << rgb.min << rgb.max << rgb.max - rgb.min
     end
     
     def figure_hue_for(rgb=[])
-      r, g, b, min, max, delta = rgb_to_float(rgb)
+      r, g, b, min, max, delta = rgb_to_values(rgb)
       delta_r, delta_g, delta_b = [r,g,b].collect {|n| (((max - n) / 6.0) + (delta / 2.0)) / delta }
       hue = if r.eql? max
         delta_b - delta_g
