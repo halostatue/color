@@ -1,5 +1,7 @@
 class Color
   
+  VERSION = "0.1.0"
+  
   # attr_accessor :rgb
   attr_accessor :hue
   attr_accessor :saturation
