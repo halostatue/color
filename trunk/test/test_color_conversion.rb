@@ -26,4 +26,10 @@ class ColorTest < Test::Unit::TestCase
     end
   end
   
+  def test_rgb_to_hsl
+    COLORS.each_value do |color|
+      assert_equal color[:hsl], Color.rgb_to_hsl(color[:rgb])
+    end
+  end
+  
 end
