@@ -1,0 +1,4 @@
+=== 24 July 2006
+* Initial import of code written 23 July.
+* Adding LICENSE, README, CHANGELOG files.
+* Added Rakefile, Basic Conversion Test for hex.
