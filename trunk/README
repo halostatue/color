@@ -1,3 +1,7 @@
+Warning
+=======
+color.rb currently has a namespace clash with color-tools, which is required by PDF::Writer. A fix is in the work.
+
 Color
 =====
 

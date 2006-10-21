@@ -1,3 +1,6 @@
+=== 21 October 2006 (live from Rubyconf/Denver)
+* completed move to HSL internally
+
 === 0.1.0, 5 August 2006
 * added hsl (degree, percent, percent) interface
 * removed rgb instance variable, color is managed internally as hsl floating point

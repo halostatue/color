@@ -2,11 +2,6 @@ class Color
   
   VERSION = "0.1.0"
   
-  # attr_accessor :rgb
-  attr_accessor :hue
-  attr_accessor :saturation
-  attr_accessor :lightness
-    
   def initialize(values, mode=:rgb)
     rgb = case mode
     when :hsl
@@ -31,10 +26,11 @@ class Color
     @hue = value
     @hue += 1 if @hue < 0 # color is _perceived_ as a wheel, not a continuum
     @hue -= 1 if @hue > 1
+    hue # doesn't seem to get returned like I'd like it to.
   end
   
   def hue
-    (@hue * 360).round
+    (@hue * 360.0).round
   end
   
   def saturation
@@ -58,10 +54,10 @@ class Color
   def mix_with(color, percent_as_decimal=0.5)
     target = color.to_hsl
     deltas = []
-    self.hsl.each_with_index {|val, i| deltas[i] = target[i] - val }
+    self.to_hsl.each_with_index {|val, i| deltas[i] = target[i] - val }
     deltas.collect! {|n| n * percent_as_decimal }
     new_color = []
-    deltas.each_with_index {|val, i| new_color[i] = val + self.hsl[i] }
+    deltas.each_with_index {|val, i| new_color[i] = val + self.to_hsl[i] }
     Color.new(new_color, :hsl)
   end
   
@@ -78,11 +74,11 @@ class Color
   end
   
   def to_hex
-    Color.rgb_to_rgbhex(@rgb)
+    Color.rgb_to_rgbhex(self.to_rgb)
   end
   
   def to_cmyk
-    Color.rgb_to_cmyk(@rgb)
+    Color.rgb_to_cmyk(self.to_rgb)
   end
   
   class << self
