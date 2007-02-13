@@ -1,15 +1,18 @@
 #--
-# Colour management with Ruby.
+# Color
+# Colour management with Ruby
+# http://rubyforge.org/projects/color
+#   Version 1.4.0
 #
-# Copyright 2005 Austin Ziegler
-#   http://rubyforge.org/ruby-pdf/
+# Licensed under a MIT-style licence. See Licence.txt in the main
+# distribution for full licensing information.
 #
-#   Licensed under a MIT-style licence.
+# Copyright (c) 2005 - 2007 Austin Ziegler and Matt Lyon
 #
-# $Id: rgb.rb 153 2007-02-07 02:28:41Z austin $
+# $Id: test_all.rb 55 2007-02-03 23:29:34Z austin $
 #++
 
-  # An RGB colour object.
+# An RGB colour object.
 class Color::RGB
   # The format of a DeviceRGB colour for PDF. In color-tools 2.0 this will
   # be removed from this package and added back as a modification by the
@@ -62,14 +65,14 @@ class Color::RGB
   # colour and a non-RGB colour will be approximate and based on the other
   # colour's default #to_rgb conversion. If there is no #to_rgb conversion,
   # this will raise an exception. This will report that two RGB colours are
-  # equivalent if all component values are within 1e-4 (0.0001) of each
+  # equivalent if all component values are within COLOR_TOLERANCE of each
   # other.
   def ==(other)
     other = other.to_rgb
     other.kind_of?(Color::RGB) and
-    ((@r - other.r).abs <= 1e-4) and
-    ((@g - other.g).abs <= 1e-4) and
-    ((@b - other.b).abs <= 1e-4)
+    ((@r - other.r).abs <= Color::COLOR_TOLERANCE) and
+    ((@g - other.g).abs <= Color::COLOR_TOLERANCE) and
+    ((@b - other.b).abs <= Color::COLOR_TOLERANCE)
   end
 
   # Creates an RGB colour object from the standard range 0..255.
@@ -108,6 +111,34 @@ class Color::RGB
     "#%02x%02x%02x" % [ r, g, b ]
   end
 
+  # Present the colour as an RGB HTML/CSS colour string (e.g., "rgb(0%, 50%,
+  # 100%)"). Note that this will perform a #to_rgb operation using the
+  # default conversion formula.
+  def css_rgb
+    "rgb(%3.2f%%, %3.2f%%, %3.2f%%)" % [ red_p, green_p, blue_p ]
+  end
+
+  # Present the colour as an RGBA (with alpha) HTML/CSS colour string (e.g.,
+  # "rgb(0%, 50%, 100%, 1)"). Note that this will perform a #to_rgb
+  # operation using the default conversion formula.
+  def css_rgba
+    "rgba(%3.2f%%, %3.2f%%, %3.2f%%, %3.2f)" % [ red_p, green_p, blue_p, 1 ]
+  end
+
+  # Present the colour as an HSL HTML/CSS colour string (e.g., "hsl(180,
+  # 25%, 35%)"). Note that this will perform a #to_hsl operation using the
+  # default conversion formula.
+  def css_hsl
+    to_hsl.css_hsl
+  end
+
+  # Present the colour as an HSLA (with alpha) HTML/CSS colour string (e.g.,
+  # "hsla(180, 25%, 35%, 1)"). Note that this will perform a #to_hsl
+  # operation using the default conversion formula.
+  def css_hsla
+    to_hsl.css_hsla
+  end
+
   # Converts the RGB colour to CMYK. Most colour experts strongly suggest
   # that this is not a good idea (some even suggesting that it's a very bad
   # idea). CMYK represents additive percentages of inks on white paper,
@@ -120,13 +151,13 @@ class Color::RGB
   #     c = 1.0 - r
   #     m = 1.0 - g
   #     y = 1.0 - b
-  # 2. Compute the minimum amount of black (K) required to smooth the
-  #    colour in inks.
+  # 2. Compute the minimum amount of black (K) required to smooth the colour
+  #    in inks.
   #     k = min(c, m, y)
   # 3. Perform undercolour removal on the C, M, and Y components of the
-  #    colours because less of each colour is needed for each bit of
-  #    black. Also, regenerate the black (K) based on the undercolour
-  #    removal so that the colour is more accurately represented in ink.
+  #    colours because less of each colour is needed for each bit of black.
+  #    Also, regenerate the black (K) based on the undercolour removal so
+  #    that the colour is more accurately represented in ink.
   #     c = min(1.0, max(0.0, c - UCR(k)))
   #     m = min(1.0, max(0.0, m - UCR(k)))
   #     y = min(1.0, max(0.0, y - UCR(k)))
@@ -233,10 +264,10 @@ class Color::RGB
   def brightness
     to_yiq.y
   end
+  # Convert to grayscale.
   def to_grayscale
     Color::GrayScale.from_fraction(to_hsl.l)
   end
-
   alias to_greyscale to_grayscale
 
   # Returns a new colour with the brightness adjusted by the specified
@@ -290,22 +321,85 @@ class Color::RGB
     hsl.to_rgb
   end
 
-  attr_accessor :r, :g, :b
-  remove_method :r=, :g=, :b= ;
-  def r=(rr) #:nodoc:
-    rr = 1.0 if rr > 1
-    rr = 0.0 if rr < 0
-    @r = rr
+  # Returns the red component of the colour in the normal 0 .. 255 range.
+  def red
+    @r * 255.0
   end
-  def g=(gg) #:nodoc:
-    gg = 1.0 if gg > 1
-    gg = 0.0 if gg < 0
-    @g = gg
+  # Returns the red component of the colour as a percentage.
+  def red_p
+    @r * 100.0
   end
-  def b=(bb) #:nodoc:
-    bb = 1.0 if bb > 1
-    bb = 0.0 if bb < 0
-    @b = bb
+  # Returns the red component of the colour as a fraction in the range 0.0
+  # .. 1.0.
+  def r
+    @r
+  end
+  # Sets the red component of the colour in the normal 0 .. 255 range.
+  def red=(rr)
+    @r = Color.normalize(rr / 255.0)
+  end
+  # Sets the red component of the colour as a percentage.
+  def red_p=(rr)
+    @r = Color.normalize(rr / 100.0)
+  end
+  # Sets the red component of the colour as a fraction in the range 0.0 ..
+  # 1.0.
+  def r=(rr)
+    @r = Color.normalize(rr)
+  end
+
+  # Returns the green component of the colour in the normal 0 .. 255 range.
+  def green
+    @g * 255.0
+  end
+  # Returns the green component of the colour as a percentage.
+  def green_p
+    @g * 100.0
+  end
+  # Returns the green component of the colour as a fraction in the range 0.0
+  # .. 1.0.
+  def g
+    @g
+  end
+  # Sets the green component of the colour in the normal 0 .. 255 range.
+  def green=(gg)
+    @g = Color.normalize(gg / 255.0)
+  end
+  # Sets the green component of the colour as a percentage.
+  def green_p=(gg)
+    @g = Color.normalize(gg / 100.0)
+  end
+  # Sets the green component of the colour as a fraction in the range 0.0 ..
+  # 1.0.
+  def g=(gg)
+    @g = Color.normalize(gg)
+  end
+
+  # Returns the blue component of the colour in the normal 0 .. 255 range.
+  def blue
+    @b * 255.0
+  end
+  # Returns the blue component of the colour as a percentage.
+  def blue_p
+    @b * 100.0
+  end
+  # Returns the blue component of the colour as a fraction in the range 0.0
+  # .. 1.0.
+  def b
+    @b
+  end
+  # Sets the blue component of the colour in the normal 0 .. 255 range.
+  def blue=(bb)
+    @b = Color.normalize(bb / 255.0)
+  end
+  # Sets the blue component of the colour as a percentage.
+  def blue_p=(bb)
+    @b = Color.normalize(bb / 100.0)
+  end
+  # Sets the blue component of the colour as a fraction in the range 0.0 ..
+  # 1.0.
+  def b=(bb)
+    @b = Color.normalize(bb)
   end
 end
 

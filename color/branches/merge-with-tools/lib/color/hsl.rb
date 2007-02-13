@@ -1,12 +1,15 @@
 #--
-# Colour management with Ruby.
+# Color
+# Colour management with Ruby
+# http://rubyforge.org/projects/color
+#   Version 1.4.0
 #
-# Copyright 2005 Austin Ziegler
-#   http://rubyforge.org/ruby-pdf/
+# Licensed under a MIT-style licence. See Licence.txt in the main
+# distribution for full licensing information.
 #
-#   Licensed under a MIT-style licence.
+# Copyright (c) 2005 - 2007 Austin Ziegler and Matt Lyon
 #
-# $Id: hsl.rb 153 2007-02-07 02:28:41Z austin $
+# $Id: test_all.rb 55 2007-02-03 23:29:34Z austin $
 #++
 
 # An HSL colour object. Internally, the hue (#h), saturation (#s), and
@@ -29,14 +32,14 @@ class Color::HSL
   # colour and a non-HSL colour will be approximate and based on the other
   # colour's #to_hsl conversion. If there is no #to_hsl conversion, this
   # will raise an exception. This will report that two HSL values are
-  # equivalent if all component values are within 1e-4 (0.0001) of each
-  # other.
+  # equivalent if all component values are within Color::COLOR_TOLERANCE of
+  # each other.
   def ==(other)
     other = other.to_hsl
     other.kind_of?(Color::HSL) and
-    ((@h - other.h).abs <= 1e-4) and
-    ((@s - other.s).abs <= 1e-4) and
-    ((@l - other.l).abs <= 1e-4)
+    ((@h - other.h).abs <= Color::COLOR_TOLERANCE) and
+    ((@s - other.s).abs <= Color::COLOR_TOLERANCE) and
+    ((@l - other.l).abs <= Color::COLOR_TOLERANCE)
   end
 
   # Creates an HSL colour object from the standard values of degrees and
@@ -50,6 +53,32 @@ class Color::HSL
   # Present the colour as an HTML/CSS colour string.
   def html
     to_rgb.html
+  end
+
+  # Present the colour as an RGB HTML/CSS colour string (e.g., "rgb(0%, 50%,
+  # 100%)"). Note that this will perform a #to_rgb operation using the
+  # default conversion formula.
+  def css_rgb
+    to_rgb.css_rgb
+  end
+
+  # Present the colour as an RGBA (with alpha) HTML/CSS colour string (e.g.,
+  # "rgb(0%, 50%, 100%, 1)"). Note that this will perform a #to_rgb
+  # operation using the default conversion formula.
+  def css_rgba
+    to_rgb.css_rgba
+  end
+
+  # Present the colour as an HSL HTML/CSS colour string (e.g., "hsl(180,
+  # 25%, 35%)").
+  def css_hsl
+    "hsl(%3.2f, %3.2f%%, %3.2f%%)" % [ hue, saturation, luminosity ]
+  end
+
+  # Present the colour as an HSLA (with alpha) HTML/CSS colour string (e.g.,
+  # "hsla(180, 25%, 35%, 1)").
+  def css_hsla
+    "hsla(%3.2f, %3.2f%%, %3.2f%%, %3.2f)" % [ hue, saturation, luminosity, 1 ]
   end
 
   # Converting to HSL as adapted from Foley and Van-Dam from
@@ -67,7 +96,7 @@ class Color::HSL
     return Color::RGB.new(@l, @l, @l) if Color.near_zero?(@s)
 
     # Is the value less than 0.5?
-    if Color.near_zero_or_less?(@l - 0.5) # (@l - 0.5) < Color::COLOR_EPSILON
+    if Color.near_zero_or_less?(@l - 0.5)
       tmp2 = @l * (1.0 + @s.to_f)
     else
       tmp2 = @l + @s - (@l * @s.to_f)
@@ -94,17 +123,17 @@ class Color::HSL
      Color::RGB.from_fraction(*rgb)
   end
 
-    # Converts to RGB then YIQ.
+  # Converts to RGB then YIQ.
   def to_yiq
     to_rgb.to_yiq
   end
 
-    # Converts to RGB then CMYK.
+  # Converts to RGB then CMYK.
   def to_cmyk
     to_rgb.to_cmyk
   end
 
-    # Returns the luminosity (#l) of the colour.
+  # Returns the luminosity (#l) of the colour.
   def brightness
     @l
   end
@@ -115,7 +144,7 @@ class Color::HSL
 
   # Returns the hue of the colour in degrees.
   def hue
-    (@h * 360.0).round
+    @h * 360.0
   end
   # Returns the hue of the colour in the range 0.0 .. 1.0.
   def h
@@ -135,10 +164,9 @@ class Color::HSL
   def h=(hh)
     @h = Color.normalize(hh)
   end
-
   # Returns the percentage of saturation of the colour.
   def saturation
-    (@s * 100.0).round
+    @s * 100.0
   end
   # Returns the saturation of the colour in the range 0.0 .. 1.0.
   def s
@@ -155,7 +183,7 @@ class Color::HSL
 
   # Returns the percentage of luminosity of the colour.
   def luminosity
-    (@l * 100.0).round
+    @l * 100.0
   end
   alias lightness luminosity
   # Returns the luminosity of the colour in the range 0.0 .. 1.0.
@@ -166,7 +194,7 @@ class Color::HSL
   def luminosity=(ll)
     @l = Color.normalize(ll / 100.0)
   end
-  alias lightness= luminosity=
+  alias lightness= luminosity= ;
   # Sets the luminosity of the colour in the ragne 0.0 .. 1.0.
   def l=(ll)
     @l = Color.normalize(ll)

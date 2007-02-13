@@ -6,11 +6,20 @@
   - A thin veneer has been written to allow Color::new to return a Color::HSL
     instance; Color::HSL supports as many methods as possible that were
     previously supported by the Color class.
+  - Values that were previously rounded by Color are no longer rounded;
+    fractional values matter.
 * Converted to hoe for project management.
 * Moved to the next step of deprecating Color::Name values; printing a
   warning for each use (see the history for color-utils 1.3.0).
 * Print a warning on the access of either VERSION or COLOR_TOOLS_VERSION; the
   version constant is now COLOR_VERSION.
+* Added humanized versions of accessors (e.g., CMYK colours now have both #cyan
+  and #c to access the cyan component of the colour; #cyan provides the value
+  as a percentage).
+* Added CSS3 formatters for RGB, RGBA, HSL, and HSLA outputs. Note that the
+  Color library does not yet have a way of setting alpha opacity, so the
+  output for RGBA and HSLA are at full alpha opacity (1.0). The values are
+  output with two decimal places.
 
 == Color 0.1.0 / 2006.08.05
 * Added HSL (degree, percent, percent) interface.

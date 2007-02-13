@@ -1,59 +1,62 @@
 #--
-# Colour management with Ruby.
+# Color
+# Colour management with Ruby
+# http://rubyforge.org/projects/color
+#   Version 1.4.0
 #
-# Copyright 2005 Austin Ziegler
-#   http://rubyforge.org/ruby-pdf/
+# Licensed under a MIT-style licence. See Licence.txt in the main
+# distribution for full licensing information.
 #
-#   Licensed under a MIT-style licence.
+# Copyright (c) 2005 - 2007 Austin Ziegler and Matt Lyon
 #
-# $Id: grayscale.rb 153 2007-02-07 02:28:41Z austin $
+# $Id: test_all.rb 55 2007-02-03 23:29:34Z austin $
 #++
 
-  # A colour object representing shades of grey. Used primarily in PDF
-  # document creation.
+# A colour object representing shades of grey. Used primarily in PDF
+# document creation.
 class Color::GrayScale
-    # The format of a DeviceGrey colour for PDF. In color-tools 2.0 this
-    # will be removed from this package and added back as a modification by
-    # the PDF::Writer package.
+  # The format of a DeviceGrey colour for PDF. In color-tools 2.0 this will
+  # be removed from this package and added back as a modification by the
+  # PDF::Writer package.
   PDF_FORMAT_STR  = "%.3f %s"
 
-    # Creates a greyscale colour object from fractional values 0..1.
-    #
-    #   Color::GreyScale.from_fraction(0.5)
+  # Creates a greyscale colour object from fractional values 0..1.
+  #
+  #   Color::GreyScale.from_fraction(0.5)
   def self.from_fraction(g = 0)
     color = Color::GrayScale.new
     color.g = g
     color
   end
 
-    # Creates a greyscale colour object from percentages 0..100.
-    #
-    #   Color::GrayScale.new(50)
+  # Creates a greyscale colour object from percentages 0..100.
+  #
+  #   Color::GrayScale.new(50)
   def initialize(g = 0)
     @g = g / 100.0
   end
 
-    # Compares the other colour to this one. The other colour will be
-    # converted to GreyScale before comparison, so the comparison between a
-    # GreyScale colour and a non-GreyScale colour will be approximate and
-    # based on the other colour's #to_greyscale conversion. If there is no
-    # #to_greyscale conversion, this will raise an exception. This will
-    # report that two GreyScale values are equivalent if they are within
-    # 1e-4 (0.0001) of each other.
+  # Compares the other colour to this one. The other colour will be
+  # converted to GreyScale before comparison, so the comparison between a
+  # GreyScale colour and a non-GreyScale colour will be approximate and
+  # based on the other colour's #to_greyscale conversion. If there is no
+  # #to_greyscale conversion, this will raise an exception. This will report
+  # that two GreyScale values are equivalent if they are within
+  # COLOR_TOLERANCE of each other.
   def ==(other)
     other = other.to_grayscale
     other.kind_of?(Color::GrayScale) and
-    ((@g - other.g).abs <= 1e-4)
+    ((@g - other.g).abs <= Color::COLOR_TOLERANCE)
   end
 
-    # Present the colour as a DeviceGrey fill colour string for PDF. This
-    # will be removed from the default package in color-tools 2.0.
+  # Present the colour as a DeviceGrey fill colour string for PDF. This will
+  # be removed from the default package in color-tools 2.0.
   def pdf_fill
     PDF_FORMAT_STR % [ @g, "g" ]
   end
 
-    # Present the colour as a DeviceGrey stroke colour string for PDF. This
-    # will be removed from the default package in color-tools 2.0.
+  # Present the colour as a DeviceGrey stroke colour string for PDF. This
+  # will be removed from the default package in color-tools 2.0.
   def pdf_stroke
     PDF_FORMAT_STR % [ @g, "G" ]
   end
@@ -63,45 +66,70 @@ class Color::GrayScale
   end
   private :to_255
 
-    # Present the colour as an HTML/CSS colour string.
+  # Present the colour as an HTML/CSS colour string.
   def html
     gs = "%02x" % to_255
     "##{gs * 3}"
   end
 
-    # Convert the greyscale colour to CMYK.
+  # Present the colour as an RGB HTML/CSS colour string (e.g., "rgb(0%, 50%,
+  # 100%)").
+  def css_rgb
+    "rgb(%3.2f%%, %3.2f%%, %3.2f%%)" % [ gray, gray, gray ]
+  end
+
+  # Present the colour as an RGBA (with alpha) HTML/CSS colour string (e.g.,
+  # "rgb(0%, 50%, 100%, 1)").
+  def css_rgba
+    "rgba(%3.2f%%, %3.2f%%, %3.2f%%, %1.2f)" % [ gray, gray, gray, 1 ]
+  end
+
+  # Present the colour as an HSL HTML/CSS colour string (e.g., "hsl(180,
+  # 25%, 35%)"). Note that this will perform a #to_hsl operation.
+  def css_hsl
+    to_hsl.css_hsl
+  end
+
+  # Present the colour as an HSLA (with alpha) HTML/CSS colour string (e.g.,
+  # "hsla(180, 25%, 35%, 1)"). Note that this will perform a #to_hsl
+  # operation.
+  def css_hsla
+    to_hsl.css_hsla
+  end
+
+  # Convert the greyscale colour to CMYK.
   def to_cmyk
     k = 1.0 - @g.to_f
     Color::CMYK.from_fraction(0, 0, 0, k)
   end
 
-    # Convert the greyscale colour to RGB.
+  # Convert the greyscale colour to RGB.
   def to_rgb(ignored = true)
-    g = to_255
-    Color::RGB.new(g, g, g)
+    Color::RGB.from_fraction(g, g, g)
   end
 
+  # Reflexive conversion.
   def to_grayscale
     self
   end
   alias to_greyscale to_grayscale
 
-    # Lightens the greyscale colour by the stated percent.
+  # Lightens the greyscale colour by the stated percent.
   def lighten_by(percent)
     g = [@g + (@g * (percent / 100.0)), 1.0].min
     Color::GrayScale.from_fraction(g)
   end
 
-    # Darken the RGB hue by the stated percent.
+  # Darken the greyscale colour by the stated percent.
   def darken_by(percent)
     g = [@g - (@g * (percent / 100.0)), 0.0].max
     Color::GrayScale.from_fraction(g)
   end
 
-    # Returns the YIQ (NTSC) colour encoding of the greyscale value. This
-    # is an approximation, as the values for I and Q are calculated by
-    # treating the greyscale value as an RGB value. The Y (intensity or
-    # brightness) value is the same as the greyscale value.
+  # Returns the YIQ (NTSC) colour encoding of the greyscale value. This is
+  # an approximation, as the values for I and Q are calculated by treating
+  # the greyscale value as an RGB value. The Y (intensity or brightness)
+  # value is the same as the greyscale value.
   def to_yiq
     y = @g
     i = (@g * 0.596) + (@g * -0.275) + (@g * -0.321)
@@ -109,27 +137,41 @@ class Color::GrayScale
     Color::YIQ.from_fraction(y, i, q)
   end
 
-    # Returns the HSL colour encoding of the greyscale value.
+  # Returns the HSL colour encoding of the greyscale value.
   def to_hsl
     Color::HSL.from_fraction(0, 0, @g)
   end
 
-    # Returns the brightness value for this greyscale value; this is the
-    # greyscale value.
+  # Returns the brightness value for this greyscale value; this is the
+  # greyscale value itself.
   def brightness
     @g
   end
 
-  attr_accessor :g
-  remove_method :g= ;
-  def g=(gg) #:nodoc:
-    gg = 1.0 if gg > 1
-    gg = 0.0 if gg < 0
-    @g = gg
+  # Returns the grayscale value as a percentage of white (100% gray is
+  # white).
+  def gray
+    @g * 100.0
+  end
+  alias grey gray
+  # Returns the grayscale value as a fractional value of white in the range
+  # 0.0 .. 1.0.
+  def g
+    @g
+  end
+  # Sets the grayscale value as a percentage of white.
+  def gray=(gg)
+    @g = Color.normalize(gg / 100.0)
+  end
+  alias grey= gray= ;
+  # Returns the grayscale value as a fractional value of white in the range
+  # 0.0 .. 1.0.
+  def g=(gg)
+    @g = Color.normalize(gg)
   end
 end
 
 module Color
-    # A synonym for Color::GrayScale.
+  # A synonym for Color::GrayScale.
   GreyScale = GrayScale
 end

@@ -14,7 +14,7 @@
 #++
 
 $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib") if __FILE__ == $0
-require 'test/unit' unless defined? $ZENTEST and $ZENTEST
+require 'test/unit'
 require 'color'
 require 'color/palette/gimp'
 

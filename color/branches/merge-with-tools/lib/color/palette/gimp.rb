@@ -1,45 +1,48 @@
 #--
-# Colour management with Ruby.
+# Color
+# Colour management with Ruby
+# http://rubyforge.org/projects/color
+#   Version 1.4.0
 #
-# Copyright 2005 Austin Ziegler
-#   http://rubyforge.org/ruby-pdf/
+# Licensed under a MIT-style licence. See Licence.txt in the main
+# distribution for full licensing information.
 #
-#   Licensed under a MIT-style licence.
+# Copyright (c) 2005 - 2007 Austin Ziegler and Matt Lyon
 #
-# $Id: gimp.rb 153 2007-02-07 02:28:41Z austin $
+# $Id: test_all.rb 55 2007-02-03 23:29:34Z austin $
 #++
 
 require 'color/palette'
 
-  # A class that can read a GIMP (GNU Image Manipulation Program) palette
-  # file and provide a Hash-like interface to the contents. GIMP colour
-  # palettes are RGB values only.
-  #
-  # Because two or more entries in a GIMP palette may have the same name,
-  # all named entries are returned as an array.
-  #
-  #   pal = Color::Palette::Gimp.from_file(my_gimp_palette)
-  #   pal[0]          => Color::RGB<...>
-  #   pal["white"]    => [ Color::RGB<...> ]
-  #   pal["unknown"]  => [ Color::RGB<...>, Color::RGB<...>, ... ]
-  #
-  # GIMP Palettes are always indexable by insertion order (an integer key).
+# A class that can read a GIMP (GNU Image Manipulation Program) palette file
+# and provide a Hash-like interface to the contents. GIMP colour palettes
+# are RGB values only.
+#
+# Because two or more entries in a GIMP palette may have the same name, all
+# named entries are returned as an array.
+#
+#   pal = Color::Palette::Gimp.from_file(my_gimp_palette)
+#   pal[0]          => Color::RGB<...>
+#   pal["white"]    => [ Color::RGB<...> ]
+#   pal["unknown"]  => [ Color::RGB<...>, Color::RGB<...>, ... ]
+#
+# GIMP Palettes are always indexable by insertion order (an integer key).
 class Color::Palette::Gimp
   include Enumerable
 
   class << self
-      # Create a GIMP palette object from the named file.
+    # Create a GIMP palette object from the named file.
     def from_file(filename)
       File.open(filename, "rb") { |io| Color::Palette::Gimp.from_io(io) }
     end
 
-      # Create a GIMP palette object from the provided IO.
+    # Create a GIMP palette object from the provided IO.
     def from_io(io)
       Color::Palette::Gimp.new(io.read)
     end
   end
 
-    # Create a new GIMP palette.
+  # Create a new GIMP palette from the palette file as a string.
   def initialize(palette)
     @colors   = []
     @names    = {}
@@ -80,6 +83,14 @@ class Color::Palette::Gimp
     end
   end
 
+  # Provides the colour or colours at the provided selectors.
+  def values_at(*selectors)
+    @colors.values_at(*selectors)
+  end
+
+  # If a Numeric +key+ is provided, the single colour value at that position
+  # will be returned. If a String +key+ is provided, the colour set (an
+  # array) for that colour name will be returned.
   def [](key)
     if key.kind_of?(Numeric)
       @colors[key]
@@ -88,17 +99,17 @@ class Color::Palette::Gimp
     end
   end
 
-    # Loops through each colour.
+  # Loops through each colour.
   def each
     @colors.each { |el| yield el }
   end
 
-    # Loops through each named colour set.
+  # Loops through each named colour set.
   def each_name #:yields color_name, color_set:#
     @names.each { |color_name, color_set| yield color_name, color_set }
   end
 
-    # Returns true if this is believed to be a valid GIMP palette.
+  # Returns true if this is believed to be a valid GIMP palette.
   def valid?
     @valid
   end

@@ -38,6 +38,8 @@ Hoe.new PKG_NAME, PKG_VERSION do |p|
   p.changes         = p.paragraphs_of("History.txt", 0..1).join("\n\n")
   p.description     = p.paragraphs_of("Readme.txt", 1..1).join("\n\n")
 
+  p.extra_deps      << [ "archive-tar-minitar", "~>0.5.1" ]
+
   p.spec_extras[:extra_rdoc_files] = MANIFEST.grep(/txt$/) -
     ["Manifest.txt"]
 end
@@ -90,6 +92,7 @@ file PKG_TAR => [ :test ] do |t|
 end
 task :package => [ PKG_TAR ]
 
+desc "Build the manifest file from the current set of files."
 task :build_manifest do |t|
   require 'find'
 
@@ -97,7 +100,6 @@ task :build_manifest do |t|
   Find.find(".") do |path|
     next if File.directory?(path)
     next if path =~ /\.svn/
-    next if path =~ %r{/research/}
     next if path =~ /\.swp$/
     next if path =~ /~$/
     paths << path.sub(%r{^\./}, '')
@@ -106,4 +108,6 @@ task :build_manifest do |t|
   File.open("Manifest.txt", "w") do |f|
     f.puts paths.sort.join("\n")
   end
+
+  puts paths.sort.join("\n")
 end
