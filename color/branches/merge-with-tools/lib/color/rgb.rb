@@ -203,11 +203,11 @@ class Color::RGB
 
     lum   = (max + min) / 2.0
 
-    if delta <= 1e-5  # close to 0.0, so it's a grey
+    if Color.near_zero?(delta) # close to 0.0, so it's a grey
       hue = 0
       sat = 0
     else
-      if (lum - 0.5) <= 1e-5
+      if Color.near_zero_or_less?(lum - 0.5)
         sat = delta / (max + min).to_f
       else
         sat = delta / (2 - max - min).to_f
@@ -216,9 +216,9 @@ class Color::RGB
       if @r == max
         hue = (@g - @b) / delta.to_f
       elsif @g == max
-        hue = (2.0 + @b - @r) / delta.to_f
-      elsif (@b - max) <= 1e-5
-        hue = (4.0 + @r - @g) / delta.to_f
+        hue = 2.0 + (@b - @r) / delta.to_f
+      elsif Color.near_zero_or_less?(@b - max)
+        hue = 4.0 + (@r - @g) / delta.to_f
       end
       hue /= 6.0
 
@@ -401,6 +401,47 @@ class Color::RGB
   def b=(bb)
     @b = Color.normalize(bb)
   end
+
+  # Adds another colour to the current colour. The other colour will be
+  # converted to RGB before addition. This conversion depends upon a #to_rgb
+  # method on the other colour.
+  #
+  # The addition is done using the RGB Accessor methods to ensure a valid
+  # colour in the result.
+  def +(other)
+    other = other.to_rgb
+    rgb = self.dup
+
+    rgb.r += other.r
+    rgb.g += other.g
+    rgb.b += other.b
+
+    rgb
+  end
+
+  # Subtracts another colour to the current colour. The other colour will be
+  # converted to RGB before subtraction. This conversion depends upon a
+  # #to_rgb method on the other colour.
+  #
+  # The subtraction is done using the RGB Accessor methods to ensure a valid
+  # colour in the result.
+  def -(other) 
+    other = other.to_rgb 
+    rgb = self.dup
+
+    rgb.r -= other.r
+    rgb.g -= other.g
+    rgb.b -= other.b
+
+    rgb
+  end
+
+  # Retrieve the maxmum RGB value from the current colour as a GrayScale
+  # colour
+  def max_rgb_as_grayscale
+      Color::GrayScale.from_fraction([@r, @g, @b].max)
+  end
+  alias max_rgb_as_greyscale max_rgb_as_grayscale
 end
 
 require 'color/rgb-colors'

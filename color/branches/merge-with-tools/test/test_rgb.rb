@@ -250,6 +250,12 @@ module TestColor
                    Color::RGB::Carnation.css_hsla)
       assert_equal("hsla(0.00, 100.00%, 27.65%, 1.00)",
                    Color::RGB::Cayenne.css_hsla)
+
+      # The following tests a bug reported by Jean Krohn on 10 June 2006
+      # where HSL conversion was not quite correct, resulting in a bad
+      # round-trip.
+      assert_equal("#008800", Color::RGB.from_html("#008800").to_hsl.html)
+      assert_not_equal("#002288", Color::RGB.from_html("#008800").to_hsl.html)
     end
 
     def test_to_rgb
@@ -274,6 +280,36 @@ module TestColor
                    Color::RGB::Carnation.to_yiq)
       assert_equal(Color::YIQ.new(16.53, 32.96, 11.72),
                    Color::RGB::Cayenne.to_yiq)
+    end
+
+    def test_add
+      white = Color::RGB::Cyan + Color::RGB::Yellow 
+      assert_equal(Color::RGB::White, white) 
+
+      c1 = Color::RGB.new(0x80, 0x80, 0x00)
+      c2 = Color::RGB.new(0x45, 0x20, 0xf0)
+      cr = Color::RGB.new(0xc5, 0xa0, 0xf0)
+
+      assert_equal(cr, c1 + c2)
+    end
+
+    def test_subtract
+      black = Color::RGB::LightCoral - Color::RGB::Honeydew
+      assert_equal(Color::RGB::Black, black) 
+
+      c1 = Color::RGB.new(0x85, 0x80, 0x00)
+      c2 = Color::RGB.new(0x40, 0x20, 0xf0)
+      cr = Color::RGB.new(0x45, 0x60, 0x00)
+
+      assert_equal(cr, c1 - c2)
+    end
+
+    def test_mean_grayscale
+      c1        = Color::RGB.new(0x85, 0x80, 0x00)
+      c1_max    = c1.max_rgb_as_greyscale
+      c1_result = Color::GrayScale.from_fraction(0x85 / 255.0)
+
+      assert_equal(c1_result, c1_max)
     end
   end
 end

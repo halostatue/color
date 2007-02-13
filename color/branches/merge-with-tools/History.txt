@@ -20,6 +20,18 @@
   Color library does not yet have a way of setting alpha opacity, so the
   output for RGBA and HSLA are at full alpha opacity (1.0). The values are
   output with two decimal places.
+* Applied a patch to provide simple arithmetic colour addition and subtraction
+  to Color::GrayScale and Color::RGB. The patch was contributed by Jeremy
+  Hinegardner <jeremy@hinegardner.org>. This patch also provides the ability to
+  return the maximum RGB value as a grayscale colour.
+* Fixed two problems reported by Jean Krohn <jb.krohn@free.fr> against
+  color-tools relating to RGB-to-HSL and HSL-to-RGB conversion. (Color and
+  color-tools use the same formulas, but the ordering of the calculations is
+  slightly different with Color and did not suffer from this problem;
+  color-tools was more sensitive to floating-point values and precision
+  errors.)
+* Added Paint Shop Prop (JASC-PAL) and Adobe Color swatch (Photoshop) palette
+  readers: Color::Palette::PSP and Color::Palette::AdobeColor.
 
 == Color 0.1.0 / 2006.08.05
 * Added HSL (degree, percent, percent) interface.

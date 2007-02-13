@@ -49,8 +49,6 @@ class Color::Palette::Gimp
     @valid    = false
     @name     = "(unnamed)"
 
-    index     = 0
-
     palette.split($/).each do |line|
       line.chomp!
       line.gsub!(/\s*#.*\Z/, '')
@@ -75,11 +73,9 @@ class Color::Palette::Gimp
 
       color = Color::RGB.new(*data)
 
-      @colors[index]  = color
+      @colors << color
       @names[name] ||= []
       @names[name]  << color
-
-      index += 1
     end
   end
 
@@ -112,6 +108,10 @@ class Color::Palette::Gimp
   # Returns true if this is believed to be a valid GIMP palette.
   def valid?
     @valid
+  end
+
+  def size
+    @colors.size
   end
 
   attr_reader :name

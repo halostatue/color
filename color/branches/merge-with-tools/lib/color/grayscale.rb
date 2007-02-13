@@ -169,6 +169,36 @@ class Color::GrayScale
   def g=(gg)
     @g = Color.normalize(gg)
   end
+
+  # Adds another colour to the current colour. The other colour will be
+  # converted to grayscale before addition. This conversion depends upon a
+  # #to_grayscale method on the other colour.
+  #
+  # The addition is done using the grayscale accessor methods to ensure a
+  # valid colour in the result.
+  def +(other)
+    other = other.to_grayscale
+    gray = self.dup
+    
+    gray.g += other.g
+
+    gray
+  end
+
+  # Subtracts another colour to the current colour. The other colour will be
+  # converted to grayscale before subtraction. This conversion depends upon
+  # a #to_grayscale method on the other colour.
+  #
+  # The subtraction is done using the grayscale accessor methods to ensure a
+  # valid colour in the result.
+  def -(other)
+    other = other.to_grayscale 
+    gray = self.dup
+
+    gray.g -= other.g
+
+    gray 
+  end
 end
 
 module Color

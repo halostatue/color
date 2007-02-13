@@ -93,7 +93,7 @@ class Color::HSL
   def to_rgb(ignored = nil)
     return Color::RGB.new if Color.near_zero_or_less?(@l)
     return Color::RGB.new(0xff, 0xff, 0xff) if Color.near_one_or_more?(@l)
-    return Color::RGB.new(@l, @l, @l) if Color.near_zero?(@s)
+    return Color::RGB.from_fraction(@l, @l, @l) if Color.near_zero?(@s)
 
     # Is the value less than 0.5?
     if Color.near_zero_or_less?(@l - 0.5)
@@ -109,11 +109,11 @@ class Color::HSL
       hue += 1.0 if Color.near_zero_or_less?(hue)
       hue -= 1.0 if Color.near_one_or_more?(hue)
 
-      if ((6.0 * hue) - 1.0) < Color::COLOR_EPSILON
+      if Color.near_zero_or_less?((6.0 * hue) - 1.0)
         tmp1 + ((tmp2 - tmp1) * hue * 6.0)
-      elsif ((2.0 * hue) - 1.0) < Color::COLOR_EPSILON
+      elsif Color.near_zero_or_less?((2.0 * hue) - 1.0)
         tmp2
-      elsif ((3.0 * hue) - 2.0) < Color::COLOR_EPSILON
+      elsif Color.near_zero_or_less?((3.0 * hue) - 2.0)
         tmp1 + (tmp2 - tmp1) * ((2 / 3.0) - hue) * 6.0
       else
         tmp1

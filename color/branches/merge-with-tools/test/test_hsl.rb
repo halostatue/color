@@ -99,6 +99,11 @@ module TestColor
       assert_equal("#3d5c4a", @hsl.html)
       assert_equal("rgb(24.00%, 36.00%, 29.00%)", @hsl.css_rgb)
       assert_equal("rgba(24.00%, 36.00%, 29.00%, 1.00)", @hsl.css_rgba)
+      # The following tests address a bug reported by Jean Krohn on June 6,
+      # 2006 and excercise some previously unexercised code in to_rgb.
+      assert_equal(Color::RGB::Black, Color::HSL.new(75, 75, 0))
+      assert_equal(Color::RGB::White, Color::HSL.new(75, 75, 100))
+      assert_equal(Color::RGB::Gray80, Color::HSL.new(75, 0, 80))
     end
 
     def test_to_yiq

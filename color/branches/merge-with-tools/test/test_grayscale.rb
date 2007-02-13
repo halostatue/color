@@ -100,5 +100,20 @@ module TestColor
       assert_in_delta(0.0, yiq.i, Color::COLOR_TOLERANCE)
       assert_in_delta(0.0, yiq.q, Color::COLOR_TOLERANCE)
     end
+
+    def test_add
+      delta = @gs + Color::GrayScale.new(20)
+      max   = @gs + Color::GrayScale.new(80)
+
+      assert_in_delta(1.0, max.g, Color::COLOR_TOLERANCE)
+      assert_in_delta(0.53, delta.g, Color::COLOR_TOLERANCE)
+    end
+
+    def test_subtract
+      delta = @gs - Color::GrayScale.new(20)
+      max   = @gs - Color::GrayScale.new(80)
+      assert_in_delta(0.0, max.g, Color::COLOR_TOLERANCE)
+      assert_in_delta(0.13, delta.g, Color::COLOR_TOLERANCE)
+    end
   end
 end
