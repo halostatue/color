@@ -84,7 +84,7 @@ module Color
     else
       if Color::RGB.const_defined?(name)
         warn "Color::#{name} has been deprecated. Use Color::RGB::#{name} instead."
-        Color::RGB.const_get(const)
+        Color::RGB.const_get(name)
       else
         super
       end
@@ -103,14 +103,14 @@ module Color
   # mode = :cmyk::  +values+ must be an array of [ cyan %, magenta %, yellow
   #                 %, black % ]. A Color::CMYK object will be created.
   def self.new(values, mode = :rgb)
-    warn "Color.new has been deprecated. Use Color::HSL.new instead."
+    warn "Color.new has been deprecated. Use Color::#{mode.to_s.upcase}.new instead."
     color = case mode
             when :hsl
               Color::HSL.new(*values)
             when :rgb
               values = [ values ].flatten
               if values.size == 1
-                Color::RGB.from_html(values)
+                Color::RGB.from_html(*values)
               else
                 Color::RGB.new(*values)
               end

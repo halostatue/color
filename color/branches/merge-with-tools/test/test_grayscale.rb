@@ -20,7 +20,7 @@ require 'color'
 module TestColor
   class TestGrayScale < Test::Unit::TestCase
     def setup
-      @gs = Color::GrayScale.new(33)
+      @gs = Color::GrayScale.from_percent(33)
     end
 
     def test_brightness
@@ -114,6 +114,10 @@ module TestColor
       max   = @gs - Color::GrayScale.new(80)
       assert_in_delta(0.0, max.g, Color::COLOR_TOLERANCE)
       assert_in_delta(0.13, delta.g, Color::COLOR_TOLERANCE)
+    end
+
+    def test_inspect
+      assert_equal("Gray [33.00%]", @gs.inspect)
     end
   end
 end

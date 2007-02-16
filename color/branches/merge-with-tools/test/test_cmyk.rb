@@ -114,6 +114,10 @@ module TestColor
       assert_equal("rgba(54.00%, 48.00%, 42.00%, 1.00)", @cmyk.css_rgba)
     end
 
+    def test_inspect
+      assert_equal("CMYK [10.00%, 20.00%, 30.00%, 40.00%]", @cmyk.inspect)
+    end
+
     def test_to_yiq
       yiq = nil
       assert_nothing_raised { yiq = @cmyk.to_yiq }

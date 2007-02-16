@@ -54,6 +54,14 @@ class Color::CMYK
   # managed as fractional values 0..1.
   #
   #   Color::CMYK.new(30, 0, 80, 30)
+  def self.from_percent(c = 0, m = 0, y = 0, k = 0)
+    Color::CMYK.new(c, m, y, k)
+  end
+
+  # Creates a CMYK colour object from percentages. Internally, the colour is
+  # managed as fractional values 0..1.
+  #
+  #   Color::CMYK.new(30, 0, 80, 30)
   def initialize(c = 0, m = 0, y = 0, k = 0)
     @c = c / 100.0
     @m = m / 100.0
@@ -174,9 +182,12 @@ class Color::CMYK
   end
   alias to_greyscale to_grayscale
 
-  # Provides a conversion for self.
   def to_cmyk
     self
+  end
+
+  def inspect
+    "CMYK [%.2f%%, %.2f%%, %.2f%%, %.2f%%]" % [ cyan, magenta, yellow, black ]
   end
 
   # Converts to RGB then YIQ.

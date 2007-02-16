@@ -311,5 +311,24 @@ module TestColor
 
       assert_equal(c1_result, c1_max)
     end
+
+    def test_from_html
+      assert_equal("RGB [#333333]", Color::RGB.from_html("#333").inspect)
+      assert_equal("RGB [#333333]", Color::RGB.from_html("333").inspect)
+      assert_equal("RGB [#555555]", Color::RGB.from_html("#555555").inspect)
+      assert_equal("RGB [#555555]", Color::RGB.from_html("555555").inspect)
+      assert_raises(ArgumentError) { Color::RGB.from_html("#5555555") }
+      assert_raises(ArgumentError) { Color::RGB.from_html("5555555") }
+      assert_raises(ArgumentError) { Color::RGB.from_html("#55555") }
+      assert_raises(ArgumentError) { Color::RGB.from_html("55555") }
+    end
+
+    def test_inspect
+      assert_equal("RGB [#000000]", Color::RGB::Black.inspect)
+      assert_equal("RGB [#0000ff]", Color::RGB::Blue.inspect)
+      assert_equal("RGB [#00ff00]", Color::RGB::Lime.inspect)
+      assert_equal("RGB [#ff0000]", Color::RGB::Red.inspect)
+      assert_equal("RGB [#ffffff]", Color::RGB::White.inspect)
+    end
   end
 end

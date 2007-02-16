@@ -31,6 +31,13 @@ class Color::GrayScale
 
   # Creates a greyscale colour object from percentages 0..100.
   #
+  #   Color::GrayScale.from_percent(50)
+  def self.from_percent(g = 0)
+    Color::GrayScale.new(g)
+  end
+
+  # Creates a greyscale colour object from percentages 0..100.
+  #
   #   Color::GrayScale.new(50)
   def initialize(g = 0)
     @g = g / 100.0
@@ -178,11 +185,9 @@ class Color::GrayScale
   # valid colour in the result.
   def +(other)
     other = other.to_grayscale
-    gray = self.dup
-    
-    gray.g += other.g
-
-    gray
+    ng = self.dup
+    ng.g += other.g
+    ng
   end
 
   # Subtracts another colour to the current colour. The other colour will be
@@ -193,11 +198,13 @@ class Color::GrayScale
   # valid colour in the result.
   def -(other)
     other = other.to_grayscale 
-    gray = self.dup
+    ng = self.dup
+    ng.g -= other.g
+    ng
+  end
 
-    gray.g -= other.g
-
-    gray 
+  def inspect
+    "Gray [%.2f%%]" % [ gray ]
   end
 end
 

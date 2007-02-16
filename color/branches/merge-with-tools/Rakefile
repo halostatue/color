@@ -40,6 +40,8 @@ Hoe.new PKG_NAME, PKG_VERSION do |p|
 
   p.extra_deps      << [ "archive-tar-minitar", "~>0.5.1" ]
 
+  p.clean_globs     << "coverage"
+
   p.spec_extras[:extra_rdoc_files] = MANIFEST.grep(/txt$/) -
     ["Manifest.txt"]
 end
@@ -101,6 +103,7 @@ task :build_manifest do |t|
     next if File.directory?(path)
     next if path =~ /\.svn/
     next if path =~ /\.swp$/
+    next if path =~ %r{coverage/}
     next if path =~ /~$/
     paths << path.sub(%r{^\./}, '')
   end

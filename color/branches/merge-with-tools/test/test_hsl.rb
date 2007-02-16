@@ -23,7 +23,7 @@ module TestColor
       @hsl = Color::HSL.new(145, 20, 30)
     end
 
-    def brightness
+    def test_brightness
       assert_in_delta(0.3, @hsl.brightness, Color::COLOR_TOLERANCE)
     end
 
@@ -126,6 +126,10 @@ module TestColor
       assert_in_delta(30, ry50.hue, Color::COLOR_TOLERANCE)
       ry75 = red.mix_with(yellow, 0.75)
       assert_in_delta(45, ry75.hue, Color::COLOR_TOLERANCE)
+    end
+
+    def test_inspect
+      assert_equal("HSL [145.00 deg, 20.00%, 30.00%]", @hsl.inspect)
     end
   end
 end

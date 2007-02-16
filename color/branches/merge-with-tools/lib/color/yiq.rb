@@ -61,21 +61,26 @@ class Color::YIQ
   end
   alias to_greyscale to_grayscale
 
-  attr_accessor :y, :i, :q
-  remove_method :y=, :i=, :q=
-  def y=(yy) #:nodoc:
-    yy = 1.0 if yy > 1
-    yy = 0.0 if yy < 0
-    @y = yy
+  def y
+    @y
   end
-  def i=(ii) #:nodoc:
-    ii = 1.0 if ii > 1
-    ii = 0.0 if ii < 0
-    @i = ii
+  def y=(yy)
+    @y = Color.normalize(yy)
   end
-  def q=(qq) #:nodoc:
-    qq = 1.0 if qq > 1
-    qq = 0.0 if qq < 0
-    @q = qq
+  def i
+    @i
+  end
+  def i=(ii)
+    @i = Color.normalize(ii)
+  end
+  def q
+    @q
+  end
+  def q=(qq)
+    @q = Color.normalize(qq)
+  end
+
+  def inspect
+    "YIQ [%.2f%%, %.2f%%, %.2f%%]" % [ @y * 100, @i * 100, @q * 100 ]
   end
 end

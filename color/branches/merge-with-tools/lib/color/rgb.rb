@@ -442,6 +442,10 @@ class Color::RGB
       Color::GrayScale.from_fraction([@r, @g, @b].max)
   end
   alias max_rgb_as_greyscale max_rgb_as_grayscale
+
+  def inspect
+    "RGB [#{html}]"
+  end
 end
 
 require 'color/rgb-colors'

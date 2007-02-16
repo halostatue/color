@@ -204,6 +204,10 @@ class Color::HSL
     self
   end
 
+  def inspect
+    "HSL [%.2f deg, %.2f%%, %.2f%%]" % [ hue, saturation, luminosity ]
+  end
+
   # Mix the mask colour (which will be converted to an HSL colour) with the
   # current colour at the stated mix percentage as a decimal value.
   #

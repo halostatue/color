@@ -67,5 +67,9 @@ module TestColor
       assert_nothing_raised { @yiq.y = -5 }
       assert_in_delta(0.0, @yiq.y, Color::COLOR_TOLERANCE)
     end
+
+    def test_inspect
+      assert_equal("YIQ [10.00%, 20.00%, 30.00%]", @yiq.inspect)
+    end
   end
 end
