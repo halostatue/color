@@ -256,6 +256,17 @@ module TestColor
       # round-trip.
       assert_equal("#008800", Color::RGB.from_html("#008800").to_hsl.html)
       assert_not_equal("#002288", Color::RGB.from_html("#008800").to_hsl.html)
+
+      # The following tests a bug reported by Adam Johnson on 29 October
+      # 2007.
+      hsl = Color::HSL.new(167, 67, 42)
+      c = Color::RGB.new(88, 35, 179).to_hsl
+      assert_in_delta hsl.h, c.h, 1e-2, "Hue"
+      assert_in_delta hsl.s, c.s, 1e-2, "Saturation"
+      assert_in_delta hsl.l, c.l, 1e-2, "Luminance"
+#     assert_in_delta hsl.h, c.h, Color::COLOR_TOLERANCE, "Hue"
+#     assert_in_delta hsl.s, c.s, Color::COLOR_TOLERANCE, "Saturation"
+#     assert_in_delta hsl.l, c.l, Color::COLOR_TOLERANCE, "Luminance"
     end
 
     def test_to_rgb

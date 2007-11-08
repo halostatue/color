@@ -213,14 +213,18 @@ class Color::RGB
         sat = delta / (2 - max - min).to_f
       end
 
-      if @r == max
-        hue = (@g - @b) / delta.to_f
-      elsif @g == max
-        hue = 2.0 + (@b - @r) / delta.to_f
-      elsif Color.near_zero_or_less?(@b - max)
-        hue = 4.0 + (@r - @g) / delta.to_f
+      # This is based on the conversion algorithm from
+      # http://en.wikipedia.org/wiki/HSV_color_space#Conversion_from_RGB_to_HSL_or_HSV
+      # Contributed by Adam Johnson
+      sixth = 1 / 6.0
+      if @r == max # Color.near_zero_or_less?(@r - max)
+        hue = (sixth * ((@g - @b) / delta))
+        hue += 1.0 if @g < @b
+      elsif @g == max # Color.near_zero_or_less(@g - max)
+        hue = (sixth * ((@b - @r) / delta)) + (1.0 / 3.0)
+      elsif @b == max # Color.near_zero_or_less?(@b - max)
+        hue = (sixth * ((@r - @g) / delta)) + (2.0 / 3.0)
       end
-      hue /= 6.0
 
       hue += 1 if hue < 0
       hue -= 1 if hue > 1
