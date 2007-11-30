@@ -65,6 +65,31 @@ module Color
         value
       end
     end
+    alias normalize_fractional normalize
+
+    def normalize_to_range(value, range)
+      range = (range.end..range.begin) if (range.end < range.begin)
+
+      if value <= range.begin
+        range.begin
+      elsif value >= range.end
+        range.end
+      else
+        value
+      end
+    end
+
+    # Normalize the value to the range (0) .. (255).
+    def normalize_byte(value)
+      normalize_to_range(value, 0..255).to_i
+    end
+    alias normalize_8bit normalize_byte
+    
+    # Normalize the value to the range (0) .. (65535).
+    def normalize_word(value)
+      normalize_to_range(value, 0..65535).to_i
+    end
+    alias normalize_16bit normalize_word
   end
 end
 

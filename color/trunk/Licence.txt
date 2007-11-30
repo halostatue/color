@@ -2,7 +2,7 @@ Color
 Colour management in Ruby
 http://rubyforge.org/projects/color/
 
-Copyright (c) 2005 - 2007 Austin Ziegler and Matt Lyon
+Copyright (c) 2005 - 2007 Austin Ziegler, Matt Lyon, and other contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

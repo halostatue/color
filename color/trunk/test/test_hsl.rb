@@ -119,14 +119,11 @@ module TestColor
 
       # The following tests a bug reported by Adam Johnson on 29 October
       # 2007.
-      rgb = Color::RGB.new(88, 35, 179)
+      rgb = Color::RGB.from_fraction(0.34496, 0.1386, 0.701399)
       c = Color::HSL.new(262, 67, 42).to_rgb
-      assert_in_delta rgb.r, c.r, 1e-2, "Red"
-      assert_in_delta rgb.g, c.g, 1e-2, "Green"
-      assert_in_delta rgb.b, c.b, 1e-2, "Blue"
-#     assert_in_delta rgb.r, c.r, Color::COLOR_TOLERANCE, "Red"
-#     assert_in_delta rgb.g, c.g, Color::COLOR_TOLERANCE, "Green"
-#     assert_in_delta rgb.b, c.b, Color::COLOR_TOLERANCE, "Blue"
+      assert_in_delta rgb.r, c.r, Color::COLOR_TOLERANCE, "Red"
+      assert_in_delta rgb.g, c.g, Color::COLOR_TOLERANCE, "Green"
+      assert_in_delta rgb.b, c.b, Color::COLOR_TOLERANCE, "Blue"
     end
 
     def test_to_yiq

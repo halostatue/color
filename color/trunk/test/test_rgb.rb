@@ -89,6 +89,7 @@ module TestColor
 
     def test_html
       assert_equal("#000000", Color::RGB::Black.html)
+      assert_equal(Color::RGB::Black, Color::RGB.from_html("#000000"))
       assert_equal("#0000ff", Color::RGB::Blue.html)
       assert_equal("#00ff00", Color::RGB::Lime.html)
       assert_equal("#ff0000", Color::RGB::Red.html)
@@ -259,14 +260,11 @@ module TestColor
 
       # The following tests a bug reported by Adam Johnson on 29 October
       # 2007.
-      hsl = Color::HSL.new(167, 67, 42)
-      c = Color::RGB.new(88, 35, 179).to_hsl
-      assert_in_delta hsl.h, c.h, 1e-2, "Hue"
-      assert_in_delta hsl.s, c.s, 1e-2, "Saturation"
-      assert_in_delta hsl.l, c.l, 1e-2, "Luminance"
-#     assert_in_delta hsl.h, c.h, Color::COLOR_TOLERANCE, "Hue"
-#     assert_in_delta hsl.s, c.s, Color::COLOR_TOLERANCE, "Saturation"
-#     assert_in_delta hsl.l, c.l, Color::COLOR_TOLERANCE, "Luminance"
+      hsl = Color::HSL.new(262, 67, 42)
+      c = Color::RGB.from_fraction(0.34496, 0.1386, 0.701399).to_hsl
+      assert_in_delta hsl.h, c.h, Color::COLOR_TOLERANCE, "Hue"
+      assert_in_delta hsl.s, c.s, Color::COLOR_TOLERANCE, "Saturation"
+      assert_in_delta hsl.l, c.l, Color::COLOR_TOLERANCE, "Luminance"
     end
 
     def test_to_rgb
@@ -294,7 +292,9 @@ module TestColor
     end
 
     def test_add
+      assert_nothing_raised { Color::RGB::Cyan + Color::RGB::Yellow }
       white = Color::RGB::Cyan + Color::RGB::Yellow 
+      assert_not_nil(white)
       assert_equal(Color::RGB::White, white) 
 
       c1 = Color::RGB.new(0x80, 0x80, 0x00)
@@ -317,6 +317,7 @@ module TestColor
 
     def test_mean_grayscale
       c1        = Color::RGB.new(0x85, 0x80, 0x00)
+      c1_max    = assert_nothing_raised { c1.max_rgb_as_greyscale }
       c1_max    = c1.max_rgb_as_greyscale
       c1_result = Color::GrayScale.from_fraction(0x85 / 255.0)
 
