@@ -32,7 +32,7 @@ Hoe.new PKG_NAME, PKG_VERSION do |p|
   # need_zip - Should package create a zipfile? [default: false]
 
   p.author          = [ "Austin Ziegler", "Matt Lyon" ]
-  p.email           = "austin@rubyforge.org matt@postsomnia.com"
+  p.email           = %W(austin@rubyforge.org matt@postsomnia.com)
   p.url             = "http://color.rubyforge.org/"
   p.summary         = "Colour management with Ruby"
   p.changes         = p.paragraphs_of("History.txt", 0..1).join("\n\n")
