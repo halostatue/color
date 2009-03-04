@@ -8,8 +8,6 @@
 # distribution for full licensing information.
 #
 # Copyright (c) 2005 - 2007 Austin Ziegler and Matt Lyon
-#
-# $Id: History.txt 50 2007-02-03 20:26:19Z austin $
 #++
 
 require 'rubygems'
@@ -27,7 +25,7 @@ MANIFEST    = File.read("Manifest.txt").split
 
 Hoe.new PKG_NAME, PKG_VERSION do |p|
   p.rubyforge_name  = PKG_NAME
-  # This is a lie becasue I will continue to use Archive::Tar::Minitar.
+  # This is a lie because I will continue to use Archive::Tar::Minitar.
   p.need_tar        = false
   # need_zip - Should package create a zipfile? [default: false]
 
