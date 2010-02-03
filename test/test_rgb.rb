@@ -3,14 +3,12 @@
 # Color
 # Colour management with Ruby
 # http://rubyforge.org/projects/color
-#   Version 1.4.0
+#   Version 1.5.0
 #
 # Licensed under a MIT-style licence. See Licence.txt in the main
 # distribution for full licensing information.
 #
-# Copyright (c) 2005 - 2007 Austin Ziegler and Matt Lyon
-#
-# $Id: test_all.rb 55 2007-02-03 23:29:34Z austin $
+# Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon
 #++
 
 $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib") if __FILE__ == $0
@@ -259,7 +257,7 @@ module TestColor
       assert_not_equal("#002288", Color::RGB.from_html("#008800").to_hsl.html)
 
       # The following tests a bug reported by Adam Johnson on 29 October
-      # 2007.
+      # 2010.
       hsl = Color::HSL.new(262, 67, 42)
       c = Color::RGB.from_fraction(0.34496, 0.1386, 0.701399).to_hsl
       assert_in_delta hsl.h, c.h, Color::COLOR_TOLERANCE, "Hue"

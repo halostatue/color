@@ -2,8 +2,8 @@ History.txt
 Install.txt
 Licence.txt
 Manifest.txt
+README.txt
 Rakefile
-Readme.txt
 lib/color.rb
 lib/color/cmyk.rb
 lib/color/css.rb

@@ -1,3 +1,9 @@
+== Color 1.5.0 / 2010.02.03
+* Imported to github.
+* Converted to Hoe 2.5 spec format.
+* Made the Color gem depend on Ruby 1.8.7 or later due to a floating-point bug
+  in 1.8.6 p398.
+
 == Color 1.4.0 / 2007.02.11
 * Merged Austin Ziegler's color-tools library (previously part of the Ruby
   PDF Tools project) with Matt Lyon's color library.
@@ -86,6 +92,4 @@
   Licensed under a MIT-style licence. See Licence.txt in the main
   distribution for full licensing information.
 
-  Copyright (c) 2005 - 2007 Austin Ziegler and Matt Lyon
-
-  $Id: History.txt 50 2007-02-03 20:26:19Z austin $
+  Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon

@@ -7,7 +7,7 @@
 # Licensed under a MIT-style licence. See Licence.txt in the main
 # distribution for full licensing information.
 #
-# Copyright (c) 2005 - 2007 Austin Ziegler and Matt Lyon
+# Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon
 #++
 
 require 'rubygems'
@@ -23,25 +23,27 @@ PKG_DIST    = "#{PKG_NAME}-#{PKG_VERSION}"
 PKG_TAR     = "pkg/#{PKG_DIST}.tar.gz"
 MANIFEST    = File.read("Manifest.txt").split
 
-Hoe.new PKG_NAME, PKG_VERSION do |p|
-  p.rubyforge_name  = PKG_NAME
+Hoe.spec PKG_NAME do
+  self.version = PKG_VERSION
+
+# self.rubyforge_name = PKG_NAME
+
+  developer "Austin Ziegler", "austin@rubyforge.org" 
+  developer "Matt Lyon", "matt@postsomnia.com" 
+
+  self.url = %W(http://color.rubyforge.org/ http://github.com/halostatue/color)
+
+  self.summary = "Colour management with Ruby"
+  self.changes = paragraphs_of("History.txt", 0..1).join("\n\n")
+  self.description = paragraphs_of("README.txt", 1..1).join("\n\n")
+
+  extra_dev_deps << [ "archive-tar-minitar", "~>0.5.1" ]
+  clean_globs << "coverage"
+
+  spec_extras[:required_ruby_version] = ">= 1.8.7"
+
   # This is a lie because I will continue to use Archive::Tar::Minitar.
-  p.need_tar        = false
-  # need_zip - Should package create a zipfile? [default: false]
-
-  p.author          = [ "Austin Ziegler", "Matt Lyon" ]
-  p.email           = %W(austin@rubyforge.org matt@postsomnia.com)
-  p.url             = "http://color.rubyforge.org/"
-  p.summary         = "Colour management with Ruby"
-  p.changes         = p.paragraphs_of("History.txt", 0..1).join("\n\n")
-  p.description     = p.paragraphs_of("Readme.txt", 1..1).join("\n\n")
-
-  p.extra_deps      << [ "archive-tar-minitar", "~>0.5.1" ]
-
-  p.clean_globs     << "coverage"
-
-  p.spec_extras[:extra_rdoc_files] = MANIFEST.grep(/txt$/) -
-    ["Manifest.txt"]
+  self.need_tar        = false
 end
 
 desc "Build a Color .tar.gz distribution."
@@ -100,6 +102,8 @@ task :build_manifest do |t|
   Find.find(".") do |path|
     next if File.directory?(path)
     next if path =~ /\.svn/
+    next if path =~ /\.git/
+    next if path =~ /\.hoerc/
     next if path =~ /\.swp$/
     next if path =~ %r{coverage/}
     next if path =~ /~$/
