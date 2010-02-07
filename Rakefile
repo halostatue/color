@@ -11,6 +11,8 @@
 #++
 
 require 'rubygems'
+gem 'rdoc'
+require 'hanna/rdoctask'
 require 'hoe'
 
 $LOAD_PATH.unshift('lib')
@@ -38,6 +40,7 @@ Hoe.spec PKG_NAME do
   self.description = paragraphs_of("README.txt", 1..1).join("\n\n")
 
   extra_dev_deps << [ "archive-tar-minitar", "~>0.5.1" ]
+  extra_dev_deps << [ "hanna", "~>0.1.2" ]
   clean_globs << "coverage"
 
   # This is a lie because I will continue to use Archive::Tar::Minitar.
