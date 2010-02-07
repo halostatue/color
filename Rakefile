@@ -40,8 +40,6 @@ Hoe.spec PKG_NAME do
   extra_dev_deps << [ "archive-tar-minitar", "~>0.5.1" ]
   clean_globs << "coverage"
 
-  spec_extras[:required_ruby_version] = ">= 1.8.7"
-
   # This is a lie because I will continue to use Archive::Tar::Minitar.
   self.need_tar        = false
 end

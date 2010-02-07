@@ -2,7 +2,7 @@
 # Color
 # Colour management with Ruby
 # http://rubyforge.org/projects/color
-#   Version 1.5.0
+#   Version 1.4.1
 #
 # Licensed under a MIT-style licence. See Licence.txt in the main
 # distribution for full licensing information.

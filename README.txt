@@ -13,15 +13,13 @@ L*a*b*) are not supported because Color does not yet support colour profiles,
 giving no meaningful way to convert colours in absolute colour spaces (like
 L*a*b*, XYZ) to non-absolute colour spaces (like RGB).
 
-Color version 1.5 changes development to GitHub and fixes some small problems.
-Ruby 1.8.6 is not supported in this version.
-
 Color version 1.4 is the result of a project merge between color.rb 0.1.0 by
 Matt Lyon and color-tools 1.3 by Austin Ziegler. Please see History.txt for
-details on the changes this merge brings.
+details on the changes this merge brings. Color version 1.4.1 changes
+development to GitHub and fixes some small problems.
 
 Copyright:: Copyright (c) 2005 - 2010 by Austin Ziegler and Matt Lyon
-Version::   1.5.0
+Version::   1.4.1
 Homepage::  http://rubyforge.org/projects/color/
 Licence::   MIT-Style; see Licence.txt
 

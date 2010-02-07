@@ -5,7 +5,7 @@
 # Color
 # Colour management with Ruby
 # http://rubyforge.org/projects/color
-#   Version 1.5.0
+#   Version 1.4.1
 #
 # Licensed under a MIT-style licence. See Licence.txt in the main
 # distribution for full licensing information.
@@ -15,7 +15,7 @@
 
 # = Colour Management with Ruby
 module Color
-  COLOR_VERSION = '1.5.0'
+  COLOR_VERSION = '1.4.1'
 
   class RGB; end
   class CMYK; end
@@ -115,7 +115,7 @@ module Color
   end
 
   # Provides a thin veneer over the Color module to make it seem like this
-  # is Color 0.1.0 (a class) and not Color 1.5.0 (a module). This
+  # is Color 0.1.0 (a class) and not Color 1.4.1 (a module). This
   # "constructor" will be removed in the future.
   #
   # mode = :hsl::   +values+ must be an array of [ hue deg, sat %, lum % ].
