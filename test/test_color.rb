@@ -85,6 +85,15 @@ module TestColor
       assert_equal(255, Color.normalize_8bit(255))
       assert_equal(255, Color.normalize_8bit(256))
 
+      assert_equal(0, Color.normalize_16bit(-1))
+      assert_equal(0, Color.normalize_16bit(0))
+      assert_equal(127, Color.normalize_16bit(127))
+      assert_equal(172, Color.normalize_16bit(172))
+      assert_equal(255, Color.normalize_16bit(255))
+      assert_equal(256, Color.normalize_16bit(256))
+      assert_equal(65535, Color.normalize_16bit(65535))
+      assert_equal(65535, Color.normalize_16bit(66536))
+
       assert_equal(-100, Color.normalize_to_range(-101, -100..100))
       assert_equal(-100, Color.normalize_to_range(-100.5, -100..100))
       assert_equal(-100, Color.normalize_to_range(-100, -100..100))
