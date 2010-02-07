@@ -4,4 +4,5 @@ doc
 pkg
 publish
 coverage
+coverage.info
 type-lists
