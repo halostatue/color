@@ -11,7 +11,6 @@
 #++
 
 require 'rubygems'
-gem 'rdoc'
 require 'hanna/rdoctask'
 require 'hoe'
 
@@ -36,8 +35,11 @@ Hoe.spec PKG_NAME do
   self.url = %W(http://color.rubyforge.org/ http://github.com/halostatue/color)
 
   self.summary = "Colour management with Ruby"
-  self.changes = paragraphs_of("History.txt", 0..1).join("\n\n")
-  self.description = paragraphs_of("README.txt", 1..1).join("\n\n")
+  self.changes = paragraphs_of(self.history_file, 0..1).join("\n\n")
+  self.description = paragraphs_of(self.readme_file, 1..1).join("\n\n")
+
+  self.remote_rdoc_dir = ''
+  rsync_args << ' --exclude=statsvn/'
 
   extra_dev_deps << [ "archive-tar-minitar", "~>0.5.1" ]
   extra_dev_deps << [ "hanna", "~>0.1.2" ]
