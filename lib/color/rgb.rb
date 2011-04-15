@@ -548,6 +548,8 @@ class Color::RGB
     percent = [percent, 2.0].min
     [0.0, percent].max
   end
+
+
 end
 
 class << Color::RGB
@@ -687,6 +689,7 @@ class << Color::RGB
       raise ArgumentError, "Not a supported HTML colour type."
     end
   end
+
 end
 
 require "color/rgb/colors"
