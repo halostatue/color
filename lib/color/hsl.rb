@@ -18,11 +18,6 @@ class Color::HSL
   # each other.
   def ==(other)
     Color.equivalent?(self, other)
-    other = other.to_hsl
-    other.kind_of?(Color::HSL) and
-    ((@h - other.h).abs <= Color::COLOR_TOLERANCE) and
-    ((@s - other.s).abs <= Color::COLOR_TOLERANCE) and
-    ((@l - other.l).abs <= Color::COLOR_TOLERANCE)
   end
 
   # Coerces the other Color object into HSL.
@@ -199,14 +194,12 @@ class Color::HSL
   # Mix the mask colour (which will be converted to an HSL colour) with the
   # current colour at the stated mix percentage as a decimal value.
   #
-  # NOTE::  This differs from Color::RGB#mix_with.
+  # NOTE:: This differs from Color::RGB#mix_with.
   def mix_with(color, mix_percent = 0.5)
-    color   = color.to_hsl
-    _h = ((color.h - self.h) * mix_percent) + self.h
-    _s = ((color.s - self.s) * mix_percent) + self.s
-    _l = ((color.l - self.l) * mix_percent) + self.l
-
-    self.class.from_fraction(_h, _s, _l)
+    v = to_a.zip(coerce(color).to_a).map { |(x, y)|
+      ((y - x) * mix_percent) + x
+    }
+    self.class.from_fraction(*v)
   end
 
   def to_a
