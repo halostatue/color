@@ -1,21 +1,9 @@
 # :title: Color -- Colour Management with Ruby
-# :main: README.txt
-
-#--
-# Color
-# Colour management with Ruby
-# http://rubyforge.org/projects/color
-#   Version 1.4.1
-#
-# Licensed under a MIT-style licence. See Licence.txt in the main
-# distribution for full licensing information.
-#
-# Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon
-#++
+# :main: README.rdoc
 
 # = Colour Management with Ruby
 module Color
-  COLOR_VERSION = '1.4.1'
+  COLOR_VERSION = '1.4.2'
 
   class RGB; end
   class CMYK; end
@@ -82,7 +70,7 @@ module Color
       normalize_to_range(value, 0..255).to_i
     end
     alias normalize_8bit normalize_byte
-    
+
     # Normalize the value to the range (0) .. (65535).
     def normalize_word(value)
       normalize_to_range(value, 0..65535).to_i
@@ -115,7 +103,7 @@ module Color
   end
 
   # Provides a thin veneer over the Color module to make it seem like this
-  # is Color 0.1.0 (a class) and not Color 1.4.1 (a module). This
+  # is Color 0.1.0 (a class) and not Color 1.4 (a module). This
   # "constructor" will be removed in the future.
   #
   # mode = :hsl::   +values+ must be an array of [ hue deg, sat %, lum % ].

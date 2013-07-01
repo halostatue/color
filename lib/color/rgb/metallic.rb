@@ -1,15 +1,3 @@
-#--
-# Color
-# Colour management with Ruby
-# http://rubyforge.org/projects/color
-#   Version 1.4.1
-#
-# Licensed under a MIT-style licence. See Licence.txt in the main
-# distribution for full licensing information.
-#
-# Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon
-#++
-
 # This namespace contains some RGB metallic colours suggested by Jim Freeze.
 module Color::RGB::Metallic
   Aluminum    = Color::RGB.new(0x99, 0x99, 0x99)

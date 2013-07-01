@@ -1,24 +1,10 @@
-#!/usr/bin/env ruby
-#--
-# Color
-# Colour management with Ruby
-# http://rubyforge.org/projects/color
-#   Version 1.5.0
-#
-# Licensed under a MIT-style licence. See Licence.txt in the main
-# distribution for full licensing information.
-#
-# Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon
-#
-# HSL Tests provided by Adam Johnson
-#++
+gem 'minitest'
+require 'minitest/autorun'
 
-$LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib") if __FILE__ == $0
-require 'test/unit'
 require 'color'
 
 module TestColor
-  class TestHSL < Test::Unit::TestCase
+  class TestHSL < Minitest::Test
     def setup
 #     @hsl = Color::HSL.new(262, 67, 42)
       @hsl = Color::HSL.new(145, 20, 30)
@@ -40,40 +26,40 @@ module TestColor
     def test_hue
       assert_in_delta 0.4027, @hsl.h, Color::COLOR_TOLERANCE
       assert_in_delta 145, @hsl.hue, Color::COLOR_TOLERANCE
-      assert_nothing_raised { @hsl.hue = 33 }
+      @hsl.hue = 33
       assert_in_delta 0.09167, @hsl.h, Color::COLOR_TOLERANCE
-      assert_nothing_raised { @hsl.hue = -33 }
+      @hsl.hue = -33
       assert_in_delta 0.90833, @hsl.h, Color::COLOR_TOLERANCE
-      assert_nothing_raised { @hsl.h = 3.3 }
+      @hsl.h = 3.3
       assert_in_delta 360, @hsl.hue, Color::COLOR_TOLERANCE
-      assert_nothing_raised { @hsl.h = -3.3 }
+      @hsl.h = -3.3
       assert_in_delta 0.0, @hsl.h, Color::COLOR_TOLERANCE
-      assert_nothing_raised { @hsl.hue = 0 }
-      assert_nothing_raised { @hsl.hue -= 20 }
+      @hsl.hue = 0
+      @hsl.hue -= 20
       assert_in_delta 340, @hsl.hue, Color::COLOR_TOLERANCE
-      assert_nothing_raised { @hsl.hue += 45 }
+      @hsl.hue += 45
       assert_in_delta 25, @hsl.hue, Color::COLOR_TOLERANCE
     end
 
     def test_saturation
       assert_in_delta 0.2, @hsl.s, Color::COLOR_TOLERANCE
       assert_in_delta 20, @hsl.saturation, Color::COLOR_TOLERANCE
-      assert_nothing_raised { @hsl.saturation = 33 }
+      @hsl.saturation = 33
       assert_in_delta 0.33, @hsl.s, Color::COLOR_TOLERANCE
-      assert_nothing_raised { @hsl.s = 3.3 }
+      @hsl.s = 3.3
       assert_in_delta 100, @hsl.saturation, Color::COLOR_TOLERANCE
-      assert_nothing_raised { @hsl.s = -3.3 }
+      @hsl.s = -3.3
       assert_in_delta 0.0, @hsl.s, Color::COLOR_TOLERANCE
     end
 
     def test_luminance
       assert_in_delta 0.3, @hsl.l, Color::COLOR_TOLERANCE
       assert_in_delta 30, @hsl.luminosity, Color::COLOR_TOLERANCE
-      assert_nothing_raised { @hsl.luminosity = 33 }
+      @hsl.luminosity = 33
       assert_in_delta 0.33, @hsl.l, Color::COLOR_TOLERANCE
-      assert_nothing_raised { @hsl.l = 3.3 }
+      @hsl.l = 3.3
       assert_in_delta 100, @hsl.lightness, Color::COLOR_TOLERANCE
-      assert_nothing_raised { @hsl.l = -3.3 }
+      @hsl.l = -3.3
       assert_in_delta 0.0, @hsl.l, Color::COLOR_TOLERANCE
     end
 
@@ -83,8 +69,7 @@ module TestColor
     end
 
     def test_to_cmyk
-      cmyk = nil
-      assert_nothing_raised { cmyk = @hsl.to_cmyk }
+      cmyk = @hsl.to_cmyk
       assert_kind_of Color::CMYK, cmyk
       assert_in_delta 0.3223, cmyk.c, Color::COLOR_TOLERANCE
       assert_in_delta 0.2023, cmyk.m, Color::COLOR_TOLERANCE
@@ -93,15 +78,13 @@ module TestColor
     end
 
     def test_to_grayscale
-      gs = nil
-      assert_nothing_raised { gs = @hsl.to_grayscale }
+      gs = @hsl.to_grayscale
       assert_kind_of Color::GreyScale, gs
       assert_in_delta 30, gs.gray, Color::COLOR_TOLERANCE
     end
 
     def test_to_rgb
-      rgb = nil
-      assert_nothing_raised { rgb = @hsl.to_rgb }
+      rgb = @hsl.to_rgb
       assert_kind_of Color::RGB, rgb
       assert_in_delta 0.24, rgb.r, Color::COLOR_TOLERANCE
       assert_in_delta 0.36, rgb.g, Color::COLOR_TOLERANCE
@@ -125,8 +108,7 @@ module TestColor
     end
 
     def test_to_yiq
-      yiq = nil
-      assert_nothing_raised { yiq = @hsl.to_yiq }
+      yiq = @hsl.to_yiq
       assert_kind_of Color::YIQ, yiq
       assert_in_delta 0.3161, yiq.y, Color::COLOR_TOLERANCE
       assert_in_delta 0.0, yiq.i, Color::COLOR_TOLERANCE

@@ -1,22 +1,10 @@
-#!/usr/bin/env ruby
-#--
-# Color
-# Colour management with Ruby
-# http://rubyforge.org/projects/color
-#   Version 1.5.0
-#
-# Licensed under a MIT-style licence. See Licence.txt in the main
-# distribution for full licensing information.
-#
-# Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon
-#++
+gem 'minitest'
+require 'minitest/autorun'
 
-$LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib") if __FILE__ == $0
-require 'test/unit'
 require 'color'
 
 module TestColor
-  class TestGrayScale < Test::Unit::TestCase
+  class TestGrayScale < Minitest::Test
     def setup
       @gs = Color::GrayScale.from_percent(33)
     end
@@ -32,11 +20,11 @@ module TestColor
     def test_g
       assert_in_delta(0.33, @gs.g, Color::COLOR_TOLERANCE)
       assert_in_delta(33, @gs.grey, Color::COLOR_TOLERANCE)
-      assert_nothing_raised { @gs.gray = 40 }
+      @gs.gray = 40
       assert_in_delta(0.4, @gs.g, Color::COLOR_TOLERANCE)
-      assert_nothing_raised { @gs.g = 2.0 }
+      @gs.g = 2.0
       assert_in_delta(100, @gs.gray, Color::COLOR_TOLERANCE)
-      assert_nothing_raised { @gs.grey = -2.0 }
+      @gs.grey = -2.0
       assert_in_delta(0.0, @gs.g, Color::COLOR_TOLERANCE)
     end
 
@@ -56,8 +44,7 @@ module TestColor
     end
 
     def test_to_cmyk
-      cmyk = nil
-      assert_nothing_raised { cmyk = @gs.to_cmyk }
+      cmyk = @gs.to_cmyk
       assert_kind_of(Color::CMYK, cmyk)
       assert_in_delta(0.0, cmyk.c, Color::COLOR_TOLERANCE)
       assert_in_delta(0.0, cmyk.m, Color::COLOR_TOLERANCE)
@@ -71,8 +58,7 @@ module TestColor
     end
 
     def test_to_hsl
-      hsl = nil
-      assert_nothing_raised { hsl = @gs.to_hsl }
+      hsl = @gs.to_hsl
       assert_kind_of(Color::HSL, hsl)
       assert_in_delta(0.0, hsl.h, Color::COLOR_TOLERANCE)
       assert_in_delta(0.0, hsl.s, Color::COLOR_TOLERANCE)
@@ -82,8 +68,7 @@ module TestColor
     end
 
     def test_to_rgb
-      rgb = nil
-      assert_nothing_raised { rgb = @gs.to_rgb }
+      rgb = @gs.to_rgb
       assert_kind_of(Color::RGB, rgb)
       assert_in_delta(0.33, rgb.r, Color::COLOR_TOLERANCE)
       assert_in_delta(0.33, rgb.g, Color::COLOR_TOLERANCE)
@@ -91,8 +76,7 @@ module TestColor
     end
 
     def test_to_yiq
-      yiq = nil
-      assert_nothing_raised { yiq = @gs.to_yiq }
+      yiq = @gs.to_yiq
       assert_kind_of(Color::YIQ, yiq)
       assert_in_delta(0.33, yiq.y, Color::COLOR_TOLERANCE)
       assert_in_delta(0.0, yiq.i, Color::COLOR_TOLERANCE)

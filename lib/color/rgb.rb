@@ -1,15 +1,3 @@
-#--
-# Color
-# Colour management with Ruby
-# http://rubyforge.org/projects/color
-#   Version 1.4.1
-#
-# Licensed under a MIT-style licence. See Licence.txt in the main
-# distribution for full licensing information.
-#
-# Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon
-#++
-
 # An RGB colour object.
 class Color::RGB
   # The format of a DeviceRGB colour for PDF. In color-tools 2.0 this will
@@ -45,7 +33,7 @@ class Color::RGB
     #   Color::RGB.from_html("cabbed")
     def from_html(html_colour)
       html_colour = html_colour.gsub(%r{[#;]}, '')
-      case html_colour.size 
+      case html_colour.size
       when 3
         colours = html_colour.scan(%r{[0-9A-Fa-f]}).map { |el| (el * 2).to_i(16) }
       when 6
@@ -249,7 +237,7 @@ class Color::RGB
   def mix_with(mask, opacity)
     opacity /= 100.0
     rgb = self.dup
-    
+
     rgb.r = (@r * opacity) + (mask.r * (1 - opacity))
     rgb.g = (@g * opacity) + (mask.g * (1 - opacity))
     rgb.b = (@b * opacity) + (mask.b * (1 - opacity))
@@ -427,8 +415,8 @@ class Color::RGB
   #
   # The subtraction is done using the RGB Accessor methods to ensure a valid
   # colour in the result.
-  def -(other) 
-    other = other.to_rgb 
+  def -(other)
+    other = other.to_rgb
     rgb = self.dup
 
     rgb.r -= other.r

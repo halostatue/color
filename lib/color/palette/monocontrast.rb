@@ -1,15 +1,3 @@
-#--
-# Color
-# Colour management with Ruby
-# http://rubyforge.org/projects/color
-#   Version 1.4.1
-#
-# Licensed under a MIT-style licence. See Licence.txt in the main
-# distribution for full licensing information.
-#
-# Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon
-#++
-
 require 'color/palette'
 
 # Generates a monochromatic constrasting colour palette for background and
@@ -25,7 +13,7 @@ require 'color/palette'
 # against the background.
 class Color::Palette::MonoContrast
   # Hash of CSS background colour values.
-  # 
+  #
   # This is always 11 values:
   #
   # 0::       The starting colour.
@@ -33,7 +21,7 @@ class Color::Palette::MonoContrast
   # -1..-5::  Darker colours.
   attr_reader :background
   # Hash of CSS foreground colour values.
-  # 
+  #
   # This is always 11 values:
   #
   # 0::       The starting colour.
@@ -60,7 +48,7 @@ class Color::Palette::MonoContrast
     else
       @minimum_brightness_diff = bd
     end
-      
+
     regenerate(@background[0], @foreground[0])
   end
 

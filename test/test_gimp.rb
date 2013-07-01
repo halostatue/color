@@ -1,24 +1,12 @@
-#!/usr/bin/env ruby
-#--
-# Color
-# Colour management with Ruby
-# http://rubyforge.org/projects/color
-#   Version 1.5.0
-#
-# Licensed under a MIT-style licence. See Licence.txt in the main
-# distribution for full licensing information.
-#
-# Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon
-#++
+gem 'minitest'
+require 'minitest/autorun'
 
-$LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib") if __FILE__ == $0
-require 'test/unit'
 require 'color'
 require 'color/palette/gimp'
 
 module TestColor
   module TestPalette
-    class TestGimp < Test::Unit::TestCase
+    class TestGimp < Minitest::Test
       include Color::Palette
 
       GIMP_W3C = <<-EOS
@@ -43,7 +31,7 @@ Columns: 2
 0 128 0		Green
 0 0 255		Blue
 0 0 128		Navy
-0 0 0 		Black 
+0 0 0 		Black
       EOS
 
       def setup
@@ -64,7 +52,7 @@ Columns: 2
       def test_each_name
         @gimp = Gimp.new(GIMP_W3C)
         assert_equal(16, @gimp.instance_variable_get(:@names).size)
-        
+
         @gimp.each_name { |color_name, color_set|
           assert_kind_of(Array, color_set)
           color_set.each { |c|
@@ -74,12 +62,10 @@ Columns: 2
       end
 
       def test_index
-        assert_nothing_raised do
-          File.open(@filename, "wb") do |f|
-            f.write GIMP_W3C
-          end
+        File.open(@filename, "wb") do |f|
+          f.write GIMP_W3C
         end
-        assert_nothing_raised { @gimp = Gimp.from_file(@filename) }
+        @gimp = Gimp.from_file(@filename)
         assert_equal(Color::RGB::White, @gimp[0])
         assert_equal(Color::RGB::White, @gimp["White"][0])
         assert_equal([Color::RGB::White, Color::RGB::Black],

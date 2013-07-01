@@ -1,15 +1,3 @@
-#--
-# Color
-# Colour management with Ruby
-# http://rubyforge.org/projects/color
-#   Version 1.4.1
-#
-# Licensed under a MIT-style licence. See Licence.txt in the main
-# distribution for full licensing information.
-#
-# Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon
-#++
-
 # A colour object representing shades of grey. Used primarily in PDF
 # document creation.
 class Color::GrayScale
@@ -195,7 +183,7 @@ class Color::GrayScale
   # The subtraction is done using the grayscale accessor methods to ensure a
   # valid colour in the result.
   def -(other)
-    other = other.to_grayscale 
+    other = other.to_grayscale
     ng = self.dup
     ng.g -= other.g
     ng
@@ -206,7 +194,5 @@ class Color::GrayScale
   end
 end
 
-module Color
-  # A synonym for Color::GrayScale.
-  GreyScale = GrayScale
-end
+# A synonym for Color::GrayScale.
+Color::GreyScale = Color::GrayScale

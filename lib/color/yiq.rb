@@ -1,15 +1,3 @@
-#--
-# Color
-# Colour management with Ruby
-# http://rubyforge.org/projects/color
-#   Version 1.4.1
-#
-# Licensed under a MIT-style licence. See Licence.txt in the main
-# distribution for full licensing information.
-#
-# Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon
-#++
-
 # A colour object representing YIQ (NTSC) colour encoding.
 class Color::YIQ
   # Creates a YIQ colour object from fractional values 0 .. 1.
@@ -44,7 +32,7 @@ class Color::YIQ
     other.kind_of?(Color::YIQ) and
     ((@y - other.y).abs <= Color::COLOR_TOLERANCE) and
     ((@i - other.i).abs <= Color::COLOR_TOLERANCE) and
-    ((@q - other.q).abs <= Color::COLOR_TOLERANCE) 
+    ((@q - other.q).abs <= Color::COLOR_TOLERANCE)
   end
 
   def to_yiq

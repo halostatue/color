@@ -1,8 +1,8 @@
-History.txt
-Install.txt
-Licence.txt
+.hoerc
+History.rdoc
+Licence.rdoc
 Manifest.txt
-README.txt
+README.rdoc
 Rakefile
 lib/color.rb
 lib/color/cmyk.rb
@@ -17,9 +17,7 @@ lib/color/rgb-colors.rb
 lib/color/rgb.rb
 lib/color/rgb/metallic.rb
 lib/color/yiq.rb
-setup.rb
 test/test_adobecolor.rb
-test/test_all.rb
 test/test_cmyk.rb
 test/test_color.rb
 test/test_css.rb

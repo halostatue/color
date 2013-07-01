@@ -1,22 +1,10 @@
-#!/usr/bin/env ruby
-#--
-# Color
-# Colour management with Ruby
-# http://rubyforge.org/projects/color
-#   Version 1.5.0
-#
-# Licensed under a MIT-style licence. See Licence.txt in the main
-# distribution for full licensing information.
-#
-# Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon
-#++
+gem 'minitest'
+require 'minitest/autorun'
 
-$LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib") if __FILE__ == $0
-require 'test/unit'
 require 'color'
 
 module TestColor
-  class TestRGB < Test::Unit::TestCase
+  class TestRGB < Minitest::Test
     def test_adjust_brightness
       assert_equal("#1a1aff", Color::RGB::Blue.adjust_brightness(10).html)
       assert_equal("#0000e6", Color::RGB::Blue.adjust_brightness(-10).html)
@@ -40,11 +28,11 @@ module TestColor
       assert_in_delta(100, red.red_p, Color::COLOR_TOLERANCE)
       assert_in_delta(255, red.red, Color::COLOR_TOLERANCE)
       assert_in_delta(1.0, red.r, Color::COLOR_TOLERANCE)
-      assert_nothing_raised { red.red_p = 33 }
+      red.red_p = 33
       assert_in_delta(0.33, red.r, Color::COLOR_TOLERANCE)
-      assert_nothing_raised { red.red = 330 }
+      red.red = 330
       assert_in_delta(1.0, red.r, Color::COLOR_TOLERANCE)
-      assert_nothing_raised { red.r = -3.3 }
+      red.r = -3.3
       assert_in_delta(0.0, red.r, Color::COLOR_TOLERANCE)
     end
 
@@ -53,11 +41,11 @@ module TestColor
       assert_in_delta(1.0, lime.g, Color::COLOR_TOLERANCE)
       assert_in_delta(100, lime.green_p, Color::COLOR_TOLERANCE)
       assert_in_delta(255, lime.green, Color::COLOR_TOLERANCE)
-      assert_nothing_raised { lime.green_p = 33 }
+      lime.green_p = 33
       assert_in_delta(0.33, lime.g, Color::COLOR_TOLERANCE)
-      assert_nothing_raised { lime.green = 330 }
+      lime.green = 330
       assert_in_delta(1.0, lime.g, Color::COLOR_TOLERANCE)
-      assert_nothing_raised { lime.g = -3.3 }
+      lime.g = -3.3
       assert_in_delta(0.0, lime.g, Color::COLOR_TOLERANCE)
     end
 
@@ -66,11 +54,11 @@ module TestColor
       assert_in_delta(1.0, blue.b, Color::COLOR_TOLERANCE)
       assert_in_delta(255, blue.blue, Color::COLOR_TOLERANCE)
       assert_in_delta(100, blue.blue_p, Color::COLOR_TOLERANCE)
-      assert_nothing_raised { blue.blue_p = 33 }
+      blue.blue_p = 33
       assert_in_delta(0.33, blue.b, Color::COLOR_TOLERANCE)
-      assert_nothing_raised { blue.blue = 330 }
+      blue.blue = 330
       assert_in_delta(1.0, blue.b, Color::COLOR_TOLERANCE)
-      assert_nothing_raised { blue.b = -3.3 }
+      blue.b = -3.3
       assert_in_delta(0.0, blue.b, Color::COLOR_TOLERANCE)
     end
 
@@ -254,7 +242,7 @@ module TestColor
       # where HSL conversion was not quite correct, resulting in a bad
       # round-trip.
       assert_equal("#008800", Color::RGB.from_html("#008800").to_hsl.html)
-      assert_not_equal("#002288", Color::RGB.from_html("#008800").to_hsl.html)
+      refute_equal("#002288", Color::RGB.from_html("#008800").to_hsl.html)
 
       # The following tests a bug reported by Adam Johnson on 29 October
       # 2010.
@@ -290,10 +278,10 @@ module TestColor
     end
 
     def test_add
-      assert_nothing_raised { Color::RGB::Cyan + Color::RGB::Yellow }
-      white = Color::RGB::Cyan + Color::RGB::Yellow 
-      assert_not_nil(white)
-      assert_equal(Color::RGB::White, white) 
+      Color::RGB::Cyan + Color::RGB::Yellow
+      white = Color::RGB::Cyan + Color::RGB::Yellow
+      refute_nil(white)
+      assert_equal(Color::RGB::White, white)
 
       c1 = Color::RGB.new(0x80, 0x80, 0x00)
       c2 = Color::RGB.new(0x45, 0x20, 0xf0)
@@ -304,7 +292,7 @@ module TestColor
 
     def test_subtract
       black = Color::RGB::LightCoral - Color::RGB::Honeydew
-      assert_equal(Color::RGB::Black, black) 
+      assert_equal(Color::RGB::Black, black)
 
       c1 = Color::RGB.new(0x85, 0x80, 0x00)
       c2 = Color::RGB.new(0x40, 0x20, 0xf0)
@@ -315,7 +303,7 @@ module TestColor
 
     def test_mean_grayscale
       c1        = Color::RGB.new(0x85, 0x80, 0x00)
-      c1_max    = assert_nothing_raised { c1.max_rgb_as_greyscale }
+      c1_max    = c1.max_rgb_as_greyscale
       c1_max    = c1.max_rgb_as_greyscale
       c1_result = Color::GrayScale.from_fraction(0x85 / 255.0)
 
