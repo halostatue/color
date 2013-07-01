@@ -41,6 +41,11 @@ module Color
       (value > 1.0 or near_one?(value))
     end
 
+    # Returns +true+ if the two values provided are near each other.
+    def near?(x, y)
+      (x - y).abs <= COLOR_TOLERANCE
+    end
+
     # Normalizes the value to the range (0.0) .. (1.0).
     def normalize(value)
       if near_zero_or_less? value
@@ -53,6 +58,7 @@ module Color
     end
     alias normalize_fractional normalize
 
+    # Normalizes the value to the specified range.
     def normalize_to_range(value, range)
       range = (range.end..range.begin) if (range.end < range.begin)
 

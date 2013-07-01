@@ -18,30 +18,24 @@ class Color::CMYK
   def ==(other)
     other = other.to_cmyk
     other.kind_of?(Color::CMYK) and
-    ((@c - other.c).abs <= Color::COLOR_TOLERANCE) and
-    ((@m - other.m).abs <= Color::COLOR_TOLERANCE) and
-    ((@y - other.y).abs <= Color::COLOR_TOLERANCE) and
-    ((@k - other.k).abs <= Color::COLOR_TOLERANCE)
+      to_a.zip(other.to_a).all? { |(x, y)| Color.near?(x, y) }
   end
 
-  # Creates a CMYK colour object from fractional values 0..1.
-  #
-  #   Color::CMYK.from_fraction(0.3, 0, 0.8, 0.3)
-  def self.from_fraction(c = 0, m = 0, y = 0, k = 0)
-    colour = Color::CMYK.new
-    colour.c = c
-    colour.m = m
-    colour.y = y
-    colour.k = k
-    colour
-  end
+  class << self
+    # Creates a CMYK colour object from fractional values 0..1.
+    #
+    #   Color::CMYK.from_fraction(0.3, 0, 0.8, 0.3)
+    def from_fraction(c = 0, m = 0, y = 0, k = 0)
+      Color::CMYK.new(*[ c, m, y, k ].map { |v| v * 100 })
+    end
 
-  # Creates a CMYK colour object from percentages. Internally, the colour is
-  # managed as fractional values 0..1.
-  #
-  #   Color::CMYK.new(30, 0, 80, 30)
-  def self.from_percent(c = 0, m = 0, y = 0, k = 0)
-    Color::CMYK.new(c, m, y, k)
+    # Creates a CMYK colour object from percentages. Internally, the colour is
+    # managed as fractional values 0..1.
+    #
+    #   Color::CMYK.new(30, 0, 80, 30)
+    def from_percent(c = 0, m = 0, y = 0, k = 0)
+      Color::CMYK.new(c, m, y, k)
+    end
   end
 
   # Creates a CMYK colour object from percentages. Internally, the colour is
@@ -138,15 +132,10 @@ class Color::CMYK
   # profiles.
   def to_rgb(use_adobe_method = false)
     if use_adobe_method
-      r = 1.0 - [1.0, @c + @k].min
-      g = 1.0 - [1.0, @m + @k].min
-      b = 1.0 - [1.0, @y + @k].min
+      Color::RGB.from_fraction(*adobe_cmyk_rgb)
     else
-      r = 1.0 - (@c.to_f * (1.0 - @k.to_f) + @k.to_f)
-      g = 1.0 - (@m.to_f * (1.0 - @k.to_f) + @k.to_f)
-      b = 1.0 - (@y.to_f * (1.0 - @k.to_f) + @k.to_f)
+      Color::RGB.from_fraction(*standard_cmyk_rgb)
     end
-    Color::RGB.from_fraction(r, g, b)
   end
 
   # Converts the CMYK colour to a single greyscale value. There are
@@ -263,5 +252,20 @@ class Color::CMYK
   # 0.0 .. 1.0.
   def k=(kk)
     @k = Color.normalize(kk)
+  end
+
+  def to_a
+    [ c, m, y, k ]
+  end
+
+  private
+  # Implements the Adobe PDF conversion of CMYK to RGB.
+  def adobe_cmyk_rgb
+    [ @c, @m, @y ].map { |v| 1.0 - [ 1.0, v + @k ].min }
+  end
+
+  # Implements the standard conversion of CMYK to RGB.
+  def standard_cmyk_rgb
+    [ @c, @m, @y ].map { |v| 1.0 - (v * (1.0 - k) + k) }
   end
 end
