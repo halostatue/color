@@ -435,4 +435,15 @@ class Color::RGB
   end
 end
 
+class << Color::RGB
+  private
+
+  def __named_color(rgb, mod, *names)
+    if names.any? { |n| mod.const_defined? n }
+      raise ArgumentError, "#{names.join(', ')} already defined in #{mod}"
+    end
+    names.each { |n| mod.const_set(n, rgb) }
+  end
+end
+
 require 'color/rgb-colors'
