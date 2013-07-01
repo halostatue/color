@@ -28,11 +28,11 @@ class Color::YIQ
   # equivalent if all component colours are within COLOR_TOLERANCE of each
   # other.
   def ==(other)
-    other = other.to_yiq
-    other.kind_of?(Color::YIQ) and
-    ((@y - other.y).abs <= Color::COLOR_TOLERANCE) and
-    ((@i - other.i).abs <= Color::COLOR_TOLERANCE) and
-    ((@q - other.q).abs <= Color::COLOR_TOLERANCE)
+    Color.equivalent?(self, other)
+  end
+
+  def coerce(other)
+    other.to_yiq
   end
 
   def to_yiq
@@ -68,5 +68,9 @@ class Color::YIQ
 
   def inspect
     "YIQ [%.2f%%, %.2f%%, %.2f%%]" % [ @y * 100, @i * 100, @q * 100 ]
+  end
+
+  def to_a
+    [ y, i, q ]
   end
 end

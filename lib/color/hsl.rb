@@ -5,11 +5,7 @@ class Color::HSL
   class << self
     # Creates an HSL colour object from fractional values 0..1.
     def from_fraction(h = 0.0, s = 0.0, l = 0.0)
-      colour = Color::HSL.new
-      colour.h = h
-      colour.s = s
-      colour.l = l
-      colour
+      new(h, s, l, 1.0, 1.0)
     end
   end
 
@@ -21,6 +17,7 @@ class Color::HSL
   # equivalent if all component values are within Color::COLOR_TOLERANCE of
   # each other.
   def ==(other)
+    Color.equivalent?(self, other)
     other = other.to_hsl
     other.kind_of?(Color::HSL) and
     ((@h - other.h).abs <= Color::COLOR_TOLERANCE) and
@@ -28,12 +25,17 @@ class Color::HSL
     ((@l - other.l).abs <= Color::COLOR_TOLERANCE)
   end
 
+  # Coerces the other Color object into HSL.
+  def coerce(other)
+    other.to_hsl
+  end
+
   # Creates an HSL colour object from the standard values of degrees and
   # percentages (e.g., 145 deg, 30%, 50%).
-  def initialize(h = 0, s = 0, l = 0)
-    @h = h / 360.0
-    @s = s / 100.0
-    @l = l / 100.0
+  def initialize(h = 0, s = 0, l = 0, radix1 = 360.0, radix2 = 100.0)
+    @h = h / radix1
+    @s = s / radix2
+    @l = l / radix2
   end
 
   # Present the colour as an HTML/CSS colour string.
@@ -205,5 +207,9 @@ class Color::HSL
     _l = ((color.l - self.l) * mix_percent) + self.l
 
     self.class.from_fraction(_h, _s, _l)
+  end
+
+  def to_a
+    [ h, s, l ]
   end
 end

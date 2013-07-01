@@ -3,7 +3,7 @@
 
 # = Colour Management with Ruby
 module Color
-  COLOR_VERSION = '1.4.2'
+  COLOR_VERSION = '2.0a0'
 
   class RGB; end
   class CMYK; end
@@ -44,6 +44,20 @@ module Color
     # Returns +true+ if the two values provided are near each other.
     def near?(x, y)
       (x - y).abs <= COLOR_TOLERANCE
+    end
+
+    # Returns +true+ if the two colours are roughly equivalent. If colour
+    # conversions are required, this all conversions will be implemented
+    # using the default conversion mechanism.
+    def equivalent?(a, b)
+      a.to_a.zip(a.coerce(b).to_a).all? { |(x, y)| near?(x, y) }
+    end
+
+    # Coerces, if possible, the second given colour object to the first
+    # given colour object type. This will probably involve colour
+    # conversion and therefore a loss of fidelity.
+    def coerce(a, b)
+      a.coerce(b)
     end
 
     # Normalizes the value to the range (0.0) .. (1.0).

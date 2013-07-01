@@ -10,23 +10,21 @@ class Color::GrayScale
   #
   #   Color::GreyScale.from_fraction(0.5)
   def self.from_fraction(g = 0)
-    color = Color::GrayScale.new
-    color.g = g
-    color
+    new(g, 1.0)
   end
 
   # Creates a greyscale colour object from percentages 0..100.
   #
   #   Color::GrayScale.from_percent(50)
   def self.from_percent(g = 0)
-    Color::GrayScale.new(g)
+    new(g)
   end
 
   # Creates a greyscale colour object from percentages 0..100.
   #
   #   Color::GrayScale.new(50)
-  def initialize(g = 0)
-    @g = g / 100.0
+  def initialize(g = 0, radix = 100.0)
+    @g = g / radix
   end
 
   # Compares the other colour to this one. The other colour will be
@@ -37,9 +35,12 @@ class Color::GrayScale
   # that two GreyScale values are equivalent if they are within
   # COLOR_TOLERANCE of each other.
   def ==(other)
-    other = other.to_grayscale
-    other.kind_of?(Color::GrayScale) and
-    ((@g - other.g).abs <= Color::COLOR_TOLERANCE)
+    Color.equivalent?(self, other)
+  end
+
+  # Coerces the other Color object to grayscale.
+  def coerce(other)
+    other.to_grayscale
   end
 
   # Present the colour as a DeviceGrey fill colour string for PDF. This will
@@ -191,6 +192,10 @@ class Color::GrayScale
 
   def inspect
     "Gray [%.2f%%]" % [ gray ]
+  end
+
+  def to_a
+    [ g ]
   end
 end
 

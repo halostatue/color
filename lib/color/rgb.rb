@@ -10,18 +10,14 @@ class Color::RGB
     #
     #   Color::RGB.from_percentage(10, 20 30)
     def from_percentage(r = 0, g = 0, b = 0)
-      from_fraction(r / 100.0, g / 100.0, b / 100.0)
+      new(r, g, b, 100.0)
     end
 
     # Creates an RGB colour object from fractional values 0..1.
     #
     #   Color::RGB.from_fraction(.3, .2, .1)
     def from_fraction(r = 0.0, g = 0.0, b = 0.0)
-      colour = Color::RGB.new
-      colour.r = r
-      colour.g = g
-      colour.b = b
-      colour
+      new(r, g, b, 1.0)
     end
 
     # Creates an RGB colour object from an HTML colour descriptor (e.g.,
@@ -32,17 +28,15 @@ class Color::RGB
     #   Color::RGB.from_html("#cabbed")
     #   Color::RGB.from_html("cabbed")
     def from_html(html_colour)
-      html_colour = html_colour.gsub(%r{[#;]}, '')
-      case html_colour.size
+      h = html_colour.scan(/\h/)
+      case h.size
       when 3
-        colours = html_colour.scan(%r{[0-9A-Fa-f]}).map { |el| (el * 2).to_i(16) }
+        new(*h.map { |v| (v * 2).to_i(16) })
       when 6
-        colours = html_colour.scan(%r<[0-9A-Fa-f]{2}>).map { |el| el.to_i(16) }
+        new(*h.each_slice(2).map { |v| v.join.to_i(16) })
       else
-        raise ArgumentError
+        raise ArgumentError, "Not a supported HTML colour type."
       end
-
-      Color::RGB.new(*colours)
     end
   end
 
@@ -54,21 +48,20 @@ class Color::RGB
   # equivalent if all component values are within COLOR_TOLERANCE of each
   # other.
   def ==(other)
-    other = other.to_rgb
-    other.kind_of?(Color::RGB) and
-    ((@r - other.r).abs <= Color::COLOR_TOLERANCE) and
-    ((@g - other.g).abs <= Color::COLOR_TOLERANCE) and
-    ((@b - other.b).abs <= Color::COLOR_TOLERANCE)
+    Color.equivalent?(self, other)
+  end
+
+  # Coerces the other Color object into RGB.
+  def coerce(other)
+    other.to_rgb
   end
 
   # Creates an RGB colour object from the standard range 0..255.
   #
   #   Color::RGB.new(32, 64, 128)
   #   Color::RGB.new(0x20, 0x40, 0x80)
-  def initialize(r = 0, g = 0, b = 0)
-    @r = r / 255.0
-    @g = g / 255.0
-    @b = b / 255.0
+  def initialize(r = 0, g = 0, b = 0, radix = 255.0)
+    @r, @g, @b = [ r, g, b ].map { |v| v / radix }
   end
 
   # Present the colour as a DeviceRGB fill colour string for PDF. This will
@@ -435,6 +428,10 @@ class Color::RGB
 
   def inspect
     "RGB [#{html}]"
+  end
+
+  def to_a
+    [ r, g, b ]
   end
 end
 

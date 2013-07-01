@@ -16,9 +16,12 @@ class Color::CMYK
   # equivalent if all component values are within COLOR_TOLERANCE of each
   # other.
   def ==(other)
-    other = other.to_cmyk
-    other.kind_of?(Color::CMYK) and
-      to_a.zip(other.to_a).all? { |(x, y)| Color.near?(x, y) }
+    Color.equivalent?(self, other)
+  end
+
+  # Coerces the other Color object into CMYK.
+  def coerce(other)
+    other.to_cmyk
   end
 
   class << self
@@ -26,7 +29,7 @@ class Color::CMYK
     #
     #   Color::CMYK.from_fraction(0.3, 0, 0.8, 0.3)
     def from_fraction(c = 0, m = 0, y = 0, k = 0)
-      Color::CMYK.new(*[ c, m, y, k ].map { |v| v * 100 })
+      new(c, m, y, k, 1.0)
     end
 
     # Creates a CMYK colour object from percentages. Internally, the colour is
@@ -34,7 +37,7 @@ class Color::CMYK
     #
     #   Color::CMYK.new(30, 0, 80, 30)
     def from_percent(c = 0, m = 0, y = 0, k = 0)
-      Color::CMYK.new(c, m, y, k)
+      new(c, m, y, k)
     end
   end
 
@@ -42,11 +45,8 @@ class Color::CMYK
   # managed as fractional values 0..1.
   #
   #   Color::CMYK.new(30, 0, 80, 30)
-  def initialize(c = 0, m = 0, y = 0, k = 0)
-    @c = c / 100.0
-    @m = m / 100.0
-    @y = y / 100.0
-    @k = k / 100.0
+  def initialize(c = 0, m = 0, y = 0, k = 0, radix = 100.0)
+    @c, @m, @y, @k = [ c, m, y, k ].map { |v| v / radix }
   end
 
   # Present the colour as a DeviceCMYK fill colour string for PDF. This will
