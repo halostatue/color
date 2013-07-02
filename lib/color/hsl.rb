@@ -67,32 +67,27 @@ class Color::HSL
   end
 
   # Converting from HSL to RGB. As with all colour conversions, this is
-  # approximate at best. The code here is adapted from Foley and van Dam,
-  # originally found at [1] (implemented similarly at [2]), and a variation
-  # at [3]. An additional variation has been found at [4].
+  # approximate at best. The code here is adapted from fvd and van Dam,
+  # originally found at [1] (implemented similarly at [2]).
   #
-  # Since there are subtle differences between these algorithms, three of them
-  # have been implemented:
-  #
-  # - The default is the standard Foley and van Dam, implemented as the only
-  #   method in Color for the last few years. This can be explicitly called
-  #   as :foley. I have tried to make the implemented code a little clearer
-  #   to understand. This also includes three primary implementation
-  #   simplifications:
-  #   - Luminance values <= 0 always translate to Color::RGB::Black.
-  #   - Luminance values >= 1 always translate to Color::RGB::White.
-  #   - Saturation values <= 0 always translate to a shade of gray using
-  #     luminance as a percentage of gray.
-  # - The second variant can be called as :foley_alt
-  # - The third variant can be called as :wikipedia, for lack of a better
-  #   source name.
+  # This simplifies the calculations with the following assumptions:
+  # - Luminance values <= 0 always translate to Color::RGB::Black.
+  # - Luminance values >= 1 always translate to Color::RGB::White.
+  # - Saturation values <= 0 always translate to a shade of gray using
+  #   luminance as a percentage of gray.
   #
   # [1] http://bobpowell.net/RGBHSB.aspx
   # [2] http://support.microsoft.com/kb/29240
-  # [3] http://www5.informatik.tu-muenchen.de/lehre/vorlesungen/graphik/info/csc/COL_25.htm
-  # [4] http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSL
-  def to_rgb(mode = :foley)
-    Color::RGB.new(*send(:"to_rgb_#{mode}"))
+  def to_rgb(*)
+    if Color.near_zero_or_less?(l)
+      Color::RGB::Black
+    elsif Color.near_one_or_more?(l)
+      Color::RGB::White
+    elsif Color.near_zero?(s)
+      Color::RGB.from_grayscale_fraction(l)
+    else
+      Color::RGB.new(*compute_fvd_rgb, 1.0)
+    end
   end
 
   # Converts to RGB then YIQ.
@@ -197,29 +192,13 @@ class Color::HSL
 
   private
 
-  # Convert to an array that can be used with Color::RGB.new. As noted
-  # above, luminances at the edges of luminance space map to all black or
-  # all white, and zero saturation is black to gray. Only if we need more
-  # specificity do we need to enter the main calculation.
-  def to_rgb_foley
-    if Color.near_zero_or_less?(l)
-      [ 0, 0, 0, 1.0 ]
-    elsif Color.near_one_or_more?(l)
-      [ 1, 1, 1, 1.0 ]
-    elsif Color.near_zero?(s)
-      [ l, l, l, 1.0 ]
-    else
-      compute_foley_rgb + [ 1.0 ]
-    end
-  end
-
   # This algorithm calculates based on a mixture of the saturation and
   # luminance, and then takes the RGB values from the hue + 1/3, hue, and
   # hue - 1/3 positions in a circular representation of colour divided into
   # four parts (confusing, I know, but it's the way that it works). See
   # #hue_to_rgb for more information.
-  def compute_foley_rgb
-    t1, t2 = foley_mix_sat_lum
+  def compute_fvd_rgb
+    t1, t2 = fvd_mix_sat_lum
     [ h + (1 / 3.0), h, h - (1 / 3.0) ].map { |v|
       hue_to_rgb(rotate_hue(v), t1, t2)
     }
@@ -227,7 +206,7 @@ class Color::HSL
 
   # Mix saturation and luminance for use in hue_to_rgb. The base value is
   # different depending on whether luminance is <= 50% or > 50%.
-  def foley_mix_sat_lum
+  def fvd_mix_sat_lum
     t = if Color.near_zero_or_less?(l - 0.5)
              l * (1.0 + s.to_f)
            else
@@ -235,7 +214,7 @@ class Color::HSL
            end
     [ 2.0 * l - t, t ]
   end
-  #
+
   # In HSL, hues are referenced as degrees in a colour circle. The flow
   # itself is endless; therefore, we can rotate around. The only thing our
   # implementation restricts is that you should not be > 1.0.

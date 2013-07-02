@@ -20,6 +20,12 @@ class Color::RGB
       new(r, g, b, 1.0)
     end
 
+    # Creates an RGB colour object from a grayscale fractional value 0..1.
+    def from_grayscale_fraction(l = 0.0)
+      new(l, l, l, 1.0)
+    end
+    alias from_greyscale_fraction from_grayscale_fraction
+
     # Creates an RGB colour object from an HTML colour descriptor (e.g.,
     # <tt>"fed"</tt> or <tt>"#cabbed;"</tt>.
     #
