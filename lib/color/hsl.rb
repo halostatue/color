@@ -1,3 +1,5 @@
+# -*- ruby encoding: utf-8 -*-
+
 # An HSL colour object. Internally, the hue (#h), saturation (#s), and
 # luminosity/lightness (#l) values are dealt with as fractional values in
 # the range 0..1.
@@ -64,46 +66,33 @@ class Color::HSL
     "hsla(%3.2f, %3.2f%%, %3.2f%%, %3.2f)" % [ hue, saturation, luminosity, 1 ]
   end
 
-  # Converting to HSL as adapted from Foley and Van-Dam from
-  # http://www.bobpowell.net/RGBHSB.htm.
+  # Converting from HSL to RGB. As with all colour conversions, this is
+  # approximate at best. The code here is adapted from Foley and van Dam,
+  # originally found at [1] (implemented similarly at [2]), and a variation
+  # at [3]. An additional variation has been found at [4].
   #
-  # NOTE:
-  # * If the colour's luminosity is near zero, the colour is always black.
-  # * If the colour's luminosity is near one, the colour is always white.
-  # * If the colour's saturation is near zero, the colour is always a shade
-  #   of grey and is based only on the luminosity of the colour.
+  # Since there are subtle differences between these algorithms, three of them
+  # have been implemented:
   #
-  def to_rgb(ignored = nil)
-    return Color::RGB.new if Color.near_zero_or_less?(@l)
-    return Color::RGB.new(0xff, 0xff, 0xff) if Color.near_one_or_more?(@l)
-    return Color::RGB.from_fraction(@l, @l, @l) if Color.near_zero?(@s)
-
-    # Is the value less than 0.5?
-    if Color.near_zero_or_less?(@l - 0.5)
-      tmp2 = @l * (1.0 + @s.to_f)
-    else
-      tmp2 = @l + @s - (@l * @s.to_f)
-    end
-    tmp1 = 2.0 * @l - tmp2
-
-    tmp3  = [ @h + (1.0 / 3.0), @h, @h - (1.0 / 3.0) ]
-
-    rgb = tmp3.map { |hue|
-      hue += 1.0 if Color.near_zero_or_less?(hue)
-      hue -= 1.0 if Color.near_one_or_more?(hue)
-
-      if Color.near_zero_or_less?((6.0 * hue) - 1.0)
-        tmp1 + ((tmp2 - tmp1) * hue * 6.0)
-      elsif Color.near_zero_or_less?((2.0 * hue) - 1.0)
-        tmp2
-      elsif Color.near_zero_or_less?((3.0 * hue) - 2.0)
-        tmp1 + (tmp2 - tmp1) * ((2 / 3.0) - hue) * 6.0
-      else
-        tmp1
-      end
-    }
-
-     Color::RGB.from_fraction(*rgb)
+  # - The default is the standard Foley and van Dam, implemented as the only
+  #   method in Color for the last few years. This can be explicitly called
+  #   as :foley. I have tried to make the implemented code a little clearer
+  #   to understand. This also includes three primary implementation
+  #   simplifications:
+  #   - Luminance values <= 0 always translate to Color::RGB::Black.
+  #   - Luminance values >= 1 always translate to Color::RGB::White.
+  #   - Saturation values <= 0 always translate to a shade of gray using
+  #     luminance as a percentage of gray.
+  # - The second variant can be called as :foley_alt
+  # - The third variant can be called as :wikipedia, for lack of a better
+  #   source name.
+  #
+  # [1] http://bobpowell.net/RGBHSB.aspx
+  # [2] http://support.microsoft.com/kb/29240
+  # [3] http://www5.informatik.tu-muenchen.de/lehre/vorlesungen/graphik/info/csc/COL_25.htm
+  # [4] http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSL
+  def to_rgb(mode = :foley)
+    Color::RGB.new(*send(:"to_rgb_#{mode}"))
   end
 
   # Converts to RGB then YIQ.
@@ -204,5 +193,75 @@ class Color::HSL
 
   def to_a
     [ h, s, l ]
+  end
+
+  private
+
+  # Convert to an array that can be used with Color::RGB.new. As noted
+  # above, luminances at the edges of luminance space map to all black or
+  # all white, and zero saturation is black to gray. Only if we need more
+  # specificity do we need to enter the main calculation.
+  def to_rgb_foley
+    if Color.near_zero_or_less?(l)
+      [ 0, 0, 0, 1.0 ]
+    elsif Color.near_one_or_more?(l)
+      [ 1, 1, 1, 1.0 ]
+    elsif Color.near_zero?(s)
+      [ l, l, l, 1.0 ]
+    else
+      compute_foley_rgb + [ 1.0 ]
+    end
+  end
+
+  # This algorithm calculates based on a mixture of the saturation and
+  # luminance, and then takes the RGB values from the hue + 1/3, hue, and
+  # hue - 1/3 positions in a circular representation of colour divided into
+  # four parts (confusing, I know, but it's the way that it works). See
+  # #hue_to_rgb for more information.
+  def compute_foley_rgb
+    t1, t2 = foley_mix_sat_lum
+    [ h + (1 / 3.0), h, h - (1 / 3.0) ].map { |v|
+      hue_to_rgb(rotate_hue(v), t1, t2)
+    }
+  end
+
+  # Mix saturation and luminance for use in hue_to_rgb. The base value is
+  # different depending on whether luminance is <= 50% or > 50%.
+  def foley_mix_sat_lum
+    t = if Color.near_zero_or_less?(l - 0.5)
+             l * (1.0 + s.to_f)
+           else
+             l + s - (l * s.to_f)
+           end
+    [ 2.0 * l - t, t ]
+  end
+  #
+  # In HSL, hues are referenced as degrees in a colour circle. The flow
+  # itself is endless; therefore, we can rotate around. The only thing our
+  # implementation restricts is that you should not be > 1.0.
+  def rotate_hue(h)
+    h += 1.0 if Color.near_zero_or_less?(h)
+    h -= 1.0 if Color.near_one_or_more?(h)
+    h
+  end
+
+  # We calculate the interaction of the saturation/luminance mix (calculated
+  # earlier) based on the position of the hue in the circular colour space
+  # divided into quadrants. Our hue range is [0, 1), not [0, 360º).
+  #
+  # - The first quadrant covers the first 60º [0, 60º].
+  # - The second quadrant covers the next 120º (60º, 180º].
+  # - The third quadrant covers the next 60º (180º, 240º].
+  # - The fourth quadrant covers the final 120º (240º, 360º).
+  def hue_to_rgb(h, t1, t2)
+    if Color.near_zero_or_less?((6.0 * h) - 1.0)
+      t1 + ((t2 - t1) * h * 6.0)
+    elsif Color.near_zero_or_less?((2.0 * h) - 1.0)
+      t2
+    elsif Color.near_zero_or_less?((3.0 * h) - 2.0)
+      t1 + (t2 - t1) * ((2 / 3.0) - h) * 6.0
+    else
+      t1
+    end
   end
 end
