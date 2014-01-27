@@ -1,8 +1,8 @@
-gem 'minitest'
-require 'minitest/autorun'
+# -*- ruby encoding: utf-8 -*-
 
 require 'color'
 require 'color/palette/monocontrast'
+require 'minitest_helper'
 
 module TestColor
   module TestPalette

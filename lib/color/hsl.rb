@@ -4,22 +4,13 @@
 # luminosity/lightness (#l) values are dealt with as fractional values in
 # the range 0..1.
 class Color::HSL
+  include Color
+
   class << self
     # Creates an HSL colour object from fractional values 0..1.
-    def from_fraction(h = 0.0, s = 0.0, l = 0.0)
-      new(h, s, l, 1.0, 1.0)
+    def from_fraction(h = 0.0, s = 0.0, l = 0.0, &block)
+      new(h, s, l, 1.0, 1.0, &block)
     end
-  end
-
-  # Compares the other colour to this one. The other colour will be
-  # converted to HSL before comparison, so the comparison between a HSL
-  # colour and a non-HSL colour will be approximate and based on the other
-  # colour's #to_hsl conversion. If there is no #to_hsl conversion, this
-  # will raise an exception. This will report that two HSL values are
-  # equivalent if all component values are within Color::COLOR_TOLERANCE of
-  # each other.
-  def ==(other)
-    Color.equivalent?(self, other)
   end
 
   # Coerces the other Color object into HSL.
@@ -29,10 +20,11 @@ class Color::HSL
 
   # Creates an HSL colour object from the standard values of degrees and
   # percentages (e.g., 145 deg, 30%, 50%).
-  def initialize(h = 0, s = 0, l = 0, radix1 = 360.0, radix2 = 100.0)
+  def initialize(h = 0, s = 0, l = 0, radix1 = 360.0, radix2 = 100.0, &block) # :yields self:
     @h = h / radix1
     @s = s / radix2
     @l = l / radix2
+    block.call if block
   end
 
   # Present the colour as an HTML/CSS colour string.

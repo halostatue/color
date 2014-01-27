@@ -1,41 +1,35 @@
 # A colour object representing shades of grey. Used primarily in PDF
 # document creation.
 class Color::GrayScale
+  include Color
+
   # The format of a DeviceGrey colour for PDF. In color-tools 2.0 this will
   # be removed from this package and added back as a modification by the
   # PDF::Writer package.
   PDF_FORMAT_STR  = "%.3f %s"
 
-  # Creates a greyscale colour object from fractional values 0..1.
-  #
-  #   Color::GreyScale.from_fraction(0.5)
-  def self.from_fraction(g = 0)
-    new(g, 1.0)
-  end
+  class << self
+    # Creates a greyscale colour object from fractional values 0..1.
+    #
+    #   Color::GreyScale.from_fraction(0.5)
+    def from_fraction(g = 0, &block)
+      new(g, 1.0, &block)
+    end
 
-  # Creates a greyscale colour object from percentages 0..100.
-  #
-  #   Color::GrayScale.from_percent(50)
-  def self.from_percent(g = 0)
-    new(g)
+    # Creates a greyscale colour object from percentages 0..100.
+    #
+    #   Color::GrayScale.from_percent(50)
+    def from_percent(g = 0, &block)
+      new(g, &block)
+    end
   end
 
   # Creates a greyscale colour object from percentages 0..100.
   #
   #   Color::GrayScale.new(50)
-  def initialize(g = 0, radix = 100.0)
+  def initialize(g = 0, radix = 100.0, &block) # :yields self:
     @g = g / radix
-  end
-
-  # Compares the other colour to this one. The other colour will be
-  # converted to GreyScale before comparison, so the comparison between a
-  # GreyScale colour and a non-GreyScale colour will be approximate and
-  # based on the other colour's #to_greyscale conversion. If there is no
-  # #to_greyscale conversion, this will raise an exception. This will report
-  # that two GreyScale values are equivalent if they are within
-  # COLOR_TOLERANCE of each other.
-  def ==(other)
-    Color.equivalent?(self, other)
+    block.call if block
   end
 
   # Coerces the other Color object to grayscale.

@@ -1,3 +1,28 @@
+== 1.5 / 2014-MM-DD
+
+* Minor enhancements:
+  * Added new methods to Color::RGB to make it so that the default defined
+    colours can be looked up by hex, name, or both.
+  * Added a method to Color::RGB to extract colours from text by hex, name, or
+    both.
+  * Added new common methods for colour names. Converted colours do not retain
+    names.
+  * Restructured color comparisons to use protocols instead of custom
+    implementations. This makes it easier to implement new colour classes. To
+    make this work, color classes should +include+ Color only need to implement
+    <tt>#coerce(other)</tt>, <tt>#to_a</tt>, and supported conversion methods
+    (e.g., <tt>#to_rgb</tt>).
+  * Added @daveheitzman’s initial implementation of an RGB contrast method as
+    an extension file: <tt>require 'color/rgb/contrast'</tt>. This method and
+    the value it returns should be considered experimental; it requires further
+    examination to ensure that the results produced are consistent with the
+    contrast comparisons used in Color::Palette::MonoContrast.
+
+* Bug Fixes:
+  * Moved +lib/color/rgb-colors.rb+ to +lib/color/rgb/colors.rb+. This should
+    have no impact in general.
+  * Improved the way that named colors are specified internally.
+
 == 1.4.2 / 2013-06-30
 
 Maintenance:

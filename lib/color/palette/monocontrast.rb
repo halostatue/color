@@ -71,7 +71,8 @@ class Color::Palette::MonoContrast
 
   # Generate the initial palette.
   def initialize(background, foreground = nil)
-    self.minimum_brightness_diff = self.minimum_color_diff = nil
+    @minimum_brightness_diff = DEFAULT_MINIMUM_BRIGHTNESS_DIFF
+    @minimum_color_diff = DEFAULT_MINIMUM_COLOR_DIFF
     regenerate(background, foreground)
   end
 

@@ -3,21 +3,12 @@
 # would be mixed from 30% cyan, 0% magenta, 80% yellow, and 30% black.
 # Primarily used in four-colour printing processes.
 class Color::CMYK
+  include Color
+
   # The format of a DeviceCMYK colour for PDF. In color-tools 2.0 this will
   # be removed from this package and added back as a modification by the
   # PDF::Writer package.
   PDF_FORMAT_STR = "%.3f %.3f %.3f %.3f %s"
-
-  # Compares the other colour to this one. The other colour will be
-  # converted to CMYK before comparison, so the comparison between a CMYK
-  # colour and a non-CMYK colour will be approximate and based on the other
-  # colour's #to_cmyk conversion. If there is no #to_cmyk conversion, this
-  # will raise an exception. This will report that two CMYK colours are
-  # equivalent if all component values are within COLOR_TOLERANCE of each
-  # other.
-  def ==(other)
-    Color.equivalent?(self, other)
-  end
 
   # Coerces the other Color object into CMYK.
   def coerce(other)
@@ -28,16 +19,16 @@ class Color::CMYK
     # Creates a CMYK colour object from fractional values 0..1.
     #
     #   Color::CMYK.from_fraction(0.3, 0, 0.8, 0.3)
-    def from_fraction(c = 0, m = 0, y = 0, k = 0)
-      new(c, m, y, k, 1.0)
+    def from_fraction(c = 0, m = 0, y = 0, k = 0, &block)
+      new(c, m, y, k, 1.0, &block)
     end
 
     # Creates a CMYK colour object from percentages. Internally, the colour is
     # managed as fractional values 0..1.
     #
     #   Color::CMYK.new(30, 0, 80, 30)
-    def from_percent(c = 0, m = 0, y = 0, k = 0)
-      new(c, m, y, k)
+    def from_percent(c = 0, m = 0, y = 0, k = 0, &block)
+      new(c, m, y, k, &block)
     end
   end
 
@@ -45,8 +36,9 @@ class Color::CMYK
   # managed as fractional values 0..1.
   #
   #   Color::CMYK.new(30, 0, 80, 30)
-  def initialize(c = 0, m = 0, y = 0, k = 0, radix = 100.0)
+  def initialize(c = 0, m = 0, y = 0, k = 0, radix = 100.0, &block) # :yields self:
     @c, @m, @y, @k = [ c, m, y, k ].map { |v| v / radix }
+    block.call(self) if block
   end
 
   # Present the colour as a DeviceCMYK fill colour string for PDF. This will

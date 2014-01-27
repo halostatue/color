@@ -1,34 +1,20 @@
 # A colour object representing YIQ (NTSC) colour encoding.
 class Color::YIQ
+  include Color
+
   # Creates a YIQ colour object from fractional values 0 .. 1.
   #
   #   Color::YIQ.new(0.3, 0.2, 0.1)
-  def self.from_fraction(y = 0, i = 0, q = 0)
-    color = Color::YIQ.new
-    color.y = y
-    color.i = i
-    color.q = q
-    color
+  def self.from_fraction(y = 0, i = 0, q = 0, &block)
+    new(y, i, q, 1.0, &block)
   end
 
   # Creates a YIQ colour object from percentages 0 .. 100.
   #
   #   Color::YIQ.new(10, 20, 30)
-  def initialize(y = 0, i = 0, q = 0)
-    @y = y / 100.0
-    @i = i / 100.0
-    @q = q / 100.0
-  end
-
-  # Compares the other colour to this one. The other colour will be
-  # converted to YIQ before comparison, so the comparison between a YIQ
-  # colour and a non-YIQ colour will be approximate and based on the other
-  # colour's #to_yiq conversion. If there is no #to_yiq conversion, this
-  # will raise an exception. This will report that two YIQ values are
-  # equivalent if all component colours are within COLOR_TOLERANCE of each
-  # other.
-  def ==(other)
-    Color.equivalent?(self, other)
+  def initialize(y = 0, i = 0, q = 0, radix = 100.0, &block) # :yields self:
+    @y, @i, @q = [ y, i, q ].map { |v| Color.normalize(v / radix) }
+    block.call if block
   end
 
   def coerce(other)

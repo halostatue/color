@@ -1,5 +1,7 @@
 # An RGB colour object.
 class Color::RGB
+  include Color
+
   # The format of a DeviceRGB colour for PDF. In color-tools 2.0 this will
   # be removed from this package and added back as a modification by the
   # PDF::Writer package.
@@ -9,22 +11,22 @@ class Color::RGB
     # Creates an RGB colour object from percentages 0..100.
     #
     #   Color::RGB.from_percentage(10, 20 30)
-    def from_percentage(r = 0, g = 0, b = 0)
-      new(r, g, b, 100.0)
+    def from_percentage(r = 0, g = 0, b = 0, &block)
+      new(r, g, b, 100.0, &block)
     end
 
     # Creates an RGB colour object from fractional values 0..1.
     #
     #   Color::RGB.from_fraction(.3, .2, .1)
-    def from_fraction(r = 0.0, g = 0.0, b = 0.0)
-      new(r, g, b, 1.0)
+    def from_fraction(r = 0.0, g = 0.0, b = 0.0, &block)
+      new(r, g, b, 1.0, &block)
     end
 
     # Creates an RGB colour object from a grayscale fractional value 0..1.
-    def from_grayscale_fraction(l = 0.0)
-      new(l, l, l, 1.0)
+    def from_grayscale_fraction(l = 0.0, &block)
+      new(l, l, l, 1.0, &block)
     end
-    alias from_greyscale_fraction from_grayscale_fraction
+    alias_method :from_greyscale_fraction, :from_grayscale_fraction
 
     # Creates an RGB colour object from an HTML colour descriptor (e.g.,
     # <tt>"fed"</tt> or <tt>"#cabbed;"</tt>.
@@ -33,28 +35,71 @@ class Color::RGB
     #   Color::RGB.from_html("#fed")
     #   Color::RGB.from_html("#cabbed")
     #   Color::RGB.from_html("cabbed")
-    def from_html(html_colour)
+    def from_html(html_colour, &block)
       h = html_colour.scan(/\h/)
       case h.size
       when 3
-        new(*h.map { |v| (v * 2).to_i(16) })
+        new(*h.map { |v| (v * 2).to_i(16) }, &block)
       when 6
-        new(*h.each_slice(2).map { |v| v.join.to_i(16) })
+        new(*h.each_slice(2).map { |v| v.join.to_i(16) }, &block)
       else
         raise ArgumentError, "Not a supported HTML colour type."
       end
     end
-  end
 
-  # Compares the other colour to this one. The other colour will be
-  # converted to RGB before comparison, so the comparison between a RGB
-  # colour and a non-RGB colour will be approximate and based on the other
-  # colour's default #to_rgb conversion. If there is no #to_rgb conversion,
-  # this will raise an exception. This will report that two RGB colours are
-  # equivalent if all component values are within COLOR_TOLERANCE of each
-  # other.
-  def ==(other)
-    Color.equivalent?(self, other)
+    # Find or create a colour by an HTML hex code. This differs from the
+    # #from_html method in that if the colour code matches a named colour,
+    # the existing colour will be returned.
+    #
+    #     Color::RGB.by_hex('ff0000').name # => 'red'
+    #     Color::RGB.by_hex('ff0001').name # => nil
+    #
+    # If a block is provided, the value that is returned by the block will
+    # be returned instead of the exception caused by an error in providing a
+    # correct hex format.
+    def by_hex(hex, &block)
+      __by_hex.fetch(html_hexify(hex)) { from_html(hex) }
+    rescue
+      if block
+        block.call
+      else
+        raise
+      end
+    end
+
+    # Return a colour as identified by the colour name.
+    def by_name(name, &block)
+      __by_name.fetch(name.to_s.downcase, &block)
+    end
+
+    # Return a colour as identified by the colour name, or by hex.
+    def by_css(name_or_hex, &block)
+      by_name(name_or_hex) { by_hex(name_or_hex, &block) }
+    end
+
+    # Extract named or hex colours from the provided text.
+    def extract_colors(text, mode = :both)
+      text  = text.downcase
+      regex = case mode
+              when :name
+                Regexp.union(__by_name.keys)
+              when :hex
+                Regexp.union(__by_hex.keys)
+              when :both
+                Regexp.union(__by_hex.keys + __by_name.keys)
+              end
+
+      text.scan(regex).map { |match|
+        case mode
+        when :name
+          by_name(match)
+        when :hex
+          by_hex(match)
+        when :both
+          by_css(match)
+        end
+      }
+    end
   end
 
   # Coerces the other Color object into RGB.
@@ -66,8 +111,9 @@ class Color::RGB
   #
   #   Color::RGB.new(32, 64, 128)
   #   Color::RGB.new(0x20, 0x40, 0x80)
-  def initialize(r = 0, g = 0, b = 0, radix = 255.0)
+  def initialize(r = 0, g = 0, b = 0, radix = 255.0, &block) # :yields self:
     @r, @g, @b = [ r, g, b ].map { |v| v / radix }
+    block.call(self) if block
   end
 
   # Present the colour as a DeviceRGB fill colour string for PDF. This will
@@ -82,8 +128,8 @@ class Color::RGB
     PDF_FORMAT_STR % [ @r, @g, @b, "RG" ]
   end
 
-  # Present the colour as an HTML/CSS colour string.
-  def html
+  # Present the colour as an RGB hex triplet.
+  def hex
     r = (@r * 255).round
     r = 255 if r > 255
 
@@ -93,7 +139,12 @@ class Color::RGB
     b = (@b * 255).round
     b = 255 if b > 255
 
-    "#%02x%02x%02x" % [ r, g, b ]
+    "%02x%02x%02x" % [ r, g, b ]
+  end
+
+  # Present the colour as an HTML/CSS colour string.
+  def html
+    "##{hex}"
   end
 
   # Present the colour as an RGB HTML/CSS colour string (e.g., "rgb(0%, 50%,
@@ -442,13 +493,39 @@ class Color::RGB
 end
 
 class << Color::RGB
-  private
 
-  def __named_color(rgb, mod, *names)
+  private
+  def __named_color(mod, rgb, *names)
     if names.any? { |n| mod.const_defined? n }
       raise ArgumentError, "#{names.join(', ')} already defined in #{mod}"
     end
+
     names.each { |n| mod.const_set(n, rgb) }
+
+    rgb.names = names
+    rgb.names.each { |n| __by_name[n] = rgb }
+    __by_hex[rgb.hex] = rgb
+    rgb.freeze
+  end
+
+  def __by_hex
+    @__by_hex ||= {}
+  end
+
+  def __by_name
+    @__by_name ||= {}
+  end
+
+  def html_hexify(hex)
+    h = hex.to_s.downcase.scan(/\h/)
+    case h.size
+    when 3
+      h.map { |v| (v * 2) }.join
+    when 6
+      h.join
+    else
+      raise ArgumentError, "Not a supported HTML colour type."
+    end
   end
 end
 

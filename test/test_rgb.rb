@@ -1,7 +1,7 @@
-gem 'minitest'
-require 'minitest/autorun'
+# -*- ruby encoding: utf-8 -*-
 
 require 'color'
+require 'minitest_helper'
 
 module TestColor
   class TestRGB < Minitest::Test
@@ -254,7 +254,7 @@ module TestColor
     end
 
     def test_to_rgb
-      assert_equal(Color::RGB::Black, Color::RGB::Black.to_rgb)
+      assert_same(Color::RGB::Black, Color::RGB::Black.to_rgb)
     end
 
     def test_to_yiq
@@ -319,6 +319,34 @@ module TestColor
       assert_raises(ArgumentError) { Color::RGB.from_html("5555555") }
       assert_raises(ArgumentError) { Color::RGB.from_html("#55555") }
       assert_raises(ArgumentError) { Color::RGB.from_html("55555") }
+    end
+
+    def test_by_hex
+      assert_same(Color::RGB::Cyan, Color::RGB.by_hex('#0ff'))
+      assert_same(Color::RGB::Cyan, Color::RGB.by_hex('#00ffff'))
+      assert_equal("RGB [#333333]", Color::RGB.by_hex("#333").inspect)
+      assert_equal("RGB [#333333]", Color::RGB.by_hex("333").inspect)
+      assert_raises(ArgumentError) { Color::RGB.by_hex("5555555") }
+      assert_raises(ArgumentError) { Color::RGB.by_hex("#55555") }
+      assert_equal(:boom, Color::RGB.by_hex('#55555') { :boom })
+    end
+
+    def test_by_name
+      assert_same(Color::RGB::Cyan, Color::RGB.by_name('cyan'))
+      assert_raises(KeyError) { Color::RGB.by_name('cyanide') }
+      assert_equal(:boom, Color::RGB.by_name('cyanide') { :boom })
+    end
+
+    def test_by_css
+      assert_same(Color::RGB::Cyan, Color::RGB.by_css('#0ff'))
+      assert_same(Color::RGB::Cyan, Color::RGB.by_css('cyan'))
+      assert_raises(ArgumentError) { Color::RGB.by_css('cyanide') }
+      assert_equal(:boom, Color::RGB.by_css('cyanide') { :boom })
+    end
+
+    def test_extract_colors
+      assert_equal([ Color::RGB::BlanchedAlmond, Color::RGB::Cyan ],
+                   Color::RGB.extract_colors('BlanchedAlmond is a nice shade, but #00ffff is not.'))
     end
 
     def test_inspect

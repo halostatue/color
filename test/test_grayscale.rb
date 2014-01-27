@@ -1,7 +1,7 @@
-gem 'minitest'
-require 'minitest/autorun'
+# -*- ruby encoding: utf-8 -*-
 
 require 'color'
+require 'minitest_helper'
 
 module TestColor
   class TestGrayScale < Minitest::Test

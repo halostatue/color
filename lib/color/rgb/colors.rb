@@ -2,7 +2,7 @@ class Color::RGB
   class << self
     private
     def named(rgb, *names)
-      __named_color(new(*rgb).freeze, self, *names)
+      __named_color(self, new(*rgb), *names)
     end
   end
 
@@ -162,3 +162,5 @@ class Color::RGB
   named [0xff, 0xff, 0x00], :Yellow
   named [0x9a, 0xcd, 0x32], :YellowGreen
 end
+
+require 'color/rgb/metallic'
