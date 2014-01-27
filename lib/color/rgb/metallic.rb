@@ -22,8 +22,4 @@ class Color::RGB
   metallic [0x66, 0x66, 0x66], :Steel
   metallic [0x7f, 0x7f, 0x7f], :Tin
   metallic [0x33, 0x33, 0x33], :Tungsten
-
-  class << self
-    undef :metallic
-  end
 end

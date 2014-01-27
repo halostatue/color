@@ -13,8 +13,12 @@ Hoe.plugin :rubyforge
 Hoe.plugin :travis
 
 Hoe.spec 'color' do
-  developer "Austin Ziegler", "austin@rubyforge.org"
-  developer "Matt Lyon", "matt@postsomnia.com"
+  developer('Austin Ziegler', 'austin@rubyforge.org')
+  developer('Matt Lyon', 'matt@postsomnia.com')
+
+  self.need_tar = true
+
+  # self.require_ruby_version '>= 1.9.2'
 
   self.remote_rdoc_dir = '.'
   self.rsync_args << ' --exclude=statsvn/'
@@ -22,6 +26,7 @@ Hoe.spec 'color' do
   self.history_file = 'History.rdoc'
   self.readme_file = 'README.rdoc'
   self.extra_rdoc_files = FileList["*.rdoc"].to_a
+  self.licenses = ["MIT"]
 
   self.extra_dev_deps << ['hoe-bundler', '~> 1.2']
   self.extra_dev_deps << ['hoe-doofus', '~> 1.0']

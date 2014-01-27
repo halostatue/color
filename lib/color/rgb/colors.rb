@@ -1,5 +1,6 @@
 class Color::RGB
   class << self
+    private
     def named(rgb, *names)
       __named_color(new(*rgb).freeze, self, *names)
     end
@@ -12,7 +13,7 @@ class Color::RGB
   named [0xf0, 0xff, 0xff], :Azure
   named [0xf5, 0xf5, 0xdc], :Beige
   named [0xff, 0xe4, 0xc4], :Bisque
-  named [0, 0, 0], :Black
+  named [0x00, 0x00, 0x00], :Black
   named [0xff, 0xeb, 0xcd], :BlanchedAlmond
   named [0x00, 0x00, 0xff], :Blue
   named [0x8a, 0x2b, 0xe2], :BlueViolet
@@ -160,8 +161,4 @@ class Color::RGB
   named [0xf5, 0xf5, 0xf5], :WhiteSmoke
   named [0xff, 0xff, 0x00], :Yellow
   named [0x9a, 0xcd, 0x32], :YellowGreen
-
-  class << self
-    undef named
-  end
 end

@@ -13,7 +13,7 @@ lib/color/palette.rb
 lib/color/palette/adobecolor.rb
 lib/color/palette/gimp.rb
 lib/color/palette/monocontrast.rb
-lib/color/rgb-colors.rb
+lib/color/rgb/colors.rb
 lib/color/rgb.rb
 lib/color/rgb/metallic.rb
 lib/color/yiq.rb

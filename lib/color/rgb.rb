@@ -452,4 +452,4 @@ class << Color::RGB
   end
 end
 
-require 'color/rgb-colors'
+require 'color/rgb/colors'
