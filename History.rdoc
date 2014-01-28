@@ -17,6 +17,7 @@
     the value it returns should be considered experimental; it requires further
     examination to ensure that the results produced are consistent with the
     contrast comparisons used in Color::Palette::MonoContrast.
+  * Reducing duplicated code.
 
 * Bug Fixes:
   * Moved +lib/color/rgb-colors.rb+ to +lib/color/rgb/colors.rb+. This should

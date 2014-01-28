@@ -318,11 +318,7 @@ class Color::RGB
   #   Color::RGB::DarkBlue.adjust_brightness(10)
   #   Color::RGB::DarkBlue.adjust_brightness(-10)
   def adjust_brightness(percent)
-    percent /= 100.0
-    percent += 1.0
-    percent  = [ percent, 2.0 ].min
-    percent  = [ 0.0, percent ].max
-
+    percent = normalize_percent(percent)
     hsl      = to_hsl
     hsl.l   *= percent
     hsl.to_rgb
@@ -335,11 +331,7 @@ class Color::RGB
   #   Color::RGB::DarkBlue.adjust_saturation(10)
   #   Color::RGB::DarkBlue.adjust_saturation(-10)
   def adjust_saturation(percent)
-    percent  /= 100.0
-    percent  += 1.0
-    percent  = [ percent, 2.0 ].min
-    percent  = [ 0.0, percent ].max
-
+    percent = normalize_percent(percent)
     hsl      = to_hsl
     hsl.s   *= percent
     hsl.to_rgb
@@ -352,11 +344,7 @@ class Color::RGB
   #   Color::RGB::DarkBlue.adjust_hue(10)
   #   Color::RGB::DarkBlue.adjust_hue(-10)
   def adjust_hue(percent)
-    percent  /= 100.0
-    percent  += 1.0
-    percent  = [ percent, 2.0 ].min
-    percent  = [ 0.0, percent ].max
-
+    percent = normalize_percent(percent)
     hsl      = to_hsl
     hsl.h   *= percent
     hsl.to_rgb
@@ -491,10 +479,18 @@ class Color::RGB
   def to_a
     [ r, g, b ]
   end
+
+  private
+  def normalize_percent(percent)
+    percent /= 100.0
+    percent += 1.0
+    percent  = [ percent, 2.0 ].min
+    percent  = [ 0.0, percent ].max
+    percent
+  end
 end
 
 class << Color::RGB
-
   private
   def __named_color(mod, rgb, *names)
     if names.any? { |n| mod.const_defined? n }
