@@ -113,7 +113,7 @@ class Color::RGB
   #   Color::RGB.new(32, 64, 128)
   #   Color::RGB.new(0x20, 0x40, 0x80)
   def initialize(r = 0, g = 0, b = 0, radix = 255.0, &block) # :yields self:
-    @r, @g, @b = [ r, g, b ].map { |v| v / radix }
+    @r, @g, @b = [ r, g, b ].map { |v| Color.normalize(v / radix) }
     block.call(self) if block
   end
 
@@ -438,14 +438,7 @@ class Color::RGB
   # The addition is done using the RGB Accessor methods to ensure a valid
   # colour in the result.
   def +(other)
-    other = other.to_rgb
-    rgb = self.dup
-
-    rgb.r += other.r
-    rgb.g += other.g
-    rgb.b += other.b
-
-    rgb
+    self.class.from_fraction(r + other.r, g + other.g, b + other.b)
   end
 
   # Subtracts another colour to the current colour. The other colour will be
@@ -455,14 +448,7 @@ class Color::RGB
   # The subtraction is done using the RGB Accessor methods to ensure a valid
   # colour in the result.
   def -(other)
-    other = other.to_rgb
-    rgb = self.dup
-
-    rgb.r -= other.r
-    rgb.g -= other.g
-    rgb.b -= other.b
-
-    rgb
+    self + (-other)
   end
 
   # Retrieve the maxmum RGB value from the current colour as a GrayScale
@@ -478,6 +464,16 @@ class Color::RGB
 
   def to_a
     [ r, g, b ]
+  end
+
+  # Numerically negate the color. This results in a color that is only
+  # usable for subtraction.
+  def -@
+    rgb = self.dup
+    rgb.instance_variable_set(:@r, -rgb.r)
+    rgb.instance_variable_set(:@g, -rgb.g)
+    rgb.instance_variable_set(:@b, -rgb.b)
+    rgb
   end
 
   private

@@ -21,9 +21,9 @@ class Color::HSL
   # Creates an HSL colour object from the standard values of degrees and
   # percentages (e.g., 145 deg, 30%, 50%).
   def initialize(h = 0, s = 0, l = 0, radix1 = 360.0, radix2 = 100.0, &block) # :yields self:
-    @h = h / radix1
-    @s = s / radix2
-    @l = l / radix2
+    @h = Color.normalize(h / radix1)
+    @s = Color.normalize(s / radix2)
+    @l = Color.normalize(l / radix2)
     block.call if block
   end
 

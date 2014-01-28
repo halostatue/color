@@ -37,7 +37,7 @@ class Color::CMYK
   #
   #   Color::CMYK.new(30, 0, 80, 30)
   def initialize(c = 0, m = 0, y = 0, k = 0, radix = 100.0, &block) # :yields self:
-    @c, @m, @y, @k = [ c, m, y, k ].map { |v| v / radix }
+    @c, @m, @y, @k = [ c, m, y, k ].map { |v| Color.normalize(v / radix) }
     block.call(self) if block
   end
 

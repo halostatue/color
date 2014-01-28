@@ -28,7 +28,7 @@ class Color::GrayScale
   #
   #   Color::GrayScale.new(50)
   def initialize(g = 0, radix = 100.0, &block) # :yields self:
-    @g = g / radix
+    @g = Color.normalize(g / radix)
     block.call if block
   end
 
@@ -165,10 +165,7 @@ class Color::GrayScale
   # The addition is done using the grayscale accessor methods to ensure a
   # valid colour in the result.
   def +(other)
-    other = other.to_grayscale
-    ng = self.dup
-    ng.g += other.g
-    ng
+    self.class.from_fraction(g + other.to_grayscale.g)
   end
 
   # Subtracts another colour to the current colour. The other colour will be
@@ -178,10 +175,7 @@ class Color::GrayScale
   # The subtraction is done using the grayscale accessor methods to ensure a
   # valid colour in the result.
   def -(other)
-    other = other.to_grayscale
-    ng = self.dup
-    ng.g -= other.g
-    ng
+    self + (-other)
   end
 
   def inspect
@@ -190,6 +184,12 @@ class Color::GrayScale
 
   def to_a
     [ g ]
+  end
+
+  def -@
+    gs = self.dup
+    gs.instance_variable_set(:@g, -g)
+    gs
   end
 end
 
