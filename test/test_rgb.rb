@@ -332,7 +332,14 @@ module TestColor
 
     def test_by_name
       assert_same(Color::RGB::Cyan, Color::RGB.by_name('cyan'))
-      assert_raises(KeyError) { Color::RGB.by_name('cyanide') }
+
+      fetch_error = if RUBY_VERSION < "1.9"
+                      IndexError
+                    else
+                      KeyError
+                    end
+
+      assert_raises(fetch_error) { Color::RGB.by_name('cyanide') }
       assert_equal(:boom, Color::RGB.by_name('cyanide') { :boom })
     end
 

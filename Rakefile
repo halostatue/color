@@ -34,10 +34,10 @@ spec = Hoe.spec 'color' do
   self.extra_dev_deps << ['hoe-travis', '~> 1.2']
   self.extra_dev_deps << ['minitest', '~> 5.0']
   self.extra_dev_deps << ['rake', '~> 10.0']
-  self.extra_dev_deps << ['simplecov', '~> 0.7']
 end
 
 namespace :test do
+  desc "Runs test coverage. Only works Ruby 1.9+ and assumes 'simplecov' is installed."
   task :coverage do
     spec.test_prelude = [
       'require "simplecov"',

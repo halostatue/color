@@ -36,7 +36,8 @@ class Color::RGB
     #   Color::RGB.from_html("#cabbed")
     #   Color::RGB.from_html("cabbed")
     def from_html(html_colour, &block)
-      h = html_colour.scan(/\h/)
+      # When we can move to 1.9+ only, this will be \h
+      h = html_colour.scan(/[0-9a-f]/i)
       case h.size
       when 3
         new(*h.map { |v| (v * 2).to_i(16) }, &block)
@@ -517,7 +518,8 @@ class << Color::RGB
   end
 
   def html_hexify(hex)
-    h = hex.to_s.downcase.scan(/\h/)
+    # When we can move to 1.9+ only, this will be \h
+    h = hex.to_s.downcase.scan(/[0-9a-f]/)
     case h.size
     when 3
       h.map { |v| (v * 2) }.join
