@@ -278,7 +278,6 @@ module TestColor
     end
 
     def test_add
-      Color::RGB::Cyan + Color::RGB::Yellow
       white = Color::RGB::Cyan + Color::RGB::Yellow
       refute_nil(white)
       assert_equal(Color::RGB::White, white)

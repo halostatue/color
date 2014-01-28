@@ -78,7 +78,9 @@ class Color::HSL
     elsif Color.near_zero?(s)
       Color::RGB.from_grayscale_fraction(l)
     else
-      Color::RGB.new(*compute_fvd_rgb, 1.0)
+      # Only needed for Ruby 1.8. For Ruby 1.9+, we can do:
+      # Color::RGB.new(*compute_fvd_rgb, 1.0)
+      Color::RGB.new(*(compute_fvd_rgb + [ 1.0 ]))
     end
   end
 
