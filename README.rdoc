@@ -23,7 +23,7 @@ L*a*b*) are not supported because Color does not yet support colour profiles,
 giving no meaningful way to convert colours in absolute colour spaces (like
 L*a*b*, XYZ) to non-absolute colour spaces (like RGB).
 
-Color version 1.5 is mostly a maintenance release, fixing some bugs that may
+Color version 1.5.1 is mostly a maintenance release, fixing some bugs that may
 have been introduced with the previous release on Ruby 1.8.7. New features
 include an experimental contrast comparison method for RGB colours (found in
 lib/color/rgb/contrast.rb) provided by Dave Heitzman, and methods suggested by
@@ -32,6 +32,11 @@ Thomas Sawyer based on the Spectrum library.
 Barring bugs introduced in this release, this will be the last version of color
 that supports Ruby 1.8, so make sure that your gem specification is set
 properly, to <tt>~> 1.5</tt> if that matters for your application.
+
+=== Note about color 1.5
+
+Color 1.5 was released before the documetation was complete and has been
+yanked.
 
 == History
 

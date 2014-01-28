@@ -1,4 +1,6 @@
-== 1.5 / 2014-01-28
+== 1.5.1 / 2014-01-28
+
+* color 1.5 was a yanked release.
 
 * Minor enhancements:
   * Added new methods to Color::RGB to make it so that the default defined

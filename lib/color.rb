@@ -3,7 +3,7 @@
 
 # = Colour Management with Ruby
 module Color
-  COLOR_VERSION = '1.5'
+  COLOR_VERSION = '1.5.1'
 
   class RGB; end
   class CMYK; end
