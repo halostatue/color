@@ -276,6 +276,47 @@ module TestColor
       assert_equal(Color::YIQ.new(16.53, 32.96, 11.72),
                    Color::RGB::Cayenne.to_yiq)
     end
+    
+    def test_to_lab
+      # Luminosity can be an absolute.
+      assert_equal(Color::RGB::Black.to_lab[:L], 0.0)
+      assert_equal(Color::RGB::White.to_lab[:L], 100.0)
+    
+      # It's not really possible to have absolute
+      # numbers here because of how L*a*b* works, but
+      # negative/positive comparisons work
+      assert(Color::RGB::Green.to_lab[:a] < 0)
+      assert(Color::RGB::Magenta.to_lab[:a] > 0)
+      assert(Color::RGB::Blue.to_lab[:b] < 0)
+      assert(Color::RGB::Yellow.to_lab[:b] > 0)
+    end
+  
+    def test_closest_match
+      # It should match Blue to Indigo (very simple match)
+      match_from = [Color::RGB::Red, Color::RGB::Green, Color::RGB::Blue]
+      assert_equal(Color::RGB::Indigo.closest_match(match_from), Color::RGB::Blue)
+      # Crimson & Firebrick are visually closer than DarkRed and Firebrick (more precise match)
+      match_from += [Color::RGB::DarkRed, Color::RGB::Crimson]
+      assert_equal(Color::RGB::Firebrick.closest_match(match_from), Color::RGB::Crimson)
+      # Specifying a threshold low enough will cause even that match to fail, though.
+      assert_nil(Color::RGB::Firebrick.closest_match(match_from,8.0), Color::RGB::Crimson)
+      # If the match_from list isn't an array, it returns nil
+      assert_nil(Color::RGB::Red.closest_match(Color::RGB::Blue))
+      # If the match_from list is an empty array, it also returns nil
+      assert_nil(Color::RGB::Red.closest_match([]))
+    end
+    
+    def test_closest_match!
+      # It returns nil if it's not within the JND
+      match_from = [Color::RGB::Red, Color::RGB::Green, Color::RGB::Blue]
+      assert_nil(Color::RGB::Indigo.closest_match!(match_from))
+      # RGB::Green is 0,128,0, so we'll pick something VERY close to it, visually
+      jnd_green = Color::RGB.new(3,132,3)
+      assert_equal(jnd_green.closest_match!(match_from), Color::RGB::Green)
+      # And then something that's just barely out of the tolerance range
+      diff_green = Color::RGB.new(9,142,9)
+      assert_nil(diff_green.closest_match!(match_from))
+    end
 
     def test_add
       white = Color::RGB::Cyan + Color::RGB::Yellow

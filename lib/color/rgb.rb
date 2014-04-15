@@ -349,6 +349,118 @@ class Color::RGB
     hsl.h   *= percent
     hsl.to_rgb
   end
+  
+  # Color Analysis methods
+  # Uses the CIE deltaE 1994 algorithm to find near-matches based on
+  # perceived visual color
+  
+  # closest_match
+  # Returns the closest match from a provided array of possible colors
+  # To do this, we must first get both XYZ and LAB values for the RGB 
+  
+  def closest_match(color_list, threshold = 1000.0)
+    return nil if (color_list.class != Array || color_list.empty?)
+    return color_list[0] if color_list.count == 1
+    
+    # get LAB
+    lab = to_lab
+    
+    # This is the initial threshold under which it must match
+    # the default is an arbitrarily large number
+    closest_distance = threshold
+    best_match = nil
+    
+    # Iterate through each color and compare -- if the distance is
+    # better than before, that's our new favorite
+    color_list.each do |c|
+      distance = deltaE94(lab, c.to_lab)
+      # Lower scores = shorter distance, which is a closer match
+      if (distance < closest_distance)
+        closest_distance = distance
+        best_match = c
+      end
+    end
+    best_match
+  end
+  
+  # closest_match!
+  # Bang-method for when you only want a close match with a JND from the
+  # seed color. 
+  def closest_match!(color_list)
+    closest_match(color_list, 2.3) # 2.3 is the Just Noticeable Difference
+  end
+  
+  def deltaE94(color_1, color_2)
+    k1 = 0.045
+    k2 = 0.015
+    
+    l1 = color_1[:L]
+    l2 = color_2[:L]
+    a1 = color_1[:a]
+    a2 = color_2[:a]
+    b1 = color_1[:b]
+    b2 = color_2[:b]
+    
+    dL = l1 - l2
+    da = a1 - a2
+    db = b1 - b2
+    
+    c1 = Math.sqrt((a1**2)+(b1**2))
+    c2 = Math.sqrt((a2**2)+(b2**2))
+    dCab = c1 - c2
+    radical = (da**2) + (db**2) - (dCab**2)
+    
+    dHab = (radical > 0) ? Math.sqrt(radical) : 0
+
+    kL = 1
+    kC = 1 #
+    kH = 1 #
+    
+    sL = 1
+    sC = 1 + k1*c1
+    sH = 1 + k2*c1
+    
+    composite_L = (dL / (kL*sL))
+    composite_C = (dCab / (kC*sC))
+    composite_H = (dHab / (kH*sH))
+    Math.sqrt((composite_L**2) + (composite_C**2) + (composite_H**2))
+  end
+  
+  def to_lab
+    r,g,b = [@r,@g,@b].collect { |v| 
+          if (v > 0.04045)
+            (((v + 0.055) / 1.055) ** 2.4) * 100
+          else
+            (v / 12.92) * 100
+          end
+         }
+    
+    # First convert to XYZ format
+    xyz = {
+          x: (r*0.4124 + g*0.3576 + b*0.1805), 
+          y: (r*0.2126 + g*0.7152 + b*0.0722),
+          z: (r*0.0193 + g*0.1192 + b*0.9505)
+          }
+    
+    # Normalize the XYZ
+    ref = [95.047, 100.00, 108.883]
+    x = xyz[:x] / ref[0]
+    y = xyz[:y] / ref[1]
+    z = xyz[:z] / ref[2]
+    # And now transform
+    x,y,z = [x,y,z].map { |t|
+              if (t > ((6/29)**3))
+                t ** (1.0/3)
+              else
+                ((1.0/3)*((29.0/6)**2) * t) + (4.0/29)
+              end
+            }
+    {L:((116 * y) - 16),
+     a:(500 * (x - y)),
+     b:(200 * (y - z))}
+  end
+  
+  ##############
 
   # Returns the red component of the colour in the normal 0 .. 255 range.
   def red
