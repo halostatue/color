@@ -305,18 +305,6 @@ module TestColor
       # If the match_from list is an empty array, it also returns nil
       assert_nil(Color::RGB::Red.closest_match([]))
     end
-    
-    def test_closest_match!
-      # It returns nil if it's not within the JND
-      match_from = [Color::RGB::Red, Color::RGB::Green, Color::RGB::Blue]
-      assert_nil(Color::RGB::Indigo.closest_match!(match_from))
-      # RGB::Green is 0,128,0, so we'll pick something VERY close to it, visually
-      jnd_green = Color::RGB.new(3,132,3)
-      assert_equal(jnd_green.closest_match!(match_from), Color::RGB::Green)
-      # And then something that's just barely out of the tolerance range
-      diff_green = Color::RGB.new(9,142,9)
-      assert_nil(diff_green.closest_match!(match_from))
-    end
 
     def test_add
       white = Color::RGB::Cyan + Color::RGB::Yellow

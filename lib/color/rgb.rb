@@ -357,7 +357,6 @@ class Color::RGB
   # closest_match
   # Returns the closest match from a provided array of possible colors
   # To do this, we must first get both XYZ and LAB values for the RGB 
-  
   def closest_match(color_list, threshold = 1000.0)
     return nil if (color_list.class != Array || color_list.empty?)
     return color_list[0] if color_list.count == 1
@@ -383,50 +382,64 @@ class Color::RGB
     best_match
   end
   
-  # closest_match!
-  # Bang-method for when you only want a close match with a JND from the
-  # seed color. 
-  def closest_match!(color_list)
-    closest_match(color_list, 2.3) # 2.3 is the Just Noticeable Difference
-  end
-  
+  # The Delta-E (CIE94) algorithm
+  # http://en.wikipedia.org/wiki/Color_difference#CIE94  
+  # There is a newer version, CIEDE2000, that uses slightly more 
+  # complicated math, but addresses "the perceptual uniformity issue" left
+  # lingering by the CIE94 algorithm.
+  # color_1 and color_2 are both L*a*b* hashes, rendered by to_lab
+  # Since our source is RGB, we use the "graphic arts" presets for
+  # k_L, K_1, and K_2
   def deltaE94(color_1, color_2)
-    k1 = 0.045
-    k2 = 0.015
-    
+    k1 = 0.045 # "graphic arts" weighting factor
+    k2 = 0.015 # 
+    kL = 1     # 
+    kC = 1     #
+    kH = 1     #
     l1 = color_1[:L]
     l2 = color_2[:L]
     a1 = color_1[:a]
     a2 = color_2[:a]
     b1 = color_1[:b]
     b2 = color_2[:b]
-    
+
+    # The variable names aren't exact because of Ruby constraints with
+    # capital letters and *s in variable names    
+    # Delta-L*
     dL = l1 - l2
-    da = a1 - a2
-    db = b1 - b2
-    
+    # C_1* and C_2*
     c1 = Math.sqrt((a1**2)+(b1**2))
     c2 = Math.sqrt((a2**2)+(b2**2))
+    # Delta-C_ab*
     dCab = c1 - c2
+    # Delta-a*
+    da = a1 - a2
+    # Delta-b*
+    db = b1 - b2
+    # Delta-H_ab*
     radical = (da**2) + (db**2) - (dCab**2)
-    
     dHab = (radical > 0) ? Math.sqrt(radical) : 0
-
-    kL = 1
-    kC = 1 #
-    kH = 1 #
     
+    
+    # S_L
     sL = 1
+    # S_C
     sC = 1 + k1*c1
+    # S_H
     sH = 1 + k2*c1
     
     composite_L = (dL / (kL*sL))
     composite_C = (dCab / (kC*sC))
     composite_H = (dHab / (kH*sH))
+    # This is the final Delta-E_94* formula
     Math.sqrt((composite_L**2) + (composite_C**2) + (composite_H**2))
   end
   
+  
+  # Convert RGB to L*a*b* format
   def to_lab
+    # Prep the RGB values to fit within the [0,1] interval:
+    # http://www.brucelindbloom.com/index.html?Equations.html
     r,g,b = [@r,@g,@b].collect { |v| 
           if (v > 0.04045)
             (((v + 0.055) / 1.055) ** 2.4) * 100
@@ -436,28 +449,38 @@ class Color::RGB
          }
     
     # First convert to XYZ format
+    # This transformation uses coefficients defined by the CIE XYZ matrix transformation
+    # http://www.cs.rit.edu/~ncs/color/t_convert.html#RGB to XYZ & XYZ to RGB
     xyz = {
-          x: (r*0.4124 + g*0.3576 + b*0.1805), 
-          y: (r*0.2126 + g*0.7152 + b*0.0722),
-          z: (r*0.0193 + g*0.1192 + b*0.9505)
+          :x => (r*0.4124 + g*0.3576 + b*0.1805), 
+          :y => (r*0.2126 + g*0.7152 + b*0.0722),
+          :z => (r*0.0193 + g*0.1192 + b*0.9505)
           }
     
-    # Normalize the XYZ
+    # Normalize the XYZ to the D65 Illuminant
+    # http://www.brucelindbloom.com/index.html?Equations.html
     ref = [95.047, 100.00, 108.883]
     x = xyz[:x] / ref[0]
     y = xyz[:y] / ref[1]
     z = xyz[:z] / ref[2]
+    
     # And now transform
+    # http://en.wikipedia.org/wiki/Lab_color_space#Forward_transformation
+    # There is a brief explanation there as far as the nature of the calculations,
+    # as well as a much nicer looking modeling of the algebra.
     x,y,z = [x,y,z].map { |t|
               if (t > ((6/29)**3))
                 t ** (1.0/3)
               else
+                # The 4/29 here is for when t = 0 (black)
+                # 4/29 * 116 = 16, and 16 - 16 = 0, which is the correct
+                # value for L* with black.
                 ((1.0/3)*((29.0/6)**2) * t) + (4.0/29)
               end
             }
-    {L:((116 * y) - 16),
-     a:(500 * (x - y)),
-     b:(200 * (y - z))}
+    {:L => ((116 * y) - 16),
+     :a => (500 * (x - y)),
+     :b => (200 * (y - z))}
   end
   
   ##############
