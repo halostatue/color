@@ -1,4 +1,10 @@
+.autotest
+.gemtest
 .hoerc
+.minitest.rb
+.travis.yml
+Contributing.rdoc
+Gemfile
 History.rdoc
 Licence.rdoc
 Manifest.txt
@@ -13,10 +19,12 @@ lib/color/palette.rb
 lib/color/palette/adobecolor.rb
 lib/color/palette/gimp.rb
 lib/color/palette/monocontrast.rb
-lib/color/rgb/colors.rb
 lib/color/rgb.rb
+lib/color/rgb/colors.rb
+lib/color/rgb/contrast.rb
 lib/color/rgb/metallic.rb
 lib/color/yiq.rb
+test/minitest_helper.rb
 test/test_adobecolor.rb
 test/test_cmyk.rb
 test/test_color.rb

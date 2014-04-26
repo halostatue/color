@@ -8,24 +8,20 @@ Hoe.plugin :email
 Hoe.plugin :gemspec2
 Hoe.plugin :git
 Hoe.plugin :minitest
-Hoe.plugin :rubyforge
 Hoe.plugin :travis
+Hoe.plugin :email unless ENV['CI'] or ENV['TRAVIS']
 
 spec = Hoe.spec 'color' do
-  developer('Austin Ziegler', 'austin@rubyforge.org')
+  developer('Austin Ziegler', 'halostatue@gmail.com')
   developer('Matt Lyon', 'matt@postsomnia.com')
 
+  license 'MIT'
+
   self.need_tar = true
-
-  # self.require_ruby_version '>= 1.9.2'
-
-  self.remote_rdoc_dir = '.'
-  self.rsync_args << ' --exclude=statsvn/'
 
   self.history_file = 'History.rdoc'
   self.readme_file = 'README.rdoc'
   self.extra_rdoc_files = FileList["*.rdoc"].to_a
-  self.licenses = ["MIT"]
 
   self.extra_dev_deps << ['hoe-doofus', '~> 1.0']
   self.extra_dev_deps << ['hoe-gemspec2', '~> 1.1']
