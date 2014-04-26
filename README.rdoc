@@ -15,28 +15,20 @@ named RGB colours (184 with spelling variations) that are commonly supported in
 HTML, SVG, and X11 applications. A technique for generating monochromatic
 contrasting palettes is also included.
 
-The capabilities of the Color library are limited to pure mathematical
-manipulation of the colours based on colour theory without reference to colour
-profiles (such as sRGB or Adobe RGB). For most purposes, when working with the
-RGB and HSL colours, this won't matter. However, some colour models (like CIE
-L*a*b*) are not supported because Color does not yet support colour profiles,
-giving no meaningful way to convert colours in absolute colour spaces (like
-L*a*b*, XYZ) to non-absolute colour spaces (like RGB).
+The Color library performs purely mathematical manipulation of the colours
+based on colour theory without reference to colour profiles (such as sRGB or
+Adobe RGB). For most purposes, when working with RGB and HSL colour spaces,
+this won't matter. Absolute colour spaces (like CIE L*a*b* and XYZ) and cannot
+be reliably converted to relative colour spaces (like RGB) without colour
+profiles.
 
-Color version 1.5.1 is mostly a maintenance release, fixing some bugs that may
-have been introduced with the previous release on Ruby 1.8.7. New features
-include an experimental contrast comparison method for RGB colours (found in
-lib/color/rgb/contrast.rb) provided by Dave Heitzman, and methods suggested by
-Thomas Sawyer based on the Spectrum library.
+Color version 1.6 primarily adds a colour matching method for RGB and
+experimental CIE L*a*b* and XYZ conversion methods for use with the colour
+matching method.
 
-Barring bugs introduced in this release, this will be the last version of color
-that supports Ruby 1.8, so make sure that your gem specification is set
-properly, to <tt>~> 1.5</tt> if that matters for your application.
-
-=== Note about color 1.5
-
-Color 1.5 was released before the documetation was complete and has been
-yanked.
+Barring bugs introduced in this release, this is the last version of color that
+supports Ruby 1.8, so make sure that your gem specification is set properly (to
+<tt>~> 1.6</tt>) if that matters for your application.
 
 == History
 

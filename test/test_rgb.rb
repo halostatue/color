@@ -277,6 +277,47 @@ module TestColor
                    Color::RGB::Cayenne.to_yiq)
     end
 
+    def test_to_lab
+      # Luminosity can be an absolute.
+      assert_in_delta(0.0, Color::RGB::Black.to_lab[:L], Color::COLOR_TOLERANCE)
+      assert_in_delta(100.0, Color::RGB::White.to_lab[:L], Color::COLOR_TOLERANCE)
+
+      # It's not really possible to have absolute
+      # numbers here because of how L*a*b* works, but
+      # negative/positive comparisons work
+      assert(Color::RGB::Green.to_lab[:a] < 0)
+      assert(Color::RGB::Magenta.to_lab[:a] > 0)
+      assert(Color::RGB::Blue.to_lab[:b] < 0)
+      assert(Color::RGB::Yellow.to_lab[:b] > 0)
+    end
+
+    def test_closest_match
+      # It should match Blue to Indigo (very simple match)
+      match_from = [Color::RGB::Red, Color::RGB::Green, Color::RGB::Blue]
+      assert_equal(Color::RGB::Blue, Color::RGB::Indigo.closest_match(match_from))
+      # But fails if using the :just_noticeable difference.
+      assert_nil(Color::RGB::Indigo.closest_match(match_from, :just_noticeable))
+
+      # Crimson & Firebrick are visually closer than DarkRed and Firebrick
+      # (more precise match)
+      match_from += [Color::RGB::DarkRed, Color::RGB::Crimson]
+      assert_equal(Color::RGB::Crimson,
+                   Color::RGB::Firebrick.closest_match(match_from))
+      # Specifying a threshold low enough will cause even that match to
+      # fail, though.
+      assert_nil(Color::RGB::Firebrick.closest_match(match_from, 8.0))
+      # If the match_from list is an empty array, it also returns nil
+      assert_nil(Color::RGB::Red.closest_match([]))
+
+      # RGB::Green is 0,128,0, so we'll pick something VERY close to it, visually
+      jnd_green = Color::RGB.new(3, 132, 3)
+      assert_equal(Color::RGB::Green,
+                   jnd_green.closest_match(match_from, :jnd))
+      # And then something that's just barely out of the tolerance range
+      diff_green = Color::RGB.new(9, 142, 9)
+      assert_nil(diff_green.closest_match(match_from, :jnd))
+    end
+
     def test_add
       white = Color::RGB::Cyan + Color::RGB::Yellow
       refute_nil(white)

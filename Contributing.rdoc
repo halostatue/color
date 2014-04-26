@@ -55,3 +55,6 @@ Here's the most direct way to get your work merged into the project:
 
 * Austin Ziegler created color-tools.
 * Matt Lyons created color.
+* Dave Heitzman (contrast comparison)
+* Thomas Sawyer
+* Aaron Hill (CIE94 colour matching)

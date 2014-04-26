@@ -1,3 +1,17 @@
+== 1.6 / 2014-MM-DD
+
+* Major enhancements:
+  * Aaron Hill (@armahillo) implemented the CIE Delta E 94 method by which an
+    RGB colour can be asked for the closest matching colour from a list of
+    provided colours. Fixes #5.
+  * To implement #closest_match and #delta_e94, conversion methods for sRGB to
+    XYZ and XYZ to L*a*b* space were implemented. These should be considered
+    experimental.
+
+* Tooling fixes:
+  * Ensured that the gem manifest was up-to-date. Fixes #4 reported by @boutil.
+    Thanks!
+
 == 1.5.1 / 2014-01-28
 
 * color 1.5 was a yanked release.
