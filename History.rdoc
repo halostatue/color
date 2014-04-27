@@ -1,8 +1,66 @@
-== Color 1.4.1 / 2010.02.03
+== 1.6 / 2014-MM-DD
+
+* Major enhancements:
+  * Aaron Hill (@armahillo) implemented the CIE Delta E 94 method by which an
+    RGB colour can be asked for the closest matching colour from a list of
+    provided colours. Fixes #5.
+  * To implement #closest_match and #delta_e94, conversion methods for sRGB to
+    XYZ and XYZ to L*a*b* space were implemented. These should be considered
+    experimental.
+
+* Tooling fixes:
+  * Ensured that the gem manifest was up-to-date. Fixes #4 reported by @boutil.
+    Thanks!
+
+== 1.5.1 / 2014-01-28
+
+* color 1.5 was a yanked release.
+
+* Minor enhancements:
+  * Added new methods to Color::RGB to make it so that the default defined
+    colours can be looked up by hex, name, or both.
+  * Added a method to Color::RGB to extract colours from text by hex, name, or
+    both.
+  * Added new common methods for colour names. Converted colours do not retain
+    names.
+  * Restructured color comparisons to use protocols instead of custom
+    implementations. This makes it easier to implement new colour classes. To
+    make this work, color classes should +include+ Color only need to implement
+    <tt>#coerce(other)</tt>, <tt>#to_a</tt>, and supported conversion methods
+    (e.g., <tt>#to_rgb</tt>).
+  * Added @daveheitzman’s initial implementation of an RGB contrast method as
+    an extension file: <tt>require 'color/rgb/contrast'</tt>. This method and
+    the value it returns should be considered experimental; it requires further
+    examination to ensure that the results produced are consistent with the
+    contrast comparisons used in Color::Palette::MonoContrast.
+  * Reducing duplicated code.
+
+* Bug Fixes:
+  * Moved +lib/color/rgb-colors.rb+ to +lib/color/rgb/colors.rb+. This should
+    have no impact in general.
+  * Improved the way that named colors are specified internally.
+  * Fixed bugs with Ruby 1.8.7 that may have been introduced in color 1.4.2.
+
+* Tooling Changes:
+  * Added simplecov for test coverage analysis.
+  * Modernized Travis CI support.
+
+== 1.4.2 / 2013-06-30
+
+Maintenance:
+* Modernized Hoe installation of Color, removing some dependencies.
+* Switched to Minitest.
+* Turned on Travis CI.
+* Started using Code Climate.
+* Small code formatting cleanup that touched pretty much every file.
+
+== 1.4.1 / 2010-02-03
+
 * Imported to github.
 * Converted to Hoe 2.5 spec format.
 
-== Color 1.4.0 / 2007.02.11
+== 1.4.0 / 2007-02-11
+
 * Merged Austin Ziegler's color-tools library (previously part of the Ruby
   PDF Tools project) with Matt Lyon's color library.
   - The HSL implementation from the Color class has been merged into
@@ -39,13 +97,15 @@
 * Added an Adobe Color swatch (Photoshop) palette reader,
   Color::Palette::AdobeColor (for .aco files only).
 
-== Color 0.1.0 / 2006.08.05
+== Color 0.1.0 / 2006-08-05
+
 * Added HSL (degree, percent, percent) interface.
 * Removed RGB instance variable; color is managed internally as HSL floating
   point.
 * Tests!
 
 == color-tools 1.3.0
+
 * Added new metallic colours suggested by Jim Freeze <jfn@freeze.org>. These
   are in the namespace Color::Metallic.
 * Colours that were defined in the Color namespace (e.g., Color::Red,
@@ -76,18 +136,10 @@
   conversions from YIQ to other colour spaces.
 
 == color-tools 1.1.0
+
 * Added color/palette/gimp to support the reading and use of GIMP color
   palettes.
 
 == color-tools 1.0.0
+
 * Initial release.
-
-== Copyright
-  Color
-  Colour Management with Ruby
-  http://rubyforge.org/projects/color
-
-  Licensed under a MIT-style licence. See Licence.txt in the main
-  distribution for full licensing information.
-
-  Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon

@@ -1,24 +1,12 @@
-#!/usr/bin/env ruby
-#--
-# Color
-# Colour management with Ruby
-# http://rubyforge.org/projects/color
-#   Version 1.5.0
-#
-# Licensed under a MIT-style licence. See Licence.txt in the main
-# distribution for full licensing information.
-#
-# Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon
-#++
+# -*- ruby encoding: utf-8 -*-
 
-$LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib") if __FILE__ == $0
-require 'test/unit'
 require 'color'
 require 'color/palette/adobecolor'
+require 'minitest_helper'
 
 module TestColor
   module TestPalette
-    class TestAdobeColor < Test::Unit::TestCase
+    class TestAdobeColor < Minitest::Test
       include Color::Palette
 
       # This is based on the Visibone Anglo-Centric Color Code List; this is
@@ -335,7 +323,7 @@ QwBNAFkASwAAAA0JxA2sEZQF3AAAAAsAVQBOAEsATgBPAFcATgAgADEAMwAA
 
       def test_version1
         v1 = VISIBONE_V1.unpack("m*")[0]
-        assert_nothing_raised { @aco = AdobeColor.new(v1) }
+        @aco = AdobeColor.new(v1)
         assert_equal(216, @aco.size)
         assert_equal(1, @aco.version)
         assert_equal({:rgb => 216}, @aco.statistics)
@@ -378,12 +366,10 @@ QwBNAFkASwAAAA0JxA2sEZQF3AAAAAsAVQBOAEsATgBPAFcATgAgADEAMwAA
       end
 
       def test_exercise
-        assert_nothing_raised do
-          File.open(@filename, "wb") do |f|
-            f.write EXERCISE.unpack("m*")[0]
-          end
+        File.open(@filename, "wb") do |f|
+          f.write EXERCISE.unpack("m*")[0]
         end
-        assert_nothing_raised { @aco = AdobeColor.from_file(@filename) }
+        @aco = AdobeColor.from_file(@filename)
         assert_equal(5, @aco.size)
         assert_equal(7, @aco.instance_variable_get(:@order).size)
       end
@@ -396,7 +382,7 @@ QwBNAFkASwAAAA0JxA2sEZQF3AAAAAsAVQBOAEsATgBPAFcATgAgADEAMwAA
 
       def test_each_name
         v2 = VISIBONE_V2.unpack("m*")[0]
-        assert_nothing_raised { @aco = AdobeColor.new(v2) }
+        @aco = AdobeColor.new(v2)
         assert_equal(216, @aco.size)
         assert_equal(2, @aco.version)
         @aco.each_name do |n, s|
@@ -408,7 +394,7 @@ QwBNAFkASwAAAA0JxA2sEZQF3AAAAAsAVQBOAEsATgBPAFcATgAgADEAMwAA
 
       def test_values_at
         v2 = VISIBONE_V2.unpack("m*")[0]
-        assert_nothing_raised { @aco = AdobeColor.new(v2) }
+        @aco = AdobeColor.new(v2)
         assert_equal(216, @aco.size)
         assert_equal(2, @aco.version)
         assert_equal([Color::RGB::White, Color::RGB.from_html("#ff0033")],

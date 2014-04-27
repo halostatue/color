@@ -1,8 +1,8 @@
-Color
-Colour management in Ruby
-http://rubyforge.org/projects/color/
+== Licence
 
-Copyright (c) 2005 - 2010 Austin Ziegler, Matt Lyon, and other contributors
+This software is available under an MIT-style licence.
+
+* Copyright 2005–2013 Austin Ziegler, Matt Lyon, and other contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

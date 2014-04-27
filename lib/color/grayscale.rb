@@ -1,57 +1,40 @@
-#--
-# Color
-# Colour management with Ruby
-# http://rubyforge.org/projects/color
-#   Version 1.4.1
-#
-# Licensed under a MIT-style licence. See Licence.txt in the main
-# distribution for full licensing information.
-#
-# Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon
-#++
-
 # A colour object representing shades of grey. Used primarily in PDF
 # document creation.
 class Color::GrayScale
+  include Color
+
   # The format of a DeviceGrey colour for PDF. In color-tools 2.0 this will
   # be removed from this package and added back as a modification by the
   # PDF::Writer package.
   PDF_FORMAT_STR  = "%.3f %s"
 
-  # Creates a greyscale colour object from fractional values 0..1.
-  #
-  #   Color::GreyScale.from_fraction(0.5)
-  def self.from_fraction(g = 0)
-    color = Color::GrayScale.new
-    color.g = g
-    color
-  end
+  class << self
+    # Creates a greyscale colour object from fractional values 0..1.
+    #
+    #   Color::GreyScale.from_fraction(0.5)
+    def from_fraction(g = 0, &block)
+      new(g, 1.0, &block)
+    end
 
-  # Creates a greyscale colour object from percentages 0..100.
-  #
-  #   Color::GrayScale.from_percent(50)
-  def self.from_percent(g = 0)
-    Color::GrayScale.new(g)
+    # Creates a greyscale colour object from percentages 0..100.
+    #
+    #   Color::GrayScale.from_percent(50)
+    def from_percent(g = 0, &block)
+      new(g, &block)
+    end
   end
 
   # Creates a greyscale colour object from percentages 0..100.
   #
   #   Color::GrayScale.new(50)
-  def initialize(g = 0)
-    @g = g / 100.0
+  def initialize(g = 0, radix = 100.0, &block) # :yields self:
+    @g = Color.normalize(g / radix)
+    block.call if block
   end
 
-  # Compares the other colour to this one. The other colour will be
-  # converted to GreyScale before comparison, so the comparison between a
-  # GreyScale colour and a non-GreyScale colour will be approximate and
-  # based on the other colour's #to_greyscale conversion. If there is no
-  # #to_greyscale conversion, this will raise an exception. This will report
-  # that two GreyScale values are equivalent if they are within
-  # COLOR_TOLERANCE of each other.
-  def ==(other)
-    other = other.to_grayscale
-    other.kind_of?(Color::GrayScale) and
-    ((@g - other.g).abs <= Color::COLOR_TOLERANCE)
+  # Coerces the other Color object to grayscale.
+  def coerce(other)
+    other.to_grayscale
   end
 
   # Present the colour as a DeviceGrey fill colour string for PDF. This will
@@ -182,10 +165,7 @@ class Color::GrayScale
   # The addition is done using the grayscale accessor methods to ensure a
   # valid colour in the result.
   def +(other)
-    other = other.to_grayscale
-    ng = self.dup
-    ng.g += other.g
-    ng
+    self.class.from_fraction(g + other.to_grayscale.g)
   end
 
   # Subtracts another colour to the current colour. The other colour will be
@@ -195,18 +175,23 @@ class Color::GrayScale
   # The subtraction is done using the grayscale accessor methods to ensure a
   # valid colour in the result.
   def -(other)
-    other = other.to_grayscale 
-    ng = self.dup
-    ng.g -= other.g
-    ng
+    self + (-other)
   end
 
   def inspect
     "Gray [%.2f%%]" % [ gray ]
   end
+
+  def to_a
+    [ g ]
+  end
+
+  def -@
+    gs = self.dup
+    gs.instance_variable_set(:@g, -g)
+    gs
+  end
 end
 
-module Color
-  # A synonym for Color::GrayScale.
-  GreyScale = GrayScale
-end
+# A synonym for Color::GrayScale.
+Color::GreyScale = Color::GrayScale

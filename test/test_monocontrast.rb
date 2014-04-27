@@ -1,24 +1,12 @@
-#!/usr/bin/env ruby
-#--
-# Color
-# Colour management with Ruby
-# http://rubyforge.org/projects/color
-#   Version 1.5.0
-#
-# Licensed under a MIT-style licence. See Licence.txt in the main
-# distribution for full licensing information.
-#
-# Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon
-#++
+# -*- ruby encoding: utf-8 -*-
 
-$LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib") if __FILE__ == $0
-require 'test/unit'
 require 'color'
 require 'color/palette/monocontrast'
+require 'minitest_helper'
 
 module TestColor
   module TestPalette
-    class TestMonoContrast < Test::Unit::TestCase
+    class TestMonoContrast < Minitest::Test
       include Color::Palette
       def setup
         @high = Color::RGB.from_html("#c9e3a6")
@@ -105,14 +93,14 @@ module TestColor
         assert_in_delta(MonoContrast::DEFAULT_MINIMUM_BRIGHTNESS_DIFF,
                         @mcp1.minimum_brightness_diff, Color::COLOR_TOLERANCE)
         mcps = @mcp1.dup
-        assert_nothing_raised { @mcp1.minimum_brightness_diff = 0.75 }
+        @mcp1.minimum_brightness_diff = 0.75
         assert_in_delta(0.75, @mcp1.minimum_brightness_diff, Color::COLOR_TOLERANCE)
-        assert_not_equal(@mcp1.foreground[-5], mcps.foreground[-5])
-        assert_nothing_raised { @mcp1.minimum_brightness_diff = 4.0 }
+        refute_equal(@mcp1.foreground[-5], mcps.foreground[-5])
+        @mcp1.minimum_brightness_diff = 4.0
         assert_in_delta(1, @mcp1.minimum_brightness_diff, Color::COLOR_TOLERANCE)
-        assert_nothing_raised { @mcp1.minimum_brightness_diff = -4.0 }
+        @mcp1.minimum_brightness_diff = -4.0
         assert_in_delta(0, @mcp1.minimum_brightness_diff, Color::COLOR_TOLERANCE)
-        assert_nothing_raised { @mcp1.minimum_brightness_diff = nil }
+        @mcp1.minimum_brightness_diff = nil
         assert_in_delta(MonoContrast::DEFAULT_MINIMUM_BRIGHTNESS_DIFF,
                         @mcp1.minimum_brightness_diff, Color::COLOR_TOLERANCE)
       end
@@ -126,14 +114,14 @@ module TestColor
         assert_in_delta(MonoContrast::DEFAULT_MINIMUM_COLOR_DIFF,
                         @mcp1.minimum_color_diff, Color::COLOR_TOLERANCE)
         mcps = @mcp1.dup
-        assert_nothing_raised { @mcp1.minimum_color_diff = 0.75 }
+        @mcp1.minimum_color_diff = 0.75
         assert_in_delta(0.75, @mcp1.minimum_color_diff, Color::COLOR_TOLERANCE)
-        assert_not_equal(@mcp1.foreground[-5], mcps.foreground[-5])
-        assert_nothing_raised { @mcp1.minimum_color_diff = 4.0 }
+        refute_equal(@mcp1.foreground[-5], mcps.foreground[-5])
+        @mcp1.minimum_color_diff = 4.0
         assert_in_delta(3, @mcp1.minimum_color_diff, Color::COLOR_TOLERANCE)
-        assert_nothing_raised { @mcp1.minimum_color_diff = -4.0 }
+        @mcp1.minimum_color_diff = -4.0
         assert_in_delta(0, @mcp1.minimum_color_diff, Color::COLOR_TOLERANCE)
-        assert_nothing_raised { @mcp1.minimum_color_diff = nil }
+        @mcp1.minimum_color_diff = nil
         assert_in_delta(MonoContrast::DEFAULT_MINIMUM_COLOR_DIFF,
                         @mcp1.minimum_color_diff, Color::COLOR_TOLERANCE)
       end

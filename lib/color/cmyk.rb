@@ -1,70 +1,44 @@
-#--
-# Color
-# Colour management with Ruby
-# http://rubyforge.org/projects/color
-#   Version 1.4.1
-#
-# Licensed under a MIT-style licence. See Licence.txt in the main
-# distribution for full licensing information.
-#
-# Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon
-#++
-
 # An CMYK colour object. CMYK (cyan, magenta, yellow, and black) colours are
 # based on additive percentages of ink. A CMYK colour of (0.3, 0, 0.8, 0.3)
 # would be mixed from 30% cyan, 0% magenta, 80% yellow, and 30% black.
 # Primarily used in four-colour printing processes.
 class Color::CMYK
+  include Color
+
   # The format of a DeviceCMYK colour for PDF. In color-tools 2.0 this will
   # be removed from this package and added back as a modification by the
   # PDF::Writer package.
   PDF_FORMAT_STR = "%.3f %.3f %.3f %.3f %s"
 
-  # Compares the other colour to this one. The other colour will be
-  # converted to CMYK before comparison, so the comparison between a CMYK
-  # colour and a non-CMYK colour will be approximate and based on the other
-  # colour's #to_cmyk conversion. If there is no #to_cmyk conversion, this
-  # will raise an exception. This will report that two CMYK colours are
-  # equivalent if all component values are within COLOR_TOLERANCE of each
-  # other.
-  def ==(other)
-    other = other.to_cmyk
-    other.kind_of?(Color::CMYK) and
-    ((@c - other.c).abs <= Color::COLOR_TOLERANCE) and
-    ((@m - other.m).abs <= Color::COLOR_TOLERANCE) and
-    ((@y - other.y).abs <= Color::COLOR_TOLERANCE) and
-    ((@k - other.k).abs <= Color::COLOR_TOLERANCE)
+  # Coerces the other Color object into CMYK.
+  def coerce(other)
+    other.to_cmyk
   end
 
-  # Creates a CMYK colour object from fractional values 0..1.
-  #
-  #   Color::CMYK.from_fraction(0.3, 0, 0.8, 0.3)
-  def self.from_fraction(c = 0, m = 0, y = 0, k = 0)
-    colour = Color::CMYK.new
-    colour.c = c
-    colour.m = m
-    colour.y = y
-    colour.k = k
-    colour
+  class << self
+    # Creates a CMYK colour object from fractional values 0..1.
+    #
+    #   Color::CMYK.from_fraction(0.3, 0, 0.8, 0.3)
+    def from_fraction(c = 0, m = 0, y = 0, k = 0, &block)
+      new(c, m, y, k, 1.0, &block)
+    end
+
+    # Creates a CMYK colour object from percentages. Internally, the colour is
+    # managed as fractional values 0..1.
+    #
+    #   Color::CMYK.new(30, 0, 80, 30)
+    def from_percent(c = 0, m = 0, y = 0, k = 0, &block)
+      new(c, m, y, k, &block)
+    end
   end
 
   # Creates a CMYK colour object from percentages. Internally, the colour is
   # managed as fractional values 0..1.
   #
   #   Color::CMYK.new(30, 0, 80, 30)
-  def self.from_percent(c = 0, m = 0, y = 0, k = 0)
-    Color::CMYK.new(c, m, y, k)
-  end
-
-  # Creates a CMYK colour object from percentages. Internally, the colour is
-  # managed as fractional values 0..1.
-  #
-  #   Color::CMYK.new(30, 0, 80, 30)
-  def initialize(c = 0, m = 0, y = 0, k = 0)
-    @c = c / 100.0
-    @m = m / 100.0
-    @y = y / 100.0
-    @k = k / 100.0
+  def initialize(c = 0, m = 0, y = 0, k = 0, radix = 100.0, &block) # :yields self:
+    @c, @m, @y, @k = [ c, m, y, k ].map { |v| Color.normalize(v / radix) }
+    block.call(self) if block
   end
 
   # Present the colour as a DeviceCMYK fill colour string for PDF. This will
@@ -150,15 +124,10 @@ class Color::CMYK
   # profiles.
   def to_rgb(use_adobe_method = false)
     if use_adobe_method
-      r = 1.0 - [1.0, @c + @k].min
-      g = 1.0 - [1.0, @m + @k].min
-      b = 1.0 - [1.0, @y + @k].min
+      Color::RGB.from_fraction(*adobe_cmyk_rgb)
     else
-      r = 1.0 - (@c.to_f * (1.0 - @k.to_f) + @k.to_f)
-      g = 1.0 - (@m.to_f * (1.0 - @k.to_f) + @k.to_f)
-      b = 1.0 - (@y.to_f * (1.0 - @k.to_f) + @k.to_f)
+      Color::RGB.from_fraction(*standard_cmyk_rgb)
     end
-    Color::RGB.from_fraction(r, g, b)
   end
 
   # Converts the CMYK colour to a single greyscale value. There are
@@ -275,5 +244,20 @@ class Color::CMYK
   # 0.0 .. 1.0.
   def k=(kk)
     @k = Color.normalize(kk)
+  end
+
+  def to_a
+    [ c, m, y, k ]
+  end
+
+  private
+  # Implements the Adobe PDF conversion of CMYK to RGB.
+  def adobe_cmyk_rgb
+    [ @c, @m, @y ].map { |v| 1.0 - [ 1.0, v + @k ].min }
+  end
+
+  # Implements the standard conversion of CMYK to RGB.
+  def standard_cmyk_rgb
+    [ @c, @m, @y ].map { |v| 1.0 - (v * (1.0 - k) + k) }
   end
 end

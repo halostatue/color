@@ -1,15 +1,3 @@
-#--
-# Color
-# Colour management with Ruby
-# http://rubyforge.org/projects/color
-#   Version 1.4.1
-#
-# Licensed under a MIT-style licence. See Licence.txt in the main
-# distribution for full licensing information.
-#
-# Copyright (c) 2005 - 2010 Austin Ziegler and Matt Lyon
-#++
-
 require 'color/palette'
 
 # Generates a monochromatic constrasting colour palette for background and
@@ -25,7 +13,7 @@ require 'color/palette'
 # against the background.
 class Color::Palette::MonoContrast
   # Hash of CSS background colour values.
-  # 
+  #
   # This is always 11 values:
   #
   # 0::       The starting colour.
@@ -33,7 +21,7 @@ class Color::Palette::MonoContrast
   # -1..-5::  Darker colours.
   attr_reader :background
   # Hash of CSS foreground colour values.
-  # 
+  #
   # This is always 11 values:
   #
   # 0::       The starting colour.
@@ -48,19 +36,17 @@ class Color::Palette::MonoContrast
   # the palette based on the base colours. The default value for this is 125
   # / 255.0. If this value is set to +nil+, it will be restored to the
   # default.
-  attr_accessor :minimum_brightness_diff
-  remove_method :minimum_brightness_diff= ;
+  attr_reader :minimum_brightness_diff
   def minimum_brightness_diff=(bd) #:nodoc:
-    if bd.nil?
-      @minimum_brightness_diff = DEFAULT_MINIMUM_BRIGHTNESS_DIFF
-    elsif bd > 1.0
-      @minimum_brightness_diff = 1.0
-    elsif bd < 0.0
-      @minimum_brightness_diff = 0.0
-    else
-      @minimum_brightness_diff = bd
-    end
-      
+    @minimum_brightness_diff = if bd.nil?
+                                 DEFAULT_MINIMUM_BRIGHTNESS_DIFF
+                               elsif bd > 1.0
+                                 1.0
+                               elsif bd < 0.0
+                                 0.0
+                               else
+                                 bd
+                               end
     regenerate(@background[0], @foreground[0])
   end
 
@@ -69,18 +55,17 @@ class Color::Palette::MonoContrast
   # The minimum colour difference between the background and the foreground,
   # and must be between 0..3. Setting this value will regenerate the palette
   # based on the base colours. The default value for this is 500 / 255.0.
-  attr_accessor :minimum_color_diff
-  remove_method :minimum_color_diff= ;
-  def minimum_color_diff=(cd) #:noco:
-    if cd.nil?
-      @minimum_color_diff = DEFAULT_MINIMUM_COLOR_DIFF
-    elsif cd > 3.0
-      @minimum_color_diff = 3.0
-    elsif cd < 0.0
-      @minimum_color_diff = 0.0
-    else
-      @minimum_color_diff = cd
-    end
+  attr_reader :minimum_color_diff
+  def minimum_color_diff=(cd) #:nodoc:
+    @minimum_color_diff = if cd.nil?
+                            DEFAULT_MINIMUM_COLOR_DIFF
+                          elsif cd > 3.0
+                            3.0
+                          elsif cd < 0.0
+                            0.0
+                          else
+                            cd
+                          end
     regenerate(@background[0], @foreground[0])
   end
 
@@ -88,7 +73,6 @@ class Color::Palette::MonoContrast
   def initialize(background, foreground = nil)
     @minimum_brightness_diff = DEFAULT_MINIMUM_BRIGHTNESS_DIFF
     @minimum_color_diff = DEFAULT_MINIMUM_COLOR_DIFF
-
     regenerate(background, foreground)
   end
 
@@ -160,7 +144,7 @@ class Color::Palette::MonoContrast
 
   # Returns the absolute difference between the brightness levels of two
   # colours. This will be a decimal value between 0 and 1. W3C accessibility
-  # guidelines for colour contrast[http://www.w3.org/TR/AERT#color-contrast]
+  # guidelines for {colour contrast}[http://www.w3.org/TR/AERT#color-contrast]
   # suggest that this value be at least approximately 0.49 (125 / 255.0) for
   # proper contrast.
   def brightness_diff(c1, c2)
@@ -168,8 +152,8 @@ class Color::Palette::MonoContrast
   end
 
   # Returns the contrast between to colours, a decimal value between 0 and
-  # 3. W3C accessibility guidelines for colour
-  # contrast[http://www.w3.org/TR/AERT#color-contrast] suggest that this
+  # 3. W3C accessibility guidelines for {colour
+  # contrast}[http://www.w3.org/TR/AERT#color-contrast] suggest that this
   # value be at least approximately 1.96 (500 / 255.0) for proper contrast.
   def color_diff(c1, c2)
     r = (c1.r - c2.r).abs
