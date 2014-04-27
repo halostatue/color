@@ -101,8 +101,9 @@ class Color::RGB
         end
       }
     end
-  end
+  end #class methods 
 
+  public 
   # Coerces the other Color object into RGB.
   def coerce(other)
     other.to_rgb
@@ -659,14 +660,6 @@ class Color::RGB
     rgb
   end
 
-  private
-  def normalize_percent(percent)
-    percent /= 100.0
-    percent += 1.0
-    percent  = [ percent, 2.0 ].min
-    percent  = [ 0.0, percent ].max
-    percent
-  end
   # Outputs how much contrast this color has with another rgb color. Computes the same
   # regardless of which one is considered foreground. 
   # If the other color does not have a to_rgb method, this will throw an exception
@@ -680,12 +673,10 @@ class Color::RGB
     end 
     #the following numbers have been set with some care.
     return ( 
-    self.diff_bri(other_rgb)*0.65 + 
-    self.diff_hue(other_rgb)*0.20 + 
-    self.diff_lum(other_rgb)*0.15 ) 
+    diff_bri(other_rgb)*0.65 + 
+    diff_hue(other_rgb)*0.20 + 
+    diff_lum(other_rgb)*0.15 ) 
   end
-
-  
   #provides the luminosity difference between two rbg vals 
   def diff_lum(rgb)
     rgb=rgb.to_rgb
@@ -723,6 +714,17 @@ class Color::RGB
            (self.g-rgb.g).abs +
            (self.b-rgb.b).abs)/3 
   end 
+
+
+  private
+  def normalize_percent(percent)
+    percent /= 100.0
+    percent += 1.0
+    percent  = [ percent, 2.0 ].min
+    percent  = [ 0.0, percent ].max
+    percent
+  end
+
 
 end
 
