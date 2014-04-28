@@ -30,16 +30,36 @@ spec = Hoe.spec 'color' do
   self.extra_dev_deps << ['hoe-travis', '~> 1.2']
   self.extra_dev_deps << ['minitest', '~> 5.0']
   self.extra_dev_deps << ['rake', '~> 10.0']
+
+  if RUBY_VERSION >= '1.9' and (ENV['CI'] or ENV['TRAVIS'])
+    self.extra_dev_deps << ['simplecov', '~> 0.7']
+    self.extra_dev_deps << ['coveralls', '~> 0.7']
+  end
 end
 
-namespace :test do
-  desc "Runs test coverage. Only works Ruby 1.9+ and assumes 'simplecov' is installed."
-  task :coverage do
-    spec.test_prelude = [
-      'require "simplecov"',
-      'SimpleCov.start("test_frameworks") { command_name "Minitest" }',
-      'gem "minitest"'
-    ].join('; ')
-    Rake::Task['test'].execute
+if RUBY_VERSION >= '1.9'
+  namespace :test do
+    desc "Submit test coverage to Coveralls"
+    task :coveralls do
+      spec.test_prelude = [
+        'require "psych"',
+        'require "simplecov"',
+        'require "coveralls"',
+        'SimpleCov.formatter = Coveralls::SimpleCov::Formatter',
+      ].join('; ')
+      Rake::Task['test'].execute
+    end
+
+    desc "Runs test coverage. Only works Ruby 1.9+ and assumes 'simplecov' is installed."
+    task :coverage do
+      spec.test_prelude = [
+        'require "simplecov"',
+        'SimpleCov.start("test_frameworks") { command_name "Minitest" }',
+        'gem "minitest"'
+      ].join('; ')
+      Rake::Task['test'].execute
+    end
   end
+
+  Rake::Task['travis'].prerequisites.replace(%w(test:coveralls))
 end
