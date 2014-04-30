@@ -287,7 +287,7 @@ module TestColor
       # negative/positive comparisons work
       assert(Color::RGB::Green.to_lab.a < 0)
       assert(Color::RGB::Magenta.to_lab.a > 0)
-      assert(Color::RGB::Blue.to_lab.b< 0)
+      assert(Color::RGB::Blue.to_lab.b < 0)
       assert(Color::RGB::Yellow.to_lab.b > 0)
 
       # an rgb color converted to lab and to rgb from lab will still have the same r,g,b values
@@ -414,42 +414,45 @@ module TestColor
       assert_equal("RGB [#ffffff]", Color::RGB::White.inspect)
     end
 
-    def test_delta_e2000
+    def test_delta_e2000_lab
       # test data:
       # http://www.ece.rochester.edu/~gsharma/ciede2000/
       # http://www.ece.rochester.edu/~gsharma/ciede2000/dataNprograms/CIEDE2000.xls
 
       # this will also test rad_to_deg and deg_to_rad by association
-      test_colors=[]
-      File.read('test/test_colors').each_line do |line|
+      test_colors = []
+      File.read("test/test_colors").each_line do |line|
         test_colors << line.split(" ").map(&:to_f)
       end
-      correct_answers=[]
+      correct_answers = []
       File.read("test/test_color_correct_results").each_line do |line|
         correct_answers << line.to_f
       end
       test_colors.each do |nums|
-        @ind ||= -1 ; @ind += 1
-        c1 = Color::LAB.new nums[0], nums[1], nums[2]
-        c2 = Color::LAB.new nums[3], nums[4], nums[5]
+        @ind ||= -1
+        @ind += 1
+        c1 = {L: nums[0], a: nums[1], b: nums[2]}
+        c2 = {L: nums[3], a: nums[4], b: nums[5]}
+        c = Color::RGB.new
         answer = correct_answers[@ind]
-        e2000=Color::LAB.delta_e2000(c1,c2)
-        assert_equal(Color::LAB.delta_e2000(c1, c2), Color::LAB.delta_e2000(c2, c1))
+        # puts "e2000 c1=#{c1.inspect}, c2=#{c2.inspect}, answer=#{answer}"
+        e2000 = c.delta_e2000_lab(c1, c2)
+        assert_equal(c.delta_e2000_lab(c1, c2), c.delta_e2000_lab(c2, c1))
         assert_in_delta 0.0001, e2000, answer
       end
     end
 
     def test_contrast
-      data=[
-        [[171,215,103], [195,108,197], 0.18117],
-        [[223,133,234], [64,160,101], 0.229530],
-        [[7,30,49], [37,225,31], 0.377786],
-        [[65,119,130], [70,63,212], 0.10323],
-        [[211,77,232], [5,113,139], 0.233503],
-        [[166,185,41], [87,193,137], 0.07275],
-        [[1,120,37], [195,70,33], 0.1474640],
-        [[99,206,21], [228,204,155], 0.22611],
-        [[15,18,41], [90,202,208], 0.552434]
+      data = [
+        [[171, 215, 103], [195, 108, 197], 0.18117],
+        [[223, 133, 234], [64, 160, 101], 0.229530],
+        [[7, 30, 49], [37, 225, 31], 0.377786],
+        [[65, 119, 130], [70, 63, 212], 0.10323],
+        [[211, 77, 232], [5, 113, 139], 0.233503],
+        [[166, 185, 41], [87, 193, 137], 0.07275],
+        [[1, 120, 37], [195, 70, 33], 0.1474640],
+        [[99, 206, 21], [228, 204, 155], 0.22611],
+        [[15, 18, 41], [90, 202, 208], 0.552434]
       ]
       data.each do |row|
         c1 = Color::RGB.new(row[0][0], row[0][1], row[0][2])
