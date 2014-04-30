@@ -437,6 +437,104 @@ class Color::RGB
     Math.sqrt(composite_L + composite_C + composite_H)
   end
 
+  def rad_to_deg(rad)
+    @@_ratio ||= 180 /(Math::PI)
+    if rad < 0
+      r=rad % -Math::PI
+      r = (Math::PI + r)*@@_ratio + 180
+    else
+      r=rad % Math::PI
+      r = r * @@_ratio
+    end
+  end
+
+  def deg_to_rad(deg)
+    deg = ( (deg % 360) + 360 ) % 360
+    if deg >= 180
+      Math::PI * (deg - 360) / 180.0
+    else
+      Math::PI * deg / 180.0
+    end
+  end
+
+  def delta_e2000(rgb1,rgb2) # l1 and l2 should be of type Color::RGB
+    color_1 = rgb1.to_lab
+    color_2 = rgb2.to_lab
+    delta_e2000_lab(color_1,color_2)
+  end
+
+  # http://www.brucelindbloom.com/index.html?Eqn_DeltaE_CIE2000.html
+  # www.ece.rochester.edu/~gsharma/ciede2000/ciede2000noteCRNA.pdf
+  def delta_e2000_lab(color_1,color_2) # l1 and l2 should be of type Color::RGB
+    @@tf7 ||= 25**7
+    @@twopi ||= Math::PI * 2
+    @@halfpi ||= Math::PI / 2
+    @@thirty ||=  Math::PI * 30/180.0
+    @@six ||= Math::PI * 6 / 180.0
+    @@sixty_three ||=  Math::PI * 63.0/180
+    @@two_seventy_five ||= (275.0 - 360) * Math::PI
+
+    k_C = k_H = k_L = 1
+    l_1, a_1, b_1 = color_1.values_at(:L, :a, :b)
+    l_2, a_2, b_2 = color_2.values_at(:L, :a, :b)
+    l_bar_prime = (l_1 + l_2) / 2
+    c_1 = Math.sqrt((a_1 ** 2) + (b_1 ** 2))
+    c_2 = Math.sqrt((a_2 ** 2) + (b_2 ** 2))
+    c_bar = (c_1 + c_2)/2.0
+
+    c_bar7=c_bar**7.0
+    g = 0.5*(1-Math.sqrt( c_bar7.to_f/( c_bar7 + @@tf7 ) ) )
+    a1_prime = a_1 * (1 + g)
+    a2_prime = a_2 * (1 + g)
+    c1_prime = Math.sqrt(a1_prime**2 + b_1**2 )
+    c2_prime = Math.sqrt(a2_prime**2 + b_2**2 )
+    c_bar_prime = (c1_prime + c2_prime)/2.0
+    h1_prime =
+    if a1_prime == 0 && b_1 == 0
+      0.0
+    else
+      Math.atan2(b_1,a1_prime)
+    end
+    h2_prime =
+    if a2_prime == 0 && b_2 == 0
+      0.0
+    else
+      Math.atan2(b_2,a2_prime)
+    end
+    h_diff = (h1_prime - h2_prime).abs
+    h_bar_prime = h_diff > Math::PI ? (h2_prime + h1_prime + @@twopi) / 2 : ( h2_prime + h1_prime ) / 2
+
+    t = 1 - 0.17*Math.cos(h_bar_prime - @@thirty) +
+      0.24 * Math.cos( 2*h_bar_prime ) +
+      0.32 * Math.cos(3*h_bar_prime + @@six) -
+      0.2*Math.cos(4*h_bar_prime - @@sixty_three )
+
+    delta_h_prime=
+      if (c_1 * c_2) == 0
+        0
+      elsif h_diff <= Math::PI
+        h2_prime - h1_prime
+      elsif (h2_prime-h1_prime) > Math::PI # && h2_prime > h1_prime
+        h2_prime - h1_prime - @@twopi
+      elsif (h2_prime-h1_prime) <= Math::PI #&& h2_prime <= h1_prime
+        h2_prime - h1_prime + @@twopi
+      end
+    delta_l_prime = l_2 - l_1
+    delta_c_prime = c2_prime - c1_prime
+    delta_H_prime = ( 2*Math.sqrt(c1_prime * c2_prime)*Math.sin(delta_h_prime / 2.0) )
+    s_L = 1 + (0.015*(l_bar_prime-50)**2)/( Math.sqrt(20+(l_bar_prime-50.0)**2) )
+    s_C = 1 + 0.045 * c_bar_prime
+    s_H = 1 + 0.015 * c_bar_prime * t
+    delta_theta = 30 * ( Math.exp( -( ( rad_to_deg(h_bar_prime) - 275.0 )/25.0)**2 ) )
+    cbp7 = c_bar_prime**7
+    r_C =2 * Math.sqrt( cbp7 / (cbp7 + @@tf7 ) )
+    r_T = r_C*-Math.sin(2* deg_to_rad( delta_theta) )
+    Math.sqrt( (delta_l_prime / (k_L * s_L ) )**2 +
+               (delta_c_prime / ( k_C*s_C ) )**2 +
+               (delta_H_prime / (k_H*s_H) )**2 +
+               r_T*(delta_c_prime/(k_C*s_C))*(delta_H_prime/( k_H*s_H) ))
+  end
+
   # Returns the red component of the colour in the normal 0 .. 255 range.
   def red
     @r * 255.0
@@ -563,15 +661,14 @@ class Color::RGB
     rgb
   end
 
+
   # Outputs how much contrast this color has with another rgb color. Computes the same
   # regardless of which one is considered foreground.
   # If the other color does not have a to_rgb method, this will throw an exception
   # anything over about 0.22 should have a high likelihood of begin legible.
   # otherwise, to be safe go with something > 0.3
   def contrast(other_rgb)
-    if other_rgb.respond_to? :to_rgb then
-      c2 = other_rgb.to_rgb
-    else
+    if !other_rgb.respond_to?( :to_rgb ) then
       raise "rgb.rb unable to calculate contrast with object #{other_rgb.to_s}"
     end
     #the following numbers have been set with some care.
@@ -619,7 +716,6 @@ class Color::RGB
            (self.b-rgb.b).abs)/3
   end
 
-
   private
   def normalize_percent(percent)
     percent /= 100.0
@@ -628,8 +724,6 @@ class Color::RGB
     percent  = [ 0.0, percent ].max
     percent
   end
-
-
 end
 
 class << Color::RGB
@@ -767,3 +861,6 @@ class << Color::RGB
 end
 
 require 'color/rgb/colors'
+
+
+
