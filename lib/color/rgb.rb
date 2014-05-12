@@ -674,7 +674,8 @@ class Color::RGB
     (
     diff_bri(other_rgb) * 0.65 +
     diff_hue(other_rgb) * 0.20 +
-    diff_lum(other_rgb) * 0.15)
+    diff_lum(other_rgb) * 0.15
+  )
   end
 
   # provides the luminosity difference between two rbg vals
@@ -835,9 +836,7 @@ class << Color::RGB
     if used.length < names.length
       raise ArgumentError, "#{names.join(", ")} already defined in #{mod}"
     end
-
     names.each { |n| mod.const_set(n, rgb) }
-
     rgb.names = names
     rgb.names.each { |n| __by_name[n] = rgb }
     __by_hex[rgb.hex] = rgb
