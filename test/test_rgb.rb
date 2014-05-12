@@ -414,7 +414,7 @@ module TestColor
       assert_equal("RGB [#ffffff]", Color::RGB::White.inspect)
     end
 
-    def test_delta_e2000_lab
+    def test_delta_e2000
       # test data:
       # http://www.ece.rochester.edu/~gsharma/ciede2000/
       # http://www.ece.rochester.edu/~gsharma/ciede2000/dataNprograms/CIEDE2000.xls
@@ -430,14 +430,12 @@ module TestColor
       end
       test_colors.each do |nums|
         @ind ||= -1 ; @ind += 1
-        c1={:L=> nums[0], :a=>nums[1], :b=>nums[2] }
-        c2={:L=> nums[3], :a=>nums[4], :b=>nums[5] }
-        c=Color::RGB.new
+        c1 = Color::LAB.new nums[0], nums[1], nums[2]
+        c2 = Color::LAB.new nums[3], nums[4], nums[5]
         answer = correct_answers[@ind]
-        # puts "e2000 c1=#{c1.inspect}, c2=#{c2.inspect}, answer=#{answer}"
-        e2000=c.delta_e2000_lab(c1,c2)
-        assert_equal(c.delta_e2000_lab(c1,c2),c.delta_e2000_lab(c2,c1))
-        assert_in_delta 0.0001 , e2000 , answer
+        e2000=Color::LAB.delta_e2000(c1,c2)
+        assert_equal(Color::LAB.delta_e2000(c1, c2), Color::LAB.delta_e2000(c2, c1))
+        assert_in_delta 0.0001, e2000, answer
       end
     end
 
@@ -454,10 +452,10 @@ module TestColor
         [[15,18,41], [90,202,208], 0.552434]
       ]
       data.each do |row|
-        c1=Color::RGB.new( row[0][0], row[0][1] , row[0][2] )
-        c2=Color::RGB.new( row[1][0], row[1][1] , row[1][2] )
-        assert_in_delta(0.0001, c1.contrast(c2), row[2] )
-        assert_equal( c1.contrast(c2), c2.contrast(c1) )
+        c1 = Color::RGB.new(row[0][0], row[0][1], row[0][2])
+        c2 = Color::RGB.new(row[1][0], row[1][1], row[1][2])
+        assert_in_delta(0.0001, c1.contrast(c2), row[2])
+        assert_equal(c1.contrast(c2), c2.contrast(c1))
       end
     end
   end

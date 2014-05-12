@@ -19,6 +19,8 @@ module Color
 
   class YIQ; end
 
+  class LAB; end
+
   # The maximum "resolution" for colour math; if any value is less than or
   # equal to this value, it is treated as zero.
   COLOR_EPSILON = 1e-5
@@ -69,10 +71,10 @@ module Color
   #   rgb.scale(0, 0.5, 2) -> red = 0, green / 2, blue * 2
   def scale(*factors)
     if factors.size == 1
-      map {|v| v * factors.first }
+      map { |v| v * factors.first }
     else
-      new_components = to_a.zip(factors).map {|c, f| c * f }
-      self.class.new *new_components, 1
+      new_components = to_a.zip(factors).map { |c, f| c * f }
+      self.class.new(*new_components, 1)
     end
   end
 end

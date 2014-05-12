@@ -294,28 +294,24 @@ class Color::RGB
   # provided colours. Returns +nil+ if +color_list+ is empty or if there is
   # no colour within the +threshold_distance+.
   #
-  # +threshold_distance+ is used to determine the minimum colour distance
-  # permitted. Uses the CIE Delta E 1994 algorithm (CIE94) to find near
-  # matches based on perceived visual colour. The default value (1000.0) is
-  # an arbitrarily large number. The values <tt>:jnd</tt> and
-  # <tt>:just_noticeable</tt> may be passed as the +threshold_distance+ to
-  # use the value <tt>2.3</tt>.
-  def closest_match(color_list, threshold_distance = 1000.0)
+  # threshhold_distance removed to instead allow choice of algorithms used to calculate the contrast
+  # between each color.
+  def closest_match(color_list, algorithm = :delta_e94, options = {})
     color_list = [color_list].flatten(1)
     return nil if color_list.empty?
 
-    threshold_distance = case threshold_distance
-    when :jnd, :just_noticeable
-      2.3
-    else
-      threshold_distance.to_f
-    end
-    lab = to_lab
-    closest_distance = threshold_distance
+    # threshold_distance = case threshold_distance
+    #                      when :jnd, :just_noticeable
+    #                        2.3
+    #                      else
+    #                        threshold_distance.to_f
+    #                      end
+    # lab = to_lab
+    closest_distance = 999_999.9
     best_match = nil
 
     color_list.each do |c|
-      distance = delta_e94(lab, c.to_lab)
+      distance = contrast(c, algorithm) # delta_e94(lab, c.to_lab)
       if distance < closest_distance
         closest_distance = distance
         best_match = c
@@ -643,12 +639,13 @@ class Color::RGB
     if !other_rgb.respond_to?(:to_rgb)
       raise "rgb.rb unable to calculate contrast with object #{other_rgb}"
     end
+
     # the following numbers have been set with some care.
     (
-    diff_bri(other_rgb) * 0.65 +
-    diff_hue(other_rgb) * 0.20 +
-    diff_lum(other_rgb) * 0.15
-  )
+     diff_bri(other_rgb) * 0.65 +
+     diff_hue(other_rgb) * 0.20 +
+     diff_lum(other_rgb) * 0.15
+   )
   end
 
   # provides the luminosity difference between two rbg vals
@@ -839,3 +836,5 @@ class << Color::RGB
 end
 
 require "color/rgb/colors"
+require "color/rgb/metallic"
+require "color/rgb/contrast"
