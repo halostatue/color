@@ -210,6 +210,7 @@ class Color::RGB
   # Currently only the sRGB colour space is supported and defaults to using
   # a D65 reference white.
   def to_lab(color_space = :sRGB, reference_white = [ 95.047, 100.00, 108.883 ])
+    
     xyz = to_xyz
 
     # Calculate the ratio of the XYZ values to the reference white.
@@ -238,11 +239,13 @@ class Color::RGB
 #       ((1.0/3)*((29.0/6)**2) * t) + (4.0/29)
       end
     }
-    {
-      :L => ((116 * fy) - 16),
-      :a => (500 * (fx - fy)),
-      :b => (200 * (fy - fz))
-    }
+
+    Color::LAB.new( (116 * fy) - 16 , 500 * (fx - fy) , 200 * (fy - fz) )    
+    # {
+    #   :L => ((116 * fy) - 16),
+    #   :a => (500 * (fx - fy)),
+    #   :b => (200 * (fy - fz))
+    # }
   end
 
   # Mix the RGB hue with White so that the RGB hue is the specified
@@ -333,28 +336,24 @@ class Color::RGB
   # provided colours. Returns +nil+ if +color_list+ is empty or if there is
   # no colour within the +threshold_distance+.
   #
-  # +threshold_distance+ is used to determine the minimum colour distance
-  # permitted. Uses the CIE Delta E 1994 algorithm (CIE94) to find near
-  # matches based on perceived visual colour. The default value (1000.0) is
-  # an arbitrarily large number. The values <tt>:jnd</tt> and
-  # <tt>:just_noticeable</tt> may be passed as the +threshold_distance+ to
-  # use the value <tt>2.3</tt>.
-  def closest_match(color_list, threshold_distance = 1000.0)
+  # threshhold_distance removed to instead allow choice of algorithms used to calculate the contrast
+  # between each color. 
+  def closest_match(color_list, algorithm=:delta_e94, options={})
     color_list = [ color_list ].flatten(1)
     return nil if color_list.empty?
 
-    threshold_distance = case threshold_distance
-                         when :jnd, :just_noticeable
-                           2.3
-                         else
-                           threshold_distance.to_f
-                         end
-    lab = to_lab
-    closest_distance = threshold_distance
+    # threshold_distance = case threshold_distance
+    #                      when :jnd, :just_noticeable
+    #                        2.3
+    #                      else
+    #                        threshold_distance.to_f
+    #                      end
+    # lab = to_lab
+    closest_distance = 999_999.9 
     best_match = nil
 
     color_list.each do |c|
-      distance = delta_e94(lab, c.to_lab)
+      distance = contrast( c, algorithm ) # delta_e94(lab, c.to_lab)
       if (distance < closest_distance)
         closest_distance = distance
         best_match = c
@@ -363,6 +362,7 @@ class Color::RGB
     best_match
   end
 
+<<<<<<< HEAD
   # The Delta E (CIE94) algorithm
   # http://en.wikipedia.org/wiki/Color_difference#CIE94
   #
@@ -534,6 +534,8 @@ class Color::RGB
                (delta_H_prime / (k_H*s_H) )**2 +
                r_T*(delta_c_prime/(k_C*s_C))*(delta_H_prime/( k_H*s_H) ))
   end
+=======
+>>>>>>> e68c749... putting lab stuff into its own area, and correcting references to lab objects to reflect
 
   # Returns the red component of the colour in the normal 0 .. 255 range.
   def red
@@ -660,6 +662,7 @@ class Color::RGB
     rgb.instance_variable_set(:@b, -rgb.b)
     rgb
   end
+<<<<<<< HEAD
 
   # Outputs how much contrast this color has with another rgb color. Computes the same
   # regardless of which one is considered foreground.
@@ -717,6 +720,8 @@ class Color::RGB
            (self.b-rgb.b).abs)/3
   end
 
+=======
+>>>>>>> e68c749... putting lab stuff into its own area, and correcting references to lab objects to reflect
   private
   def normalize_percent(percent)
     percent /= 100.0
@@ -860,3 +865,5 @@ class << Color::RGB
 end
 
 require 'color/rgb/colors'
+require 'color/rgb/metallic'
+require 'color/rgb/contrast'

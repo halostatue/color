@@ -5,18 +5,23 @@ class Color::RGB
   # Computes the same regardless of which one is considered foreground. If
   # the other color does not have a #to_rgb method, this will throw an
   # exception. Anything over about 0.22 should have a high likelihood of
-  # being legible, but the larger the difference, the more contrast.
-  # Otherwise, to be safe go with something > 0.3
-  def contrast(other)
+  # being legible. Otherwise, to be safe go with something > 0.3.
+  def contrast(other, algorithm = nil)
     other = coerce(other)
 
-    # The following numbers have been set with some care.
-    ((diff_brightness(other) * 0.65) +
-     (diff_hue(other)        * 0.20) +
-     (diff_luminosity(other) * 0.15))
+    case algorithm
+    when :delta_e94
+      Color::LAB.delta_e94(self.to_lab, other_rgb.to_lab)
+    when :delta_e2000
+      Color::LAB.delta_e2000(self.to_lab, other_rgb.to_lab)
+    else
+      # The following numbers have been set with some care.
+      ((diff_brightness(other_rgb) * 0.65) +
+       (diff_hue(other_rgb) * 0.20) +
+       (diff_luminosity(other_rgb) * 0.15))
+    end
   end
 
-  private
   # Provides the luminosity difference between two rbg vals
   def diff_luminosity(other)
     other = coerce(other)
