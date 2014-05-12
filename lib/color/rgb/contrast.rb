@@ -22,8 +22,6 @@ class Color::RGB
     end
   end
 
-  private
-
   # Provides the luminosity difference between two rbg vals
   def diff_luminosity(other)
     other = coerce(other)

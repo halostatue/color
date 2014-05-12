@@ -341,6 +341,7 @@ class Color::RGB
     best_match = nil
 
     color_list.each do |c|
+      # distance = Color::LAB.delta_e94(lab, c.to_lab)
       distance = contrast(c, algorithm) # delta_e94(lab, c.to_lab)
       if distance < closest_distance
         closest_distance = distance

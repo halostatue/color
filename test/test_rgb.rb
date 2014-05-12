@@ -414,7 +414,7 @@ module TestColor
       assert_equal("RGB [#ffffff]", Color::RGB::White.inspect)
     end
 
-    def test_delta_e2000_lab
+    def test_delta_e2000
       # test data:
       # http://www.ece.rochester.edu/~gsharma/ciede2000/
       # http://www.ece.rochester.edu/~gsharma/ciede2000/dataNprograms/CIEDE2000.xls
