@@ -661,14 +661,15 @@ class Color::RGB
     rgb
   end
 
-
   # Outputs how much contrast this color has with another rgb color. Computes the same
   # regardless of which one is considered foreground.
   # If the other color does not have a to_rgb method, this will throw an exception
   # anything over about 0.22 should have a high likelihood of begin legible.
   # otherwise, to be safe go with something > 0.3
   def contrast(other_rgb)
-    if !other_rgb.respond_to?( :to_rgb ) then
+    if other_rgb.respond_to? :to_rgb then
+      c2 = other_rgb.to_rgb
+    else
       raise "rgb.rb unable to calculate contrast with object #{other_rgb.to_s}"
     end
     #the following numbers have been set with some care.
@@ -828,9 +829,7 @@ class << Color::RGB
     if names.any? { |n| mod.const_defined? n }
       raise ArgumentError, "#{names.join(', ')} already defined in #{mod}"
     end
-
     names.each { |n| mod.const_set(n, rgb) }
-
     rgb.names = names
     rgb.names.each { |n| __by_name[n] = rgb }
     __by_hex[rgb.hex] = rgb
@@ -861,6 +860,3 @@ class << Color::RGB
 end
 
 require 'color/rgb/colors'
-
-
-
