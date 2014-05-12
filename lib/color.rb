@@ -15,6 +15,8 @@ module Color
 
   class YIQ; end
 
+  class LAB; end
+
   # The maximum "resolution" for colour math; if any value is less than or
   # equal to this value, it is treated as zero.
   COLOR_EPSILON = 1e-5
@@ -136,9 +138,10 @@ class << Color
   alias_method :normalize_16bit, :normalize_word
 end
 
-require "color/rgb"
 require "color/cmyk"
+require "color/css"
 require "color/grayscale"
 require "color/hsl"
+require "color/lab"
+require "color/rgb"
 require "color/yiq"
-require "color/css"
