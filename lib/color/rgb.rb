@@ -433,24 +433,28 @@ class Color::RGB
   # provided colours. Returns +nil+ if +color_list+ is empty or if there is
   # no colour within the +threshold_distance+.
   #
-  # threshhold_distance removed to instead allow choice of algorithms used to calculate the contrast
-  # between each color. 
-  def closest_match(color_list, algorithm=:delta_e94, options={})
+  # +threshold_distance+ is used to determine the minimum colour distance
+  # permitted. Uses the CIE Delta E 1994 algorithm (CIE94) to find near
+  # matches based on perceived visual colour. The default value (1000.0) is
+  # an arbitrarily large number. The values <tt>:jnd</tt> and
+  # <tt>:just_noticeable</tt> may be passed as the +threshold_distance+ to
+  # use the value <tt>2.3</tt>.
+  def closest_match(color_list, threshold_distance = 1000.0)
     color_list = [ color_list ].flatten(1)
     return nil if color_list.empty?
 
-    # threshold_distance = case threshold_distance
-    #                      when :jnd, :just_noticeable
-    #                        2.3
-    #                      else
-    #                        threshold_distance.to_f
-    #                      end
-    # lab = to_lab
-    closest_distance = 999_999.9 
+    threshold_distance = case threshold_distance
+                         when :jnd, :just_noticeable
+                           2.3
+                         else
+                           threshold_distance.to_f
+                         end
+    lab = to_lab
+    closest_distance = threshold_distance
     best_match = nil
 
     color_list.each do |c|
-      distance = contrast( c, algorithm ) # delta_e94(lab, c.to_lab)
+      distance = Color::LAB.delta_e94(lab, c.to_lab)
       if (distance < closest_distance)
         closest_distance = distance
         best_match = c

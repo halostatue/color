@@ -5,7 +5,7 @@ class Color::RGB
   # Computes the same regardless of which one is considered foreground. If
   # the other color does not have a to_rgb method, this will throw an
   # exception. Anything over about 0.22 should have a high likelihood of
-  # begin legible. Otherwise, to be safe go with something > 0.3
+  # being legible. Otherwise, to be safe go with something > 0.3
   def contrast(other_rgb, algorithm=nil)
     if other_rgb.respond_to? :to_rgb then
       c2 = other_rgb.to_rgb
