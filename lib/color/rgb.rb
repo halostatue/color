@@ -294,8 +294,8 @@ class Color::RGB
   # provided colours. Returns +nil+ if +color_list+ is empty or if there is
   # no colour within the +threshold_distance+.
   #
-  # threshhold_distance removed to instead allow choice of algorithms used to calculate the contrast
-  # between each color.
+  # threshhold_distance removed to instead allow choice of algorithms used
+  # to calculate the contrast between each color.
   def closest_match(color_list, algorithm = :delta_e94, options = {})
     color_list = [color_list].flatten(1)
     return nil if color_list.empty?
@@ -312,6 +312,7 @@ class Color::RGB
 
     color_list.each do |c|
       distance = contrast(c, algorithm) # delta_e94(lab, c.to_lab)
+      # distance = Color::LAB.delta_e94(lab, c.to_lab)
       if distance < closest_distance
         closest_distance = distance
         best_match = c
