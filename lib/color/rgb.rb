@@ -101,8 +101,9 @@ class Color::RGB
         end
       }
     end
-  end
+  end #class methods 
 
+  public 
   # Coerces the other Color object into RGB.
   def coerce(other)
     other.to_rgb
@@ -306,6 +307,7 @@ class Color::RGB
   # Currently only the sRGB colour space is supported and defaults to using
   # a D65 reference white.
   def to_lab(color_space = :sRGB, reference_white = [ 95.047, 100.00, 108.883 ])
+    
     xyz = to_xyz
 
     # Calculate the ratio of the XYZ values to the reference white.
@@ -334,11 +336,13 @@ class Color::RGB
 #       ((1.0/3)*((29.0/6)**2) * t) + (4.0/29)
       end
     }
-    {
-      :L => ((116 * fy) - 16),
-      :a => (500 * (fx - fy)),
-      :b => (200 * (fy - fz))
-    }
+
+    Color::LAB.new( (116 * fy) - 16 , 500 * (fx - fy) , 200 * (fy - fz) )    
+    # {
+    #   :L => ((116 * fy) - 16),
+    #   :a => (500 * (fx - fy)),
+    #   :b => (200 * (fy - fz))
+    # }
   end
 
   # Mix the RGB hue with White so that the RGB hue is the specified
@@ -450,7 +454,7 @@ class Color::RGB
     best_match = nil
 
     color_list.each do |c|
-      distance = delta_e94(lab, c.to_lab)
+      distance = Color::LAB.delta_e94(lab, c.to_lab)
       if (distance < closest_distance)
         closest_distance = distance
         best_match = c
@@ -459,79 +463,6 @@ class Color::RGB
     best_match
   end
 
-  # The Delta E (CIE94) algorithm
-  # http://en.wikipedia.org/wiki/Color_difference#CIE94
-  #
-  # There is a newer version, CIEDE2000, that uses slightly more complicated
-  # math, but addresses "the perceptual uniformity issue" left lingering by
-  # the CIE94 algorithm. color_1 and color_2 are both L*a*b* hashes,
-  # rendered by #to_lab.
-  #
-  # Since our source is treated as sRGB, we use the "graphic arts" presets
-  # for k_L, k_1, and k_2
-  #
-  # The calculations go through LCH(ab). (?)
-  #
-  # See also http://www.brucelindbloom.com/index.html?Eqn_DeltaE_CIE94.html
-  #
-  # NOTE: This should be moved to Color::Lab.
-  def delta_e94(color_1, color_2, weighting_type = :graphic_arts)
-    case weighting_type
-    when :graphic_arts
-      k_1 = 0.045
-      k_2 = 0.015
-      k_L = 1
-    when :textiles
-      k_1 = 0.048
-      k_2 = 0.014
-      k_L = 2
-    else
-      raise ArgumentError, "Unsupported weighting type #{weighting_type}."
-    end
-
-    # delta_E = Math.sqrt(
-    #   ((delta_L / (k_L * s_L)) ** 2) +
-    #   ((delta_C / (k_C * s_C)) ** 2) +
-    #   ((delta_H / (k_H * s_H)) ** 2)
-    # )
-    #
-    # Under some circumstances in real computers, delta_H could be an
-    # imaginary number (it's a square root value), so we're going to treat
-    # this as:
-    #
-    # delta_E = Math.sqrt(
-    #   ((delta_L / (k_L * s_L)) ** 2) +
-    #   ((delta_C / (k_C * s_C)) ** 2) +
-    #   (delta_H2 / ((k_H * s_H) ** 2)))
-    # )
-    #
-    # And not perform the square root when calculating delta_H2.
-
-    k_C = k_H = 1
-
-    l_1, a_1, b_1 = color_1.values_at(:L, :a, :b)
-    l_2, a_2, b_2 = color_2.values_at(:L, :a, :b)
-
-    delta_a = a_1 - a_2
-    delta_b = b_1 - b_2
-
-    c_1 = Math.sqrt((a_1 ** 2) + (b_1 ** 2))
-    c_2 = Math.sqrt((a_2 ** 2) + (b_2 ** 2))
-
-    delta_L = color_1[:L] - color_2[:L]
-    delta_C = c_1 - c_2
-
-    delta_H2 = (delta_a ** 2) + (delta_b ** 2) - (delta_C ** 2)
-
-    s_L = 1
-    s_C = 1 + k_1 * c_1
-    s_H = 1 + k_2 * c_1
-
-    composite_L = (delta_L / (k_L * s_L)) ** 2
-    composite_C = (delta_C / (k_C * s_C)) ** 2
-    composite_H = delta_H2 / ((k_H * s_H) ** 2)
-    Math.sqrt(composite_L + composite_C + composite_H)
-  end
 
   # Returns the red component of the colour in the normal 0 .. 255 range.
   def red
@@ -658,7 +589,6 @@ class Color::RGB
     rgb.instance_variable_set(:@b, -rgb.b)
     rgb
   end
-
   private
   def normalize_percent(percent)
     percent /= 100.0
@@ -667,6 +597,7 @@ class Color::RGB
     percent  = [ 0.0, percent ].max
     percent
   end
+
 end
 
 class << Color::RGB
@@ -675,9 +606,7 @@ class << Color::RGB
     if names.any? { |n| mod.const_defined? n }
       raise ArgumentError, "#{names.join(', ')} already defined in #{mod}"
     end
-
     names.each { |n| mod.const_set(n, rgb) }
-
     rgb.names = names
     rgb.names.each { |n| __by_name[n] = rgb }
     __by_hex[rgb.hex] = rgb
@@ -704,6 +633,12 @@ class << Color::RGB
       raise ArgumentError, "Not a supported HTML colour type."
     end
   end
+
 end
 
 require 'color/rgb/colors'
+require 'color/rgb/metallic'
+require 'color/rgb/contrast'
+
+
+
