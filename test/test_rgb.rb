@@ -279,16 +279,16 @@ module TestColor
 
     def test_to_lab
       # Luminosity can be an absolute.
-      assert_in_delta(0.0, Color::RGB::Black.to_lab[:L], Color::COLOR_TOLERANCE)
-      assert_in_delta(100.0, Color::RGB::White.to_lab[:L], Color::COLOR_TOLERANCE)
+      assert_in_delta(0.0, Color::RGB::Black.to_lab.l, Color::COLOR_TOLERANCE)
+      assert_in_delta(100.0, Color::RGB::White.to_lab.l, Color::COLOR_TOLERANCE)
 
       # It's not really possible to have absolute
       # numbers here because of how L*a*b* works, but
       # negative/positive comparisons work
-      assert(Color::RGB::Green.to_lab[:a] < 0)
-      assert(Color::RGB::Magenta.to_lab[:a] > 0)
-      assert(Color::RGB::Blue.to_lab[:b] < 0)
-      assert(Color::RGB::Yellow.to_lab[:b] > 0)
+      assert(Color::RGB::Green.to_lab.a < 0)
+      assert(Color::RGB::Magenta.to_lab.a > 0)
+      assert(Color::RGB::Blue.to_lab.b< 0)
+      assert(Color::RGB::Yellow.to_lab.b > 0)
 
       # an rgb color converted to lab and to rgb from lab will still have the same r,g,b values
       # not ready for this yet.
