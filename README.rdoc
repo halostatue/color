@@ -4,8 +4,8 @@ home :: http://color.rubyforge.org
 code :: https://github.com/halostatue/color
 bugs :: https://github.com/halostatue/color/issues
 rdoc :: http://rubydoc.info/github/halostatue/color
-code climate :: {<img src="https://codeclimate.com/github/halostatue/color.png" />}[https://codeclimate.com/github/halostatue/color]
 continuous integration :: {<img src="https://travis-ci.org/halostatue/color.png" />}[https://travis-ci.org/halostatue/color]
+test coverage :: {<img src="https://coveralls.io/repos/halostatue/color/badge.png" alt="Coverage Status" />}[https://coveralls.io/r/halostatue/color]
 
 == Description
 

@@ -1,4 +1,4 @@
-== 1.6 / 2014-MM-DD
+== 1.6 / 2014-05-19
 
 * Major enhancements:
   * Aaron Hill (@armahillo) implemented the CIE Delta E 94 method by which an
@@ -11,6 +11,10 @@
 * Tooling fixes:
   * Ensured that the gem manifest was up-to-date. Fixes #4 reported by @boutil.
     Thanks!
+  * Fixed problems with Travis builds. Note that Ruby 1.9.2 is no longer
+    tested. Rubinius remains in a “failure-tolerated” mode.
+  * Color 1.6 is, barring security patches, the last release of Color that will
+    support Ruby 1.8.
 
 == 1.5.1 / 2014-01-28
 

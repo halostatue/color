@@ -7,102 +7,6 @@ class Color::RGB
   # PDF::Writer package.
   PDF_FORMAT_STR  = "%.3f %.3f %.3f %s"
 
-  class << self
-    # Creates an RGB colour object from percentages 0..100.
-    #
-    #   Color::RGB.from_percentage(10, 20, 30)
-    def from_percentage(r = 0, g = 0, b = 0, &block)
-      new(r, g, b, 100.0, &block)
-    end
-
-    # Creates an RGB colour object from fractional values 0..1.
-    #
-    #   Color::RGB.from_fraction(.3, .2, .1)
-    def from_fraction(r = 0.0, g = 0.0, b = 0.0, &block)
-      new(r, g, b, 1.0, &block)
-    end
-
-    # Creates an RGB colour object from a grayscale fractional value 0..1.
-    def from_grayscale_fraction(l = 0.0, &block)
-      new(l, l, l, 1.0, &block)
-    end
-    alias_method :from_greyscale_fraction, :from_grayscale_fraction
-
-    # Creates an RGB colour object from an HTML colour descriptor (e.g.,
-    # <tt>"fed"</tt> or <tt>"#cabbed;"</tt>.
-    #
-    #   Color::RGB.from_html("fed")
-    #   Color::RGB.from_html("#fed")
-    #   Color::RGB.from_html("#cabbed")
-    #   Color::RGB.from_html("cabbed")
-    def from_html(html_colour, &block)
-      # When we can move to 1.9+ only, this will be \h
-      h = html_colour.scan(/[0-9a-f]/i)
-      case h.size
-      when 3
-        new(*h.map { |v| (v * 2).to_i(16) }, &block)
-      when 6
-        new(*h.each_slice(2).map { |v| v.join.to_i(16) }, &block)
-      else
-        raise ArgumentError, "Not a supported HTML colour type."
-      end
-    end
-
-    # Find or create a colour by an HTML hex code. This differs from the
-    # #from_html method in that if the colour code matches a named colour,
-    # the existing colour will be returned.
-    #
-    #     Color::RGB.by_hex('ff0000').name # => 'red'
-    #     Color::RGB.by_hex('ff0001').name # => nil
-    #
-    # If a block is provided, the value that is returned by the block will
-    # be returned instead of the exception caused by an error in providing a
-    # correct hex format.
-    def by_hex(hex, &block)
-      __by_hex.fetch(html_hexify(hex)) { from_html(hex) }
-    rescue
-      if block
-        block.call
-      else
-        raise
-      end
-    end
-
-    # Return a colour as identified by the colour name.
-    def by_name(name, &block)
-      __by_name.fetch(name.to_s.downcase, &block)
-    end
-
-    # Return a colour as identified by the colour name, or by hex.
-    def by_css(name_or_hex, &block)
-      by_name(name_or_hex) { by_hex(name_or_hex, &block) }
-    end
-
-    # Extract named or hex colours from the provided text.
-    def extract_colors(text, mode = :both)
-      text  = text.downcase
-      regex = case mode
-              when :name
-                Regexp.union(__by_name.keys)
-              when :hex
-                Regexp.union(__by_hex.keys)
-              when :both
-                Regexp.union(__by_hex.keys + __by_name.keys)
-              end
-
-      text.scan(regex).map { |match|
-        case mode
-        when :name
-          by_name(match)
-        when :hex
-          by_hex(match)
-        when :both
-          by_css(match)
-        end
-      }
-    end
-  end
-
   # Coerces the other Color object into RGB.
   def coerce(other)
     other.to_rgb
@@ -666,6 +570,102 @@ class Color::RGB
     percent  = [ percent, 2.0 ].min
     percent  = [ 0.0, percent ].max
     percent
+  end
+end
+
+class << Color::RGB
+  # Creates an RGB colour object from percentages 0..100.
+  #
+  #   Color::RGB.from_percentage(10, 20, 30)
+  def from_percentage(r = 0, g = 0, b = 0, &block)
+    new(r, g, b, 100.0, &block)
+  end
+
+  # Creates an RGB colour object from fractional values 0..1.
+  #
+  #   Color::RGB.from_fraction(.3, .2, .1)
+  def from_fraction(r = 0.0, g = 0.0, b = 0.0, &block)
+    new(r, g, b, 1.0, &block)
+  end
+
+  # Creates an RGB colour object from a grayscale fractional value 0..1.
+  def from_grayscale_fraction(l = 0.0, &block)
+    new(l, l, l, 1.0, &block)
+  end
+  alias_method :from_greyscale_fraction, :from_grayscale_fraction
+
+  # Creates an RGB colour object from an HTML colour descriptor (e.g.,
+  # <tt>"fed"</tt> or <tt>"#cabbed;"</tt>.
+  #
+  #   Color::RGB.from_html("fed")
+  #   Color::RGB.from_html("#fed")
+  #   Color::RGB.from_html("#cabbed")
+  #   Color::RGB.from_html("cabbed")
+  def from_html(html_colour, &block)
+    # When we can move to 1.9+ only, this will be \h
+    h = html_colour.scan(/[0-9a-f]/i)
+    case h.size
+    when 3
+      new(*h.map { |v| (v * 2).to_i(16) }, &block)
+    when 6
+      new(*h.each_slice(2).map { |v| v.join.to_i(16) }, &block)
+    else
+      raise ArgumentError, "Not a supported HTML colour type."
+    end
+  end
+
+  # Find or create a colour by an HTML hex code. This differs from the
+  # #from_html method in that if the colour code matches a named colour,
+  # the existing colour will be returned.
+  #
+  #     Color::RGB.by_hex('ff0000').name # => 'red'
+  #     Color::RGB.by_hex('ff0001').name # => nil
+  #
+  # If a block is provided, the value that is returned by the block will
+  # be returned instead of the exception caused by an error in providing a
+  # correct hex format.
+  def by_hex(hex, &block)
+    __by_hex.fetch(html_hexify(hex)) { from_html(hex) }
+  rescue
+    if block
+      block.call
+    else
+      raise
+    end
+  end
+
+  # Return a colour as identified by the colour name.
+  def by_name(name, &block)
+    __by_name.fetch(name.to_s.downcase, &block)
+  end
+
+  # Return a colour as identified by the colour name, or by hex.
+  def by_css(name_or_hex, &block)
+    by_name(name_or_hex) { by_hex(name_or_hex, &block) }
+  end
+
+  # Extract named or hex colours from the provided text.
+  def extract_colors(text, mode = :both)
+    text  = text.downcase
+    regex = case mode
+            when :name
+              Regexp.union(__by_name.keys)
+            when :hex
+              Regexp.union(__by_hex.keys)
+            when :both
+              Regexp.union(__by_hex.keys + __by_name.keys)
+            end
+
+    text.scan(regex).map { |match|
+      case mode
+      when :name
+        by_name(match)
+      when :hex
+        by_hex(match)
+      when :both
+        by_css(match)
+      end
+    }
   end
 end
 

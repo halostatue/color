@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Austin Ziegler", "Matt Lyon"]
-  s.date = "2014-04-26"
+  s.date = "2014-05-20"
   s.description = "Color is a Ruby library to provide basic RGB, CMYK, HSL, and other colourspace\nmanipulation support to applications that require it. It also provides 152\nnamed RGB colours (184 with spelling variations) that are commonly supported in\nHTML, SVG, and X11 applications. A technique for generating monochromatic\ncontrasting palettes is also included.\n\nThe Color library performs purely mathematical manipulation of the colours\nbased on colour theory without reference to colour profiles (such as sRGB or\nAdobe RGB). For most purposes, when working with RGB and HSL colour spaces,\nthis won't matter. Absolute colour spaces (like CIE L*a*b* and XYZ) and cannot\nbe reliably converted to relative colour spaces (like RGB) without colour\nprofiles.\n\nColor version 1.6 primarily adds a colour matching method for RGB and\nexperimental CIE L*a*b* and XYZ conversion methods for use with the colour\nmatching method.\n\nBarring bugs introduced in this release, this is the last version of color that\nsupports Ruby 1.8, so make sure that your gem specification is set properly (to\n<tt>~> 1.6</tt>) if that matters for your application."
   s.email = ["halostatue@gmail.com", "matt@postsomnia.com"]
   s.extra_rdoc_files = ["Contributing.rdoc", "History.rdoc", "Licence.rdoc", "Manifest.txt", "README.rdoc", "Contributing.rdoc", "History.rdoc", "Licence.rdoc", "README.rdoc"]
@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<hoe-rubygems>, ["~> 1.0"])
       s.add_development_dependency(%q<hoe-travis>, ["~> 1.2"])
       s.add_development_dependency(%q<rake>, ["~> 10.0"])
-      s.add_development_dependency(%q<hoe>, ["~> 3.11"])
+      s.add_development_dependency(%q<hoe>, ["~> 3.12"])
     else
       s.add_dependency(%q<minitest>, ["~> 5.3"])
       s.add_dependency(%q<rdoc>, ["~> 4.0"])
@@ -42,7 +42,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<hoe-rubygems>, ["~> 1.0"])
       s.add_dependency(%q<hoe-travis>, ["~> 1.2"])
       s.add_dependency(%q<rake>, ["~> 10.0"])
-      s.add_dependency(%q<hoe>, ["~> 3.11"])
+      s.add_dependency(%q<hoe>, ["~> 3.12"])
     end
   else
     s.add_dependency(%q<minitest>, ["~> 5.3"])
@@ -53,6 +53,6 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<hoe-rubygems>, ["~> 1.0"])
     s.add_dependency(%q<hoe-travis>, ["~> 1.2"])
     s.add_dependency(%q<rake>, ["~> 10.0"])
-    s.add_dependency(%q<hoe>, ["~> 3.11"])
+    s.add_dependency(%q<hoe>, ["~> 3.12"])
   end
 end
