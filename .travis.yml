@@ -13,8 +13,7 @@ rvm:
   - jruby-head
 matrix:
   allow_failures:
-    - rvm:
-      - rbx-2
+    - rvm: rbx-2
 gemfile:
   - Gemfile
 before_script:
