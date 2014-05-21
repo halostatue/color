@@ -46,6 +46,8 @@ if RUBY_VERSION >= '1.9'
         'require "simplecov"',
         'require "coveralls"',
         'SimpleCov.formatter = Coveralls::SimpleCov::Formatter',
+        'SimpleCov.start("test_frameworks") { command_name "Minitest" }',
+        'gem "minitest"'
       ].join('; ')
       Rake::Task['test'].execute
     end
