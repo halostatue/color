@@ -1,3 +1,17 @@
+== 1.7 / 2014-06-12
+
+* Minor enhancements:
+  * Added Color::RGB::BeccaPurple (#663399) in honour of Rebecca Meyer, the
+    daughter of Eric Meyer, who passed away on the 7th of June, 2014. Her
+    favourite colour was purple. #663399becca
+    https://twitter.com/meyerweb/status/476089708674428929
+    http://www.zeldman.com/2014/06/10/the-color-purple/
+    http://discourse.specifiction.org/t/name-663399-becca-purple-in-css4-color/225
+
+* Bug fixes:
+  * Changed the homepage in the gem to point to github.com instead of
+    RubyForge, which has been shut down. Fixes #10, reported by @voxik.
+
 == 1.6 / 2014-05-19
 
 * Major enhancements:

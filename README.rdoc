@@ -1,6 +1,6 @@
 = Color
 
-home :: http://color.rubyforge.org
+home :: https://github.com/halostatue/color
 code :: https://github.com/halostatue/color
 bugs :: https://github.com/halostatue/color/issues
 rdoc :: http://rubydoc.info/github/halostatue/color
@@ -22,9 +22,10 @@ this won't matter. Absolute colour spaces (like CIE L*a*b* and XYZ) and cannot
 be reliably converted to relative colour spaces (like RGB) without colour
 profiles.
 
-Color version 1.6 primarily adds a colour matching method for RGB and
-experimental CIE L*a*b* and XYZ conversion methods for use with the colour
-matching method.
+Color version 1.7 adds Color::RGB::BeccaPurple for the colour #663399 in honour
+of Rebecca Meyer, the daughter of Eric Meyer, who passed away on the 7th of
+June, 2014. Her favourite colour was purple.
+{#663399becca}[https://twitter.com/hashtag/663399becca]
 
 Barring bugs introduced in this release, this is the last version of color that
 supports Ruby 1.8, so make sure that your gem specification is set properly (to
