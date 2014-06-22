@@ -186,20 +186,19 @@ class Color::RGB
     # Inverse sRGB companding. Linearizes RGB channels with respect to
     # energy.
     r, g, b = [ @r, @g, @b ].map { |v|
-      if (v > 0.04045)
-        (((v + 0.055) / 1.055) ** 2.4) * 100
+      100 * if (v > 0.04045)
+        (((v + 0.055) / 1.055) ** 2.4)
       else
-        (v / 12.92) * 100
+        (v / 12.92)
       end
     }
 
     # Convert using the RGB/XYZ matrix at:
     # http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html#WSMatrices
-    {
-      :x => (r * 0.4124564 + g * 0.3575761 + b * 0.1804375),
-      :y => (r * 0.2126729 + g * 0.7151522 + b * 0.0721750),
-      :z => (r * 0.0193339 + g * 0.1191920 + b * 0.9503041)
-    }
+    Color::XYZ.new(
+      r * 0.4124564 + g * 0.3575761 + b * 0.1804375,
+      r * 0.2126729 + g * 0.7151522 + b * 0.0721750,
+      r * 0.0193339 + g * 0.1191920 + b * 0.9503041)
   end
 
   # Returns the L*a*b* colour encoding of the value via the XYZ colour
@@ -209,40 +208,12 @@ class Color::RGB
   #
   # Currently only the sRGB colour space is supported and defaults to using
   # a D65 reference white.
-  def to_lab(color_space = :sRGB, reference_white = [ 95.047, 100.00, 108.883 ])
-    xyz = to_xyz
+  def to_lab(color_space = :sRGB, reference_white = Color::XYZ.d65_reference_white)
+    to_xyz.to_lab(reference_white)
+  end
 
-    # Calculate the ratio of the XYZ values to the reference white.
-    # http://www.brucelindbloom.com/index.html?Equations.html
-    xr = xyz[:x] / reference_white[0]
-    yr = xyz[:y] / reference_white[1]
-    zr = xyz[:z] / reference_white[2]
-
-    # NOTE: This should be using Rational instead of floating point values,
-    # otherwise there will be discontinuities.
-    # http://www.brucelindbloom.com/LContinuity.html
-    epsilon = (216 / 24389.0)
-    kappa   = (24389 / 27.0)
-
-    # And now transform
-    # http://en.wikipedia.org/wiki/Lab_color_space#Forward_transformation
-    # There is a brief explanation there as far as the nature of the calculations,
-    # as well as a much nicer looking modeling of the algebra.
-    fx, fy, fz = [ xr, yr, zr ].map { |t|
-      if (t > (epsilon))
-        t ** (1.0 / 3)
-      else # t <= epsilon
-        ((kappa * t) + 16) / 116.0
-        # The 4/29 here is for when t = 0 (black). 4/29 * 116 = 16, and 16 -
-        # 16 = 0, which is the correct value for L* with black.
-#       ((1.0/3)*((29.0/6)**2) * t) + (4.0/29)
-      end
-    }
-    {
-      :L => ((116 * fy) - 16),
-      :a => (500 * (fx - fy)),
-      :b => (200 * (fy - fz))
-    }
+  def to_s
+    "rgb(#{@r}, #{@g}, #{@b})"
   end
 
   # Mix the RGB hue with White so that the RGB hue is the specified
@@ -549,6 +520,7 @@ class Color::RGB
     "RGB [#{html}]"
   end
 
+  # Return array of color components
   def to_a
     [ r, g, b ]
   end

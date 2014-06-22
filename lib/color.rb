@@ -9,6 +9,8 @@ module Color
   class CMYK; end
   class HSL; end
   class GrayScale; end
+  class LAB; end
+  class XYZ; end
   class YIQ; end
 
   # The maximum "resolution" for colour math; if any value is less than or
@@ -48,6 +50,11 @@ module Color
     @names = Array(n).flatten.compact.map(&:to_s).map(&:downcase).sort.uniq
   end
   alias_method :name=, :names=
+
+  # Apply block to every color component, returning new color
+  def map(&block)
+    self.class.new *to_a.map(&block), 1
+  end
 end
 
 class << Color
@@ -134,6 +141,8 @@ require 'color/rgb'
 require 'color/cmyk'
 require 'color/grayscale'
 require 'color/hsl'
+require 'color/lab'
+require 'color/xyz'
 require 'color/yiq'
 require 'color/css'
 
