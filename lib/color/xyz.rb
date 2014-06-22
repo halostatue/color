@@ -13,9 +13,9 @@ class Color::XYZ
 
   def [](component)
     case component.to_s
-    when 'x' then @x
-    when 'y' then @y
-    when 'z' then @z
+    when 'x' then @x * 100
+    when 'y' then @y * 100
+    when 'z' then @z * 100
     else nil
     end
   end
