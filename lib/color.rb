@@ -10,6 +10,7 @@ module Color
   class HSL; end
   class GrayScale; end
   class YIQ; end
+  class LAB; end
 
   # The maximum "resolution" for colour math; if any value is less than or
   # equal to this value, it is treated as zero.
@@ -136,3 +137,4 @@ require 'color/grayscale'
 require 'color/hsl'
 require 'color/yiq'
 require 'color/css'
+require 'color/lab'
