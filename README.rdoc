@@ -22,14 +22,18 @@ this won't matter. Absolute colour spaces (like CIE L*a*b* and XYZ) and cannot
 be reliably converted to relative colour spaces (like RGB) without colour
 profiles.
 
-Color 1.8 adds an alpha parameter to all <tt>#css_rgba</tt> calls, fixes a bug
-exposed by new constant lookup semantics in Ruby 2, and ensures that
-<tt>Color.equivalent?</tt> can only be called on Color instances.
+<strong>NOTE</strong>: This is a prerelease version of Color 2.0, currently
+under development. The goal is to be mathematically more robust and do as many
+colour transformations as possible more accurately than previously done. Many
+of the transforms will be performed with Matrix math; where it makes sense and
+increases transformation fidelity, Rational numbers will also be used rather
+than fractional numbers.
 
-Barring bugs introduced in this release, this (really) is the last version of
-color that supports Ruby 1.8, so make sure that your gem specification is set
-properly (to <tt>~> 1.8</tt>) if that matters for your application. This
-version will no longer be supported one year after the release of color 2.0.
+Color 2.0 is a major release to the Color library.
+
+* Color 2.0 is no longer tested on any version of Ruby below 2.6, and changes
+  that remove compatibility with those versions will be supported.
+* INSERT FURTHER CHANGES HERE
 
 == History
 
@@ -44,9 +48,3 @@ SlayerOffice[2] and by Patrick Fitzgerald of BarelyFitz[3] in PHP.
 [1] http://www.stuffandnonsense.co.uk/archives/creating_colour_palettes.html
 [2] http://slayeroffice.com/tools/color_palette/
 [3] http://www.barelyfitz.com/projects/csscolor/
-
-:include: Code-of-Conduct.rdoc
-
-:include: Contributing.rdoc
-
-:include: Licence.rdoc

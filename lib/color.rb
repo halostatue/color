@@ -3,12 +3,16 @@
 
 # = Colour Management with Ruby
 module Color
-  COLOR_VERSION = '1.8'
+  COLOR_VERSION = "2.0pre0"
 
   class RGB; end
+
   class CMYK; end
+
   class HSL; end
+
   class GrayScale; end
+
   class YIQ; end
 
   # The maximum "resolution" for colour math; if any value is less than or
@@ -44,6 +48,7 @@ module Color
     self.names = nil unless defined? @names
     @names
   end
+
   def names=(n) # :nodoc:
     @names = Array(n).flatten.compact.map(&:to_s).map(&:downcase).sort.uniq
   end
@@ -82,7 +87,7 @@ class << Color
   # conversions are required, this all conversions will be implemented
   # using the default conversion mechanism.
   def equivalent?(a, b)
-    return false unless a.kind_of?(Color) && b.kind_of?(Color)
+    return false unless a.is_a?(Color) && b.is_a?(Color)
     a.to_a.zip(a.coerce(b).to_a).all? { |(x, y)| near?(x, y) }
   end
 
@@ -103,11 +108,11 @@ class << Color
       value
     end
   end
-  alias normalize_fractional normalize
+  alias_method :normalize_fractional, :normalize
 
   # Normalizes the value to the specified range.
   def normalize_to_range(value, range)
-    range = (range.end..range.begin) if (range.end < range.begin)
+    range = (range.end..range.begin) if range.end < range.begin
 
     if value <= range.begin
       range.begin
@@ -122,64 +127,18 @@ class << Color
   def normalize_byte(value)
     normalize_to_range(value, 0..255).to_i
   end
-  alias normalize_8bit normalize_byte
+  alias_method :normalize_8bit, :normalize_byte
 
   # Normalize the value to the range (0) .. (65535).
   def normalize_word(value)
     normalize_to_range(value, 0..65535).to_i
   end
-  alias normalize_16bit normalize_word
+  alias_method :normalize_16bit, :normalize_word
 end
 
-require 'color/rgb'
-require 'color/cmyk'
-require 'color/grayscale'
-require 'color/hsl'
-require 'color/yiq'
-require 'color/css'
-
-class << Color
-  def const_missing(name) #:nodoc:
-    case name
-    when "VERSION", :VERSION, "COLOR_TOOLS_VERSION", :COLOR_TOOLS_VERSION
-      warn "Color::#{name} has been deprecated. Use Color::COLOR_VERSION instead."
-      Color::COLOR_VERSION
-    else
-      if Color::RGB.const_defined?(name)
-        warn "Color::#{name} has been deprecated. Use Color::RGB::#{name} instead."
-        Color::RGB.const_get(name)
-      else
-        super
-      end
-    end
-  end
-
-  # Provides a thin veneer over the Color module to make it seem like this
-  # is Color 0.1.0 (a class) and not Color 1.4 (a module). This
-  # "constructor" will be removed in the future.
-  #
-  # mode = :hsl::   +values+ must be an array of [ hue deg, sat %, lum % ].
-  #                 A Color::HSL object will be created.
-  # mode = :rgb::   +values+ will either be an HTML-style colour string or
-  #                 an array of [ red, green, blue ] (range 0 .. 255). A
-  #                 Color::RGB object will be created.
-  # mode = :cmyk::  +values+ must be an array of [ cyan %, magenta %, yellow
-  #                 %, black % ]. A Color::CMYK object will be created.
-  def new(values, mode = :rgb)
-    warn "Color.new has been deprecated. Use Color::#{mode.to_s.upcase}.new instead."
-    color = case mode
-            when :hsl
-              Color::HSL.new(*values)
-            when :rgb
-              values = [ values ].flatten
-              if values.size == 1
-                Color::RGB.from_html(*values)
-              else
-                Color::RGB.new(*values)
-              end
-            when :cmyk
-              Color::CMYK.new(*values)
-            end
-    color.to_hsl
-  end
-end
+require "color/rgb"
+require "color/cmyk"
+require "color/grayscale"
+require "color/hsl"
+require "color/yiq"
+require "color/css"
