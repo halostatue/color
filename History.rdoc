@@ -1,3 +1,15 @@
+== 2.0 / 2014-MM-DD
+
+* Major enhancements:
+  * Dropped support for Ruby 1.8.
+  * Removed all deprecated methods and constant handlers.
+
+* Minor enhancements:
+
+* Bug fixes:
+
+* Tooling changes:
+
 == 1.7.1 / 2014-06-12
 
 * Minor enhancements:
