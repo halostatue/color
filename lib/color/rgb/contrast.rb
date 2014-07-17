@@ -11,14 +11,14 @@ class Color::RGB
 
     case algorithm
     when :delta_e94
-      Color::LAB.delta_e94(self.to_lab, other_rgb.to_lab)
+      Color::LAB.delta_e94(self.to_lab, other.to_lab)
     when :delta_e2000
-      Color::LAB.delta_e2000(self.to_lab, other_rgb.to_lab)
+      Color::LAB.delta_e2000(self.to_lab, other.to_lab)
     else
       # The following numbers have been set with some care.
-      ((diff_brightness(other_rgb) * 0.65) +
-       (diff_hue(other_rgb) * 0.20) +
-       (diff_luminosity(other_rgb) * 0.15))
+      ((diff_brightness(other) * 0.65) +
+       (diff_hue(other) * 0.20) +
+       (diff_luminosity(other) * 0.15))
     end
   end
 
