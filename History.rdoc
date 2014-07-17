@@ -1,3 +1,12 @@
+== 1.7.1 / 2014-06-12
+
+* Minor enhancements:
+  * Renamed Color::RGB::BeccaPurple to Color::RGB::RebeccaPurple as stipulated
+    by Eric Meyer. http://meyerweb.com/eric/thoughts/2014/06/19/rebeccapurple/
+    For purposes of backwards compatibility, the previous name is still
+    permitted, but its use is strongly discouraged, and it will be removed in
+    the Color 2.0 release.
+
 == 1.7 / 2014-06-12
 
 * Minor enhancements:
