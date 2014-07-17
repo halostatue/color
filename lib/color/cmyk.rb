@@ -147,7 +147,7 @@ class Color::CMYK
     g = 1.0 - [1.0, c + m + y + @k].min
     Color::GrayScale.from_fraction(g)
   end
-  alias to_greyscale to_grayscale
+  alias_method :to_greyscale, :to_grayscale
 
   def to_cmyk
     self

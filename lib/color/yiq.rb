@@ -31,7 +31,7 @@ class Color::YIQ
   def to_grayscale
     Color::GrayScale.new(@y)
   end
-  alias to_greyscale to_grayscale
+  alias_method :to_greyscale, :to_grayscale
 
   def y
     @y
