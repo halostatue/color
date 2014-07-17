@@ -50,7 +50,7 @@ module Color
   end
 
   def names=(n) # :nodoc:
-    @names = Array(n).flatten.compact.map(&:to_s).map(&:downcase).sort.uniq
+    @names = Array(n).flatten.compact.map { |e| e.to_s.downcase }.sort.uniq
   end
   alias_method :name=, :names=
 end
