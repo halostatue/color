@@ -285,7 +285,7 @@ class Color::RGB
   def to_grayscale
     Color::GrayScale.from_fraction(to_hsl.l)
   end
-  alias to_greyscale to_grayscale
+  alias_method :to_greyscale, :to_grayscale
 
   # Returns a new colour with the brightness adjusted by the specified
   # percentage. Negative percentages will darken the colour; positive
@@ -543,7 +543,7 @@ class Color::RGB
   def max_rgb_as_grayscale
     Color::GrayScale.from_fraction([@r, @g, @b].max)
   end
-  alias max_rgb_as_greyscale max_rgb_as_grayscale
+  alias_method :max_rgb_as_greyscale, :max_rgb_as_grayscale
 
   def inspect
     "RGB [#{html}]"

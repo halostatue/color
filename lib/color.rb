@@ -102,7 +102,7 @@ class << Color
       value
     end
   end
-  alias normalize_fractional normalize
+  alias_method :normalize_fractional, :normalize
 
   # Normalizes the value to the specified range.
   def normalize_to_range(value, range)
@@ -121,13 +121,13 @@ class << Color
   def normalize_byte(value)
     normalize_to_range(value, 0..255).to_i
   end
-  alias normalize_8bit normalize_byte
+  alias_method :normalize_8bit, :normalize_byte
 
   # Normalize the value to the range (0) .. (65535).
   def normalize_word(value)
     normalize_to_range(value, 0..65535).to_i
   end
-  alias normalize_16bit normalize_word
+  alias_method :normalize_16bit, :normalize_word
 end
 
 require 'color/rgb'

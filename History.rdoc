@@ -9,6 +9,7 @@
 * Bug fixes:
 
 * Tooling changes:
+  * Standardized on +alias_method+ instead of +alias+.
 
 == 1.7.1 / 2014-06-12
 
