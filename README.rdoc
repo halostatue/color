@@ -33,6 +33,7 @@ Color 2.0 is a major release to the Color library.
 
 * Color 2.0 is no longer tested on any version of Ruby below 2.6, and changes
   that remove compatibility with those versions will be supported.
+* Added classes for LAB and XYZ colour spaces
 * INSERT FURTHER CHANGES HERE
 
 == History
