@@ -36,7 +36,7 @@ Color 2.0 is a major release to the Color library.
 * INSERT FURTHER CHANGES HERE
 
 == Examples
-Suppose you want an RGB color make a little lighter. If you dou it simply by
+Suppose you want to make given RGB color a little lighter. If you dou it simply by
 adjusting curves the hue and saturation will change too. Instead it's better
 to do in LAB color space keeping the 'color' components intact altering only
 lightness component:
