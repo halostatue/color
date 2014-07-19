@@ -209,7 +209,7 @@ class Color::RGB
   # Currently only the sRGB colour space is supported and defaults to using
   # a D65 reference white.
   def to_lab(color_space = :sRGB, reference_white = Color::XYZ.d65_reference_white)
-    to_xyz.to_lab(reference_white)
+    to_xyz(color_space).to_lab(reference_white)
   end
 
   def to_s
