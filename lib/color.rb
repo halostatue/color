@@ -62,6 +62,19 @@ module Color
   def map(&block)
     self.class.new(*to_a.map(&block), 1)
   end
+
+  # Scale color components returning new color. If one argument
+  # given every component is multiplied by that factor.
+  # Or each component may be given it's own factor:
+  #   rgb.scale(0, 0.5, 2) -> red = 0, green / 2, blue * 2
+  def scale(*factors)
+    if factors.size == 1
+      map {|v| v * factors.first }
+    else
+      new_components = to_a.zip(factors).map {|c, f| c * f }
+      self.class.new *new_components, 1
+    end
+  end
 end
 
 class << Color
