@@ -20,10 +20,6 @@ class Color::XYZ
     end
   end
 
-  def scale3(xm, ym, zm)
-    Color::XYZ.new(@x * xm, @y * ym, @z * zm, 1)
-  end
-
   def to_a
     [@x, @y, @z]
   end
@@ -31,7 +27,7 @@ class Color::XYZ
   def to_lab(reference_white = Color::XYZ.d65_reference_white)
     # Calculate the ratio of the XYZ values to the reference white.
     # http://www.brucelindbloom.com/index.html?Equations.html
-    rel = scale3(1.0 / reference_white.x, 1.0 / reference_white.y, 1.0 / reference_white.z)
+    rel = scale(1.0 / reference_white.x, 1.0 / reference_white.y, 1.0 / reference_white.z)
 
     # NOTE: This should be using Rational instead of floating point values,
     # otherwise there will be discontinuities.

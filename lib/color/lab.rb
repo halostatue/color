@@ -40,6 +40,6 @@ class Color::LAB
     yr = if @l > kappa * epsilon then ((@l + 16.0) / 116) ** 3 else @l / kappa end
     zr = if (fz3 = fz ** 3) > epsilon then fz3 else (116.0 * fz - 16) / kappa end
 
-    reference_white.scale3 xr, yr, zr
+    reference_white.scale xr, yr, zr
   end
 end
