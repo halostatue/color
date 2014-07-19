@@ -36,6 +36,20 @@ Color 2.0 is a major release to the Color library.
 * Added classes for LAB and XYZ colour spaces
 * INSERT FURTHER CHANGES HERE
 
+== Examples
+
+Suppose you want to make a given RGB color a little lighter. If you dou it simply by
+adjusting curves the hue and saturation will change too. Instead it's better
+to do in LAB color space keeping the 'color' components intact altering only
+lightness component:
+
+  c = Color::RGB.new(r, g, b).to_lab
+  if (t = c.l / 50.0) < 1
+    it = 1.0 - t
+    c = Color::LAB.new(50 * (it * Math.sqrt(t) + t * t), c.a, c.b)
+  end
+  c.to_rgb
+
 == History
 
 Color is the result of a project merge between color.rb 0.1.0 by
