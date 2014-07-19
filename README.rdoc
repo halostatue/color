@@ -32,7 +32,22 @@ than fractional numbers.
 Color 2.0 is a major release to the Color library.
 * Color 2.0 is no longer tested on Ruby 1.8 and changes will be accepted that
   remove compatibility with Ruby 1.8.
+* Added classes for LAB and XYZ colour spaces
 * INSERT FURTHER CHANGES HERE
+
+== Examples
+Suppose you want an RGB color make a little lighter. If you dou it simply by
+adjusting curves the hue and saturation will change too. Instead it's better
+to do in LAB color space keeping the 'color' components intact altering only
+lightness component:
+
+  c = Color::RGB.new(r, g, b).to_lab
+  if (t = c.l / 50.0) < 1
+    it = 1.0 - t
+    c = Color::LAB.new(50 * (it * Math.sqrt(t) + t * t), c.a, c.b)
+  end
+  c.to_rgb
+
 
 == History
 
