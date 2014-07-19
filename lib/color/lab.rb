@@ -5,10 +5,9 @@ class Color::LAB
   include Color
   attr_accessor :l, :a, :b
 
-  def initialize(l,a,b)
-    @l = l
-    @a = a
-    @b = b
+  # dummy radix is just for creation 'interface' consistency across colors
+  def initialize(l, a, b, radix = 1)
+    @l, @a, @b = [ l, a, b ].map { |v| v / radix }
   end
 
   class << self
