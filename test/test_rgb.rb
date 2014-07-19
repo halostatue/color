@@ -279,16 +279,27 @@ module TestColor
 
     def test_to_lab
       # Luminosity can be an absolute.
-      assert_in_delta(0.0, Color::RGB::Black.to_lab[:L], Color::COLOR_TOLERANCE)
-      assert_in_delta(100.0, Color::RGB::White.to_lab[:L], Color::COLOR_TOLERANCE)
+      assert_in_delta(0.0, Color::RGB::Black.to_lab.l, Color::COLOR_TOLERANCE)
+      assert_in_delta(100.0, Color::RGB::White.to_lab.l, Color::COLOR_TOLERANCE)
 
       # It's not really possible to have absolute
       # numbers here because of how L*a*b* works, but
       # negative/positive comparisons work
-      assert(Color::RGB::Green.to_lab[:a] < 0)
-      assert(Color::RGB::Magenta.to_lab[:a] > 0)
-      assert(Color::RGB::Blue.to_lab[:b] < 0)
-      assert(Color::RGB::Yellow.to_lab[:b] > 0)
+      assert(Color::RGB::Green.to_lab.a < 0)
+      assert(Color::RGB::Magenta.to_lab.a > 0)
+      assert(Color::RGB::Blue.to_lab.b< 0)
+      assert(Color::RGB::Yellow.to_lab.b > 0)
+
+      # an rgb color converted to lab and to rgb from lab will still have the same r,g,b values
+      # not ready for this yet.
+      # 10.times do |t|
+      #   c1=Color::RGB.new(rand(256),rand(256),rand(256) )
+      #   l1 = c1.to_lab
+      #   c2 = l1.to_rgb
+      #   assert_equal(c1.r,c2.r)
+      #   assert_equal(c1.g,c2.g)
+      #   assert_equal(c1.b,c2.b)
+      # end
     end
 
     def test_closest_match
@@ -402,6 +413,51 @@ module TestColor
       assert_equal("RGB [#00ff00]", Color::RGB::Lime.inspect)
       assert_equal("RGB [#ff0000]", Color::RGB::Red.inspect)
       assert_equal("RGB [#ffffff]", Color::RGB::White.inspect)
+    end
+
+    def test_delta_e2000
+      # test data:
+      # http://www.ece.rochester.edu/~gsharma/ciede2000/
+      # http://www.ece.rochester.edu/~gsharma/ciede2000/dataNprograms/CIEDE2000.xls
+
+      # this will also test rad_to_deg and deg_to_rad by association
+      test_colors=[]
+      File.read('test/test_colors').each_line do |line|
+        test_colors << line.split(" ").map(&:to_f)
+      end
+      correct_answers=[]
+      File.read("test/test_color_correct_results").each_line do |line|
+        correct_answers << line.to_f
+      end
+      test_colors.each do |nums|
+        @ind ||= -1 ; @ind += 1
+        c1 = Color::LAB.new nums[0], nums[1], nums[2]
+        c2 = Color::LAB.new nums[3], nums[4], nums[5]
+        answer = correct_answers[@ind]
+        e2000=Color::LAB.delta_e2000(c1,c2)
+        assert_equal(Color::LAB.delta_e2000(c1, c2), Color::LAB.delta_e2000(c2, c1))
+        assert_in_delta 0.0001, e2000, answer
+      end
+    end
+
+    def test_contrast
+      data=[
+        [[171,215,103], [195,108,197], 0.18117],
+        [[223,133,234], [64,160,101], 0.229530],
+        [[7,30,49], [37,225,31], 0.377786],
+        [[65,119,130], [70,63,212], 0.10323],
+        [[211,77,232], [5,113,139], 0.233503],
+        [[166,185,41], [87,193,137], 0.07275],
+        [[1,120,37], [195,70,33], 0.1474640],
+        [[99,206,21], [228,204,155], 0.22611],
+        [[15,18,41], [90,202,208], 0.552434]
+      ]
+      data.each do |row|
+        c1 = Color::RGB.new(row[0][0], row[0][1], row[0][2])
+        c2 = Color::RGB.new(row[1][0], row[1][1], row[1][2])
+        assert_in_delta(0.0001, c1.contrast(c2), row[2])
+        assert_equal(c1.contrast(c2), c2.contrast(c1))
+      end
     end
   end
 end

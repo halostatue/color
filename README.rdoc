@@ -22,14 +22,17 @@ this won't matter. Absolute colour spaces (like CIE L*a*b* and XYZ) and cannot
 be reliably converted to relative colour spaces (like RGB) without colour
 profiles.
 
-Color version 1.7 adds Color::RGB::BeccaPurple for the colour #663399 in honour
-of Rebecca Meyer, the daughter of Eric Meyer, who passed away on the 7th of
-June, 2014. Her favourite colour was purple.
-{#663399becca}[https://twitter.com/hashtag/663399becca]
+<strong>NOTE</strong>: This is a prerelease version of Color 2.0, currently is
+under development. The goal is to be mathematically more robust and do as many
+colour transformations as possible more accurately than previously done. Many
+of the transforms will be performed with Matrix math; where it makes sense and
+increases transformation fidelity, Rational numbers will also be used rather
+than fractional numbers.
 
-Barring bugs introduced in this release, this is the last version of color that
-supports Ruby 1.8, so make sure that your gem specification is set properly (to
-<tt>~> 1.6</tt>) if that matters for your application.
+Color 2.0 is a major release to the Color library.
+* Color 2.0 is no longer tested on Ruby 1.8 and changes will be accepted that
+  remove compatibility with Ruby 1.8.
+* INSERT FURTHER CHANGES HERE
 
 == History
 

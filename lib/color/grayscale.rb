@@ -100,7 +100,7 @@ class Color::GrayScale
   def to_grayscale
     self
   end
-  alias to_greyscale to_grayscale
+  alias_method :to_greyscale, :to_grayscale
 
   # Lightens the greyscale colour by the stated percent.
   def lighten_by(percent)
@@ -141,7 +141,7 @@ class Color::GrayScale
   def gray
     @g * 100.0
   end
-  alias grey gray
+  alias_method :grey, :gray
   # Returns the grayscale value as a fractional value of white in the range
   # 0.0 .. 1.0.
   def g
@@ -151,7 +151,7 @@ class Color::GrayScale
   def gray=(gg)
     @g = Color.normalize(gg / 100.0)
   end
-  alias grey= gray= ;
+  alias_method :grey=, :gray=
   # Returns the grayscale value as a fractional value of white in the range
   # 0.0 .. 1.0.
   def g=(gg)
