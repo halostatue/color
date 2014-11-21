@@ -93,6 +93,7 @@ module TestColor
       assert_equal("rgba(100.00%, 0.00%, 0.00%, 1.00)", Color::RGB::Red.css_rgba)
       assert_equal("rgba(100.00%, 100.00%, 100.00%, 1.00)",
                    Color::RGB::White.css_rgba)
+      assert_equal("rgba(100.00%, 0.00%, 0.00%, 0.50)", Color::RGB::Red.css_rgba(0.5))
     end
 
     def test_lighten_by
