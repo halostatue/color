@@ -354,7 +354,7 @@ class Color::RGB
     best_match = nil
 
     color_list.each do |c|
-      distance = delta_e94(lab, c.to_lab)
+      distance = delta_e2k(lab, c.to_lab)
       if (distance < closest_distance)
         closest_distance = distance
         best_match = c
@@ -435,6 +435,109 @@ class Color::RGB
     composite_C = (delta_C / (k_C * s_C)) ** 2
     composite_H = delta_H2 / ((k_H * s_H) ** 2)
     Math.sqrt(composite_L + composite_C + composite_H)
+  end
+
+  # The Delta E (CIEDE2000) algorithm
+  # http://en.wikipedia.org/wiki/Color_difference#CIEDE2000
+  #
+  # This newer version uses slightly more complicated
+  # math, but addresses "the perceptual uniformity issue" left lingering by
+  # the CIE94 algorithm.
+  #
+  # color_1 and color_2 are both L*a*b* hashes, rendered by #to_lab.
+  #
+  # The calculations go through LCH(ab). (?)
+  #
+  # Comment numbers match up with this research document outlining implementation steps:
+  # http://www.ece.rochester.edu/~gsharma/ciede2000/ciede2000noteCRNA.pdf
+  #
+  # NOTE: This should be moved to Color::Lab.
+  def delta_e2k(color_1, color_2)
+    # Weighting factors
+    kl = 1.0
+    kc = 1.0
+    kh = 1.0
+
+    # Conversions
+    radians = lambda { |n| n * (Math::PI / 180.0) }
+    degrees = lambda { |n| n * (180.0 / Math::PI) }
+
+    # Step 1. Calculate c1, c2, c_bar, c1_prime, c2_prime, h_prime
+    c1 = Math.sqrt( (color_1[:a] ** 2) + (color_1[:b] ** 2) ) # 2
+    c2 = Math.sqrt( (color_2[:a] ** 2) + (color_2[:b] ** 2) ) # 2
+    c_bar = (c1 + c2).to_f / 2 # 3
+
+    g = 0.5 * ( 1 - Math.sqrt( (c_bar ** 7).to_f / (c_bar ** 7 + 25 ** 7) ) ) # 4
+
+    a1_prime = (1 + g) * color_1[:a] # 5
+    a2_prime = (1 + g) * color_2[:a] # 5
+
+    c1_prime = Math.sqrt( (a1_prime ** 2) + (color_1[:b] ** 2) ) # 6
+    c2_prime = Math.sqrt( (a2_prime ** 2) + (color_2[:b] ** 2) ) # 6
+
+    h1 = degrees.call( Math.atan2(color_1[:b], a1_prime) ) # 7
+    h2 = degrees.call( Math.atan2(color_2[:b], a2_prime) ) # 7
+    h1 = h1 + 360 if h1 < 0 # 7
+    h2 = h2 + 360 if h2 < 0 # 7
+
+    # Step 2. Calculate delta_l, delta_c, h_bar, delta_h
+    delta_l = color_2[:L] - color_1[:L] # 8
+    delta_c = c2_prime - c1_prime # 9
+
+    # h_prime: 10
+    h_diff = h1 - h2
+    if c1_prime * c2_prime == 0
+      h_prime = 0
+    elsif h_diff.abs <= 180
+      h_prime = h2 - h1
+    elsif h_diff > 180
+      h_prime = (h2 - h1) - 360
+    else
+      h_prime = (h1 - h2) + 360
+    end
+
+    delta_h = 2 * Math.sqrt(c1_prime * c2_prime) * Math.sin(radians.call(h_prime.to_f / 2)) # 11
+
+    # Step 3. Calculate l_bar, c_bar, h_bar, t, delta_theta, rc, sl, sh, sc, rt
+    l_bar = (color_1[:L] + color_2[:L]).to_f / 2 # 12
+    c_bar = (c1_prime + c2_prime).to_f / 2 # 13
+
+    # h_bar: 14
+    if c1_prime * c2_prime == 0
+      h_bar = h1 + h2
+    elsif h_diff.abs <= 180
+      h_bar = (h1 + h2).to_f / 2
+    elsif h1 + h2 < 360
+      h_bar = (h1 + h2 + 360).to_f / 2
+    elsif h1 + h2 >= 360
+      h_bar = (h1 + h2 - 360).to_f / 2
+    end
+
+    # t: 15
+    t = 1 -
+        (0.17 * Math.cos(radians.call(h_bar - 30))) +
+        (0.24 * Math.cos(radians.call(2 * h_bar))) +
+        (0.32 * Math.cos(radians.call(3 * h_bar + 6))) -
+        (0.20 * Math.cos(radians.call(4 * h_bar - 63)))
+
+    delta_theta = 30 * Math.exp( -(( (h_bar - 275) / 25 ) ** 2) ) # 16
+    rc = 2 * Math.sqrt( (c_bar ** 7).to_f / (c_bar ** 7 + 25 ** 7) ) # 17
+
+    # sl: 18
+    sl = 1 + ( ( 0.015 * ((l_bar - 50) ** 2) ).to_f /
+               ( Math.sqrt(20 + ( (l_bar - 50) ** 2 ) ) ) )
+
+    sc = 1 + 0.045 * c_bar # 19
+    sh = 1 + 0.015 * c_bar * t # 20
+    rt = -(Math.sin(radians.call(2 * delta_theta)) * rc) # 21
+
+    # Calculate the CIEDE2000 Color-Difference
+    Math.sqrt(
+      ( ( delta_l.to_f / (kl * sl) ) ** 2) +
+      ( ( delta_c.to_f / (kc * sc) ) ** 2 ) +
+      ( ( delta_h.to_f / (kh * sh) ) ** 2 ) +
+      ( rt * ( (delta_c.to_f / (kc * sc)) * (delta_h.to_f / (kh * sh)) ) )
+    )
   end
 
   # Returns the red component of the colour in the normal 0 .. 255 range.
