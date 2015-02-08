@@ -82,6 +82,7 @@ class << Color
   # conversions are required, this all conversions will be implemented
   # using the default conversion mechanism.
   def equivalent?(a, b)
+    return false unless a.kind_of?(Color) && b.kind_of?(Color)
     a.to_a.zip(a.coerce(b).to_a).all? { |(x, y)| near?(x, y) }
   end
 

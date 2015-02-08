@@ -49,6 +49,12 @@ module TestColor
       assert_raises(NameError) { assert(Color::MISSING_VALUE) }
     end
 
+    def test_equivalent
+      assert Color.equivalent?(Color::RGB::Red, Color::HSL.new(0, 100, 50))
+      assert !Color.equivalent?(Color::RGB::Red, nil)
+      assert !Color.equivalent?(nil, Color::RGB::Red)
+    end
+
     def test_normalize
       (1..10).each do |i|
         assert_equal(0.0, Color.normalize(-7 * i))
