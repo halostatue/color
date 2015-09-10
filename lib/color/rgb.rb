@@ -671,8 +671,18 @@ end
 
 class << Color::RGB
   private
+  if RUBY_VERSION >= "1.9"
+    def __color_exists?(mod, name)
+      mod.const_defined?(name, false)
+    end
+  else
+    def __color_exists?(mod, name)
+      mod.const_defined?(name)
+    end
+  end
+
   def __named_color(mod, rgb, *names)
-    if names.any? { |n| mod.const_defined? n }
+    if names.any? { |n| __color_exists?(mod, n) }
       raise ArgumentError, "#{names.join(', ')} already defined in #{mod}"
     end
 
