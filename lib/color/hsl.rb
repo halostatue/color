@@ -101,7 +101,7 @@ class Color::HSL
   def to_greyscale
     Color::GrayScale.from_fraction(@l)
   end
-  alias to_grayscale to_greyscale
+  alias_method :to_grayscale, :to_greyscale
 
   # Returns the hue of the colour in degrees.
   def hue
@@ -146,7 +146,7 @@ class Color::HSL
   def luminosity
     @l * 100.0
   end
-  alias lightness luminosity
+  alias_method :lightness, :luminosity
   # Returns the luminosity of the colour in the range 0.0 .. 1.0.
   def l
     @l
@@ -155,7 +155,7 @@ class Color::HSL
   def luminosity=(ll)
     @l = Color.normalize(ll / 100.0)
   end
-  alias lightness= luminosity= ;
+  alias_method :lightness=, :luminosity=
   # Sets the luminosity of the colour in the ragne 0.0 .. 1.0.
   def l=(ll)
     @l = Color.normalize(ll)

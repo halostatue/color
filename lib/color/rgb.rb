@@ -186,20 +186,19 @@ class Color::RGB
     # Inverse sRGB companding. Linearizes RGB channels with respect to
     # energy.
     r, g, b = [ @r, @g, @b ].map { |v|
-      if (v > 0.04045)
-        (((v + 0.055) / 1.055) ** 2.4) * 100
+      100 * if (v > 0.04045)
+        (((v + 0.055) / 1.055) ** 2.4)
       else
-        (v / 12.92) * 100
+        (v / 12.92)
       end
     }
 
     # Convert using the RGB/XYZ matrix at:
     # http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html#WSMatrices
-    {
-      :x => (r * 0.4124564 + g * 0.3575761 + b * 0.1804375),
-      :y => (r * 0.2126729 + g * 0.7151522 + b * 0.0721750),
-      :z => (r * 0.0193339 + g * 0.1191920 + b * 0.9503041)
-    }
+    Color::XYZ.new(
+      r * 0.4124564 + g * 0.3575761 + b * 0.1804375,
+      r * 0.2126729 + g * 0.7151522 + b * 0.0721750,
+      r * 0.0193339 + g * 0.1191920 + b * 0.9503041)
   end
 
   # Returns the L*a*b* colour encoding of the value via the XYZ colour
@@ -209,40 +208,12 @@ class Color::RGB
   #
   # Currently only the sRGB colour space is supported and defaults to using
   # a D65 reference white.
-  def to_lab(color_space = :sRGB, reference_white = [ 95.047, 100.00, 108.883 ])
-    xyz = to_xyz
+  def to_lab(color_space = :sRGB, reference_white = Color::XYZ.d65_reference_white)
+    to_xyz(color_space).to_lab(reference_white)
+  end
 
-    # Calculate the ratio of the XYZ values to the reference white.
-    # http://www.brucelindbloom.com/index.html?Equations.html
-    xr = xyz[:x] / reference_white[0]
-    yr = xyz[:y] / reference_white[1]
-    zr = xyz[:z] / reference_white[2]
-
-    # NOTE: This should be using Rational instead of floating point values,
-    # otherwise there will be discontinuities.
-    # http://www.brucelindbloom.com/LContinuity.html
-    epsilon = (216 / 24389.0)
-    kappa   = (24389 / 27.0)
-
-    # And now transform
-    # http://en.wikipedia.org/wiki/Lab_color_space#Forward_transformation
-    # There is a brief explanation there as far as the nature of the calculations,
-    # as well as a much nicer looking modeling of the algebra.
-    fx, fy, fz = [ xr, yr, zr ].map { |t|
-      if (t > (epsilon))
-        t ** (1.0 / 3)
-      else # t <= epsilon
-        ((kappa * t) + 16) / 116.0
-        # The 4/29 here is for when t = 0 (black). 4/29 * 116 = 16, and 16 -
-        # 16 = 0, which is the correct value for L* with black.
-#       ((1.0/3)*((29.0/6)**2) * t) + (4.0/29)
-      end
-    }
-    {
-      :L => ((116 * fy) - 16),
-      :a => (500 * (fx - fy)),
-      :b => (200 * (fy - fz))
-    }
+  def to_s
+    "rgb(#{@r}, #{@g}, #{@b})"
   end
 
   # Mix the RGB hue with White so that the RGB hue is the specified
@@ -285,7 +256,7 @@ class Color::RGB
   def to_grayscale
     Color::GrayScale.from_fraction(to_hsl.l)
   end
-  alias to_greyscale to_grayscale
+  alias_method :to_greyscale, :to_grayscale
 
   # Returns a new colour with the brightness adjusted by the specified
   # percentage. Negative percentages will darken the colour; positive
@@ -354,87 +325,13 @@ class Color::RGB
     best_match = nil
 
     color_list.each do |c|
-      distance = delta_e94(lab, c.to_lab)
+      distance = Color::LAB.delta_e94(lab, c.to_lab)
       if (distance < closest_distance)
         closest_distance = distance
         best_match = c
       end
     end
     best_match
-  end
-
-  # The Delta E (CIE94) algorithm
-  # http://en.wikipedia.org/wiki/Color_difference#CIE94
-  #
-  # There is a newer version, CIEDE2000, that uses slightly more complicated
-  # math, but addresses "the perceptual uniformity issue" left lingering by
-  # the CIE94 algorithm. color_1 and color_2 are both L*a*b* hashes,
-  # rendered by #to_lab.
-  #
-  # Since our source is treated as sRGB, we use the "graphic arts" presets
-  # for k_L, k_1, and k_2
-  #
-  # The calculations go through LCH(ab). (?)
-  #
-  # See also http://www.brucelindbloom.com/index.html?Eqn_DeltaE_CIE94.html
-  #
-  # NOTE: This should be moved to Color::Lab.
-  def delta_e94(color_1, color_2, weighting_type = :graphic_arts)
-    case weighting_type
-    when :graphic_arts
-      k_1 = 0.045
-      k_2 = 0.015
-      k_L = 1
-    when :textiles
-      k_1 = 0.048
-      k_2 = 0.014
-      k_L = 2
-    else
-      raise ArgumentError, "Unsupported weighting type #{weighting_type}."
-    end
-
-    # delta_E = Math.sqrt(
-    #   ((delta_L / (k_L * s_L)) ** 2) +
-    #   ((delta_C / (k_C * s_C)) ** 2) +
-    #   ((delta_H / (k_H * s_H)) ** 2)
-    # )
-    #
-    # Under some circumstances in real computers, delta_H could be an
-    # imaginary number (it's a square root value), so we're going to treat
-    # this as:
-    #
-    # delta_E = Math.sqrt(
-    #   ((delta_L / (k_L * s_L)) ** 2) +
-    #   ((delta_C / (k_C * s_C)) ** 2) +
-    #   (delta_H2 / ((k_H * s_H) ** 2)))
-    # )
-    #
-    # And not perform the square root when calculating delta_H2.
-
-    k_C = k_H = 1
-
-    l_1, a_1, b_1 = color_1.values_at(:L, :a, :b)
-    l_2, a_2, b_2 = color_2.values_at(:L, :a, :b)
-
-    delta_a = a_1 - a_2
-    delta_b = b_1 - b_2
-
-    c_1 = Math.sqrt((a_1 ** 2) + (b_1 ** 2))
-    c_2 = Math.sqrt((a_2 ** 2) + (b_2 ** 2))
-
-    delta_L = color_1[:L] - color_2[:L]
-    delta_C = c_1 - c_2
-
-    delta_H2 = (delta_a ** 2) + (delta_b ** 2) - (delta_C ** 2)
-
-    s_L = 1
-    s_C = 1 + k_1 * c_1
-    s_H = 1 + k_2 * c_1
-
-    composite_L = (delta_L / (k_L * s_L)) ** 2
-    composite_C = (delta_C / (k_C * s_C)) ** 2
-    composite_H = delta_H2 / ((k_H * s_H) ** 2)
-    Math.sqrt(composite_L + composite_C + composite_H)
   end
 
   # Returns the red component of the colour in the normal 0 .. 255 range.
@@ -543,12 +440,13 @@ class Color::RGB
   def max_rgb_as_grayscale
     Color::GrayScale.from_fraction([@r, @g, @b].max)
   end
-  alias max_rgb_as_greyscale max_rgb_as_grayscale
+  alias_method :max_rgb_as_greyscale, :max_rgb_as_grayscale
 
   def inspect
     "RGB [#{html}]"
   end
 
+  # Return array of color components
   def to_a
     [ r, g, b ]
   end
@@ -562,7 +460,6 @@ class Color::RGB
     rgb.instance_variable_set(:@b, -rgb.b)
     rgb
   end
-
   private
   def normalize_percent(percent)
     percent /= 100.0
@@ -685,9 +582,7 @@ class << Color::RGB
     if names.any? { |n| __color_exists?(mod, n) }
       raise ArgumentError, "#{names.join(', ')} already defined in #{mod}"
     end
-
     names.each { |n| mod.const_set(n, rgb) }
-
     rgb.names = names
     rgb.names.each { |n| __by_name[n] = rgb }
     __by_hex[rgb.hex] = rgb
@@ -714,6 +609,9 @@ class << Color::RGB
       raise ArgumentError, "Not a supported HTML colour type."
     end
   end
+
 end
 
 require 'color/rgb/colors'
+require 'color/rgb/metallic'
+require 'color/rgb/contrast'
