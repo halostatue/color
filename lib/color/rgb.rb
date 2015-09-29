@@ -60,10 +60,13 @@ class Color::RGB
   end
 
   # Present the colour as an RGBA (with alpha) HTML/CSS colour string (e.g.,
-  # "rgb(0%, 50%, 100%, 1)"). Note that this will perform a #to_rgb
+  # "rgb(0%, 50%, 100%, 1)").
+  #     Color::RGB.by_hex('ff0000').css_rgba # => 'rgba(100.00%, 0.00%, 0.00%, 1.00)'
+  #     Color::RGB.by_hex('ff0000').css_rgba(0.2) # => 'rgba(100.00%, 0.00%, 0.00%, 0.20)'
+  # Note that this will perform a #to_rgb
   # operation using the default conversion formula.
-  def css_rgba
-    "rgba(%3.2f%%, %3.2f%%, %3.2f%%, %3.2f)" % [ red_p, green_p, blue_p, 1 ]
+  def css_rgba(alpha = 1)
+    "rgba(%3.2f%%, %3.2f%%, %3.2f%%, %3.2f)" % [ red_p, green_p, blue_p, alpha ]
   end
 
   # Present the colour as an HSL HTML/CSS colour string (e.g., "hsl(180,
