@@ -137,6 +137,7 @@ require 'color/grayscale'
 require 'color/hsl'
 require 'color/yiq'
 require 'color/css'
+require 'color/packed_rgb'
 
 class << Color
   def const_missing(name) #:nodoc:
