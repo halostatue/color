@@ -51,8 +51,8 @@ module TestColor
 
     def test_equivalent
       assert Color.equivalent?(Color::RGB::Red, Color::HSL.new(0, 100, 50))
-      assert !Color.equivalent?(Color::RGB::Red, nil)
-      assert !Color.equivalent?(nil, Color::RGB::Red)
+      refute Color.equivalent?(Color::RGB::Red, nil)
+      refute Color.equivalent?(nil, Color::RGB::Red)
     end
 
     def test_normalize
