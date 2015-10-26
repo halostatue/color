@@ -32,6 +32,7 @@ module TestColor
       assert_equal("#545454", @gs.html)
       assert_equal("rgb(33.00%, 33.00%, 33.00%)", @gs.css_rgb)
       assert_equal("rgba(33.00%, 33.00%, 33.00%, 1.00)", @gs.css_rgba)
+      assert_equal("rgba(33.00%, 33.00%, 33.00%, 0.20)", @gs.css_rgba(0.2))
     end
 
     def test_lighten_by

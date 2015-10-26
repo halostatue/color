@@ -95,6 +95,7 @@ module TestColor
       assert_equal("#8a7a6b", @cmyk.html)
       assert_equal("rgb(54.00%, 48.00%, 42.00%)", @cmyk.css_rgb)
       assert_equal("rgba(54.00%, 48.00%, 42.00%, 1.00)", @cmyk.css_rgba)
+      assert_equal("rgba(54.00%, 48.00%, 42.00%, 0.20)", @cmyk.css_rgba(0.2))
     end
 
     def test_inspect

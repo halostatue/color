@@ -68,8 +68,8 @@ class Color::GrayScale
 
   # Present the colour as an RGBA (with alpha) HTML/CSS colour string (e.g.,
   # "rgb(0%, 50%, 100%, 1)").
-  def css_rgba
-    "rgba(%3.2f%%, %3.2f%%, %3.2f%%, %1.2f)" % [ gray, gray, gray, 1 ]
+  def css_rgba(alpha = 1)
+    "rgba(%3.2f%%, %3.2f%%, %3.2f%%, %1.2f)" % [ gray, gray, gray, alpha ]
   end
 
   # Present the colour as an HSL HTML/CSS colour string (e.g., "hsl(180,

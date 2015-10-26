@@ -70,8 +70,8 @@ class Color::CMYK
   # Present the colour as an RGBA (with alpha) HTML/CSS colour string (e.g.,
   # "rgb(0%, 50%, 100%, 1)"). Note that this will perform a #to_rgb
   # operation using the default conversion formula.
-  def css_rgba
-    to_rgb.css_rgba
+  def css_rgba(alpha = 1)
+    to_rgb.css_rgba(alpha)
   end
 
   # Present the colour as an HSL HTML/CSS colour string (e.g., "hsl(180,
