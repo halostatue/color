@@ -1,10 +1,10 @@
-# -*- ruby encoding: utf-8 -*-
+# -*- ruby -*-
 
 require 'rubygems'
 require 'hoe'
+require 'rake/clean'
 
 Hoe.plugin :doofus
-Hoe.plugin :email
 Hoe.plugin :gemspec2
 Hoe.plugin :git
 Hoe.plugin :minitest
@@ -17,39 +17,47 @@ spec = Hoe.spec 'color' do
 
   license 'MIT'
 
-  self.need_tar = true
-
   self.history_file = 'History.rdoc'
   self.readme_file = 'README.rdoc'
-  self.extra_rdoc_files = FileList["*.rdoc"].to_a
+  self.extra_rdoc_files = FileList["*.rdoc"].to_a -
+    %w(History.rdoc README.rdoc)
 
-  self.extra_dev_deps << ['hoe-doofus', '~> 1.0']
-  self.extra_dev_deps << ['hoe-gemspec2', '~> 1.1']
-  self.extra_dev_deps << ['hoe-git', '~> 1.5']
-  self.extra_dev_deps << ['hoe-rubygems', '~> 1.0']
-  self.extra_dev_deps << ['hoe-travis', '~> 1.2']
-  self.extra_dev_deps << ['minitest', '~> 5.0']
-  self.extra_dev_deps << ['rake', '~> 10.0']
+  extra_dev_deps << ['hoe-doofus', '~> 1.0']
+  extra_dev_deps << ['hoe-gemspec2', '~> 1.1']
+  extra_dev_deps << ['hoe-git', '~> 1.6']
+  extra_dev_deps << ['hoe-travis', '~> 1.2']
+  extra_dev_deps << ['minitest', '~> 5.8']
+  extra_dev_deps << ['minitest-around', '~> 0.3']
+  extra_dev_deps << ['minitest-autotest', '~> 1.0']
+  extra_dev_deps << ['minitest-bisect', '~> 1.2']
+  extra_dev_deps << ['minitest-focus', '~> 1.1']
+  extra_dev_deps << ['minitest-moar', '~> 0.0']
+  extra_dev_deps << ['minitest-pretty_diff', '~> 0.1']
+  extra_dev_deps << ['rake', '~> 10.0']
 
-  if RUBY_VERSION >= '1.9' and (ENV['CI'] or ENV['TRAVIS'])
-    self.extra_dev_deps << ['simplecov', '~> 0.7']
-    self.extra_dev_deps << ['coveralls', '~> 0.7']
+  if RUBY_VERSION >= '1.9'
+    extra_dev_deps << ['simplecov', '~> 0.7']
+    extra_dev_deps << ['coveralls', '~> 0.7'] if ENV['CI'] or ENV['TRAVIS']
   end
 end
 
 if RUBY_VERSION >= '1.9'
   namespace :test do
-    desc "Submit test coverage to Coveralls"
-    task :coveralls do
-      spec.test_prelude = [
-        'require "psych"',
-        'require "simplecov"',
-        'require "coveralls"',
-        'SimpleCov.formatter = Coveralls::SimpleCov::Formatter',
-        'SimpleCov.start("test_frameworks") { command_name "Minitest" }',
-        'gem "minitest"'
-      ].join('; ')
-      Rake::Task['test'].execute
+    if ENV['CI'] or ENV['TRAVIS']
+      desc "Submit test coverage to Coveralls"
+      task :coveralls do
+        spec.test_prelude = [
+          'require "psych"',
+          'require "simplecov"',
+          'require "coveralls"',
+          'SimpleCov.formatter = Coveralls::SimpleCov::Formatter',
+          'SimpleCov.start("test_frameworks") { command_name "Minitest" }',
+          'gem "minitest"'
+        ].join('; ')
+        Rake::Task['test'].execute
+      end
+
+      Rake::Task['travis'].prerequisites.replace(%w(test:coveralls))
     end
 
     desc "Runs test coverage. Only works Ruby 1.9+ and assumes 'simplecov' is installed."
@@ -61,7 +69,9 @@ if RUBY_VERSION >= '1.9'
       ].join('; ')
       Rake::Task['test'].execute
     end
-  end
 
-  Rake::Task['travis'].prerequisites.replace(%w(test:coveralls))
+    CLOBBER << 'coverage'
+  end
 end
+
+# vim: syntax=ruby

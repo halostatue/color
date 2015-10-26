@@ -1,8 +1,10 @@
 .autotest
+.coveralls.yml
 .gemtest
 .hoerc
 .minitest.rb
 .travis.yml
+Code-of-Conduct.rdoc
 Contributing.rdoc
 Gemfile
 History.rdoc
