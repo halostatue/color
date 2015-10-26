@@ -1,6 +1,28 @@
+== 1.8 / 2015-10-26
+
+* 1 minor enhancement:
+
+  * Add an optional +alpha+ parameter to all #css_rgba calls. Thanks to Luke
+    Bennellick (@bennell) and Alexander Popov (@AlexWayfer) for independently
+    implemented submissions. Merged from #15.
+
+* 2 minor bug fixes:
+
+  * Improve constant detection to prevent incorrectly identified name
+    collisions with various other libraries such as Azure deployment tools.
+    Based on work by Matthew Draper (@matthewd) in #24.
+
+  * Prevent Color.equivalent? comparisons from using non-Color types for
+    comparison. Fix provided by Benjamin Guest (@bguest) in #18.
+
+* 1 governance change
+
+  * This project now has a {Code of Conduct}[Code-of-Conduct_rdoc.html]
+
 == 1.7.1 / 2014-06-12
 
 * Minor enhancements:
+
   * Renamed Color::RGB::BeccaPurple to Color::RGB::RebeccaPurple as stipulated
     by Eric Meyer. http://meyerweb.com/eric/thoughts/2014/06/19/rebeccapurple/
     For purposes of backwards compatibility, the previous name is still

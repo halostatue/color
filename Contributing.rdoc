@@ -58,3 +58,5 @@ Here's the most direct way to get your work merged into the project:
 * Dave Heitzman (contrast comparison)
 * Thomas Sawyer
 * Aaron Hill (CIE94 colour matching)
+* Luke Bennellick
+* Matthew Draper

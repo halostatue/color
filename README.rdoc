@@ -22,14 +22,14 @@ this won't matter. Absolute colour spaces (like CIE L*a*b* and XYZ) and cannot
 be reliably converted to relative colour spaces (like RGB) without colour
 profiles.
 
-Color version 1.7.1 adds Color::RGB::RebeccaPurple for the colour #663399 in
-honour of Rebecca Meyer, the daughter of Eric Meyer, who passed away on the 7th
-of June, 2014. Her favourite colour was purple.
-{rebeccapurple}[http://meyerweb.com/eric/thoughts/2014/06/19/rebeccapurple/]
+Color 1.8 adds an alpha parameter to all <tt>#css_rgba</tt> calls, fixes a bug
+exposed by new constant lookup semantics in Ruby 2, and ensures that
+<tt>Color.equivalent?</tt> can only be called on Color instances.
 
-Barring bugs introduced in this release, this is the last version of color that
-supports Ruby 1.8, so make sure that your gem specification is set properly (to
-<tt>~> 1.6</tt>) if that matters for your application.
+Barring bugs introduced in this release, this (really) is the last version of
+color that supports Ruby 1.8, so make sure that your gem specification is set
+properly (to <tt>~> 1.8</tt>) if that matters for your application. This
+version will no longer be supported one year after the release of color 2.0.
 
 == History
 
@@ -44,6 +44,8 @@ SlayerOffice[2] and by Patrick Fitzgerald of BarelyFitz[3] in PHP.
 [1] http://www.stuffandnonsense.co.uk/archives/creating_colour_palettes.html
 [2] http://slayeroffice.com/tools/color_palette/
 [3] http://www.barelyfitz.com/projects/csscolor/
+
+:include: Code-of-Conduct.rdoc
 
 :include: Contributing.rdoc
 

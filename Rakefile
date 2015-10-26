@@ -19,8 +19,6 @@ spec = Hoe.spec 'color' do
 
   self.history_file = 'History.rdoc'
   self.readme_file = 'README.rdoc'
-  self.extra_rdoc_files = FileList["*.rdoc"].to_a -
-    %w(History.rdoc README.rdoc)
 
   extra_dev_deps << ['hoe-doofus', '~> 1.0']
   extra_dev_deps << ['hoe-gemspec2', '~> 1.1']
