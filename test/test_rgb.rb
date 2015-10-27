@@ -298,10 +298,10 @@ module TestColor
       # But fails if using the :just_noticeable difference.
       assert_nil(Color::RGB::Indigo.closest_match(match_from, :just_noticeable))
 
-      # Crimson & Firebrick are visually closer than DarkRed and Firebrick
+      # DarkRed & Firebrick are visually closer than Crimson and Firebrick
       # (more precise match)
       match_from += [Color::RGB::DarkRed, Color::RGB::Crimson]
-      assert_equal(Color::RGB::Crimson,
+      assert_equal(Color::RGB::DarkRed,
                    Color::RGB::Firebrick.closest_match(match_from))
       # Specifying a threshold low enough will cause even that match to
       # fail, though.
@@ -316,6 +316,13 @@ module TestColor
       # And then something that's just barely out of the tolerance range
       diff_green = Color::RGB.new(9, 142, 9)
       assert_nil(diff_green.closest_match(match_from, :jnd))
+
+      # It should match a very dark Blue to Black instead of MidnightBlue
+      # (this is something CIE94 is not good at)
+      almost_black = Color::RGB.new(41, 33, 44)
+      match_from += [Color::RGB::MidnightBlue, Color::RGB::Black]
+      assert_equal(Color::RGB::Black,
+                   almost_black.closest_match(match_from))
     end
 
     def test_add
