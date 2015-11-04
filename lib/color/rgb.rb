@@ -1,3 +1,5 @@
+require 'matrix'
+
 # An RGB colour object.
 class Color::RGB
   include Color
@@ -137,6 +139,14 @@ class Color::RGB
     i = (@r * 0.596) + (@g * -0.275) + (@b * -0.321)
     q = (@r * 0.212) + (@g * -0.523) + (@b *  0.311)
     Color::YIQ.from_fraction(y, i, q)
+  end
+
+  # Returns the YIQ (NTSC) colour encoding of the RGB value. I and Q scaled to 0..1
+  def to_correct_yiq
+    conversion_matrix = Matrix[[0.299000,  0.587000,  0.114000],
+                               [0.595716, -0.274453, -0.321263],
+                               [0.211456, -0.522591,  0.311135]]
+    Color::YIQ.from_ntsc_fraction( *(conversion_matrix * Matrix.column_vector(self.to_a)).column(0).to_a )
   end
 
   # Returns the HSL colour encoding of the RGB value. The conversions here
