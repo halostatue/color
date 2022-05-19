@@ -1,13 +1,6 @@
-.autotest
-.coveralls.yml
-.gemtest
-.hoerc
-.minitest.rb
-.travis.yml
-Code-of-Conduct.rdoc
-Contributing.rdoc
-Gemfile
-History.rdoc
+Code-of-Conduct.md
+Contributing.md
+History.md
 Licence.rdoc
 Manifest.txt
 README.rdoc

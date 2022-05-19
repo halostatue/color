@@ -1,7 +1,7 @@
 # -*- ruby encoding: utf-8 -*-
 
-require 'color'
-require 'minitest_helper'
+require "color"
+require "minitest_helper"
 
 module TestColor
   class TestGrayScale < Minitest::Test
@@ -86,7 +86,7 @@ module TestColor
 
     def test_add
       delta = @gs + Color::GrayScale.new(20)
-      max   = @gs + Color::GrayScale.new(80)
+      max = @gs + Color::GrayScale.new(80)
 
       assert_in_delta(1.0, max.g, Color::COLOR_TOLERANCE)
       assert_in_delta(0.53, delta.g, Color::COLOR_TOLERANCE)
@@ -94,7 +94,7 @@ module TestColor
 
     def test_subtract
       delta = @gs - Color::GrayScale.new(20)
-      max   = @gs - Color::GrayScale.new(80)
+      max = @gs - Color::GrayScale.new(80)
       assert_in_delta(0.0, max.g, Color::COLOR_TOLERANCE)
       assert_in_delta(0.13, delta.g, Color::COLOR_TOLERANCE)
     end

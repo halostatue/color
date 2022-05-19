@@ -1,4 +1,4 @@
-require 'color/palette'
+require "color/palette"
 
 # Generates a monochromatic constrasting colour palette for background and
 # foreground. What does this mean?
@@ -37,16 +37,16 @@ class Color::Palette::MonoContrast
   # / 255.0. If this value is set to +nil+, it will be restored to the
   # default.
   attr_reader :minimum_brightness_diff
-  def minimum_brightness_diff=(bd) #:nodoc:
+  def minimum_brightness_diff=(bd) # :nodoc:
     @minimum_brightness_diff = if bd.nil?
-                                 DEFAULT_MINIMUM_BRIGHTNESS_DIFF
-                               elsif bd > 1.0
-                                 1.0
-                               elsif bd < 0.0
-                                 0.0
-                               else
-                                 bd
-                               end
+      DEFAULT_MINIMUM_BRIGHTNESS_DIFF
+    elsif bd > 1.0
+      1.0
+    elsif bd < 0.0
+      0.0
+    else
+      bd
+    end
     regenerate(@background[0], @foreground[0])
   end
 
@@ -56,16 +56,16 @@ class Color::Palette::MonoContrast
   # and must be between 0..3. Setting this value will regenerate the palette
   # based on the base colours. The default value for this is 500 / 255.0.
   attr_reader :minimum_color_diff
-  def minimum_color_diff=(cd) #:nodoc:
+  def minimum_color_diff=(cd) # :nodoc:
     @minimum_color_diff = if cd.nil?
-                            DEFAULT_MINIMUM_COLOR_DIFF
-                          elsif cd > 3.0
-                            3.0
-                          elsif cd < 0.0
-                            0.0
-                          else
-                            cd
-                          end
+      DEFAULT_MINIMUM_COLOR_DIFF
+    elsif cd > 3.0
+      3.0
+    elsif cd < 0.0
+      0.0
+    else
+      cd
+    end
     regenerate(@background[0], @foreground[0])
   end
 
@@ -90,7 +90,7 @@ class Color::Palette::MonoContrast
     @background[-3] = background.darken_by(50)
     @background[-2] = background.darken_by(75)
     @background[-1] = background.darken_by(85)
-    @background[ 0] = background
+    @background[0] = background
     @background[+1] = background.lighten_by(85)
     @background[+2] = background.lighten_by(75)
     @background[+3] = background.lighten_by(50)
@@ -102,7 +102,7 @@ class Color::Palette::MonoContrast
     @foreground[-3] = calculate_foreground(@background[-3], foreground)
     @foreground[-2] = calculate_foreground(@background[-2], foreground)
     @foreground[-1] = calculate_foreground(@background[-1], foreground)
-    @foreground[ 0] = calculate_foreground(@background[ 0], foreground)
+    @foreground[0] = calculate_foreground(@background[0], foreground)
     @foreground[+1] = calculate_foreground(@background[+1], foreground)
     @foreground[+2] = calculate_foreground(@background[+2], foreground)
     @foreground[+3] = calculate_foreground(@background[+3], foreground)
@@ -137,8 +137,9 @@ class Color::Palette::MonoContrast
 
       ncd = color_diff(background, nfg)
 
-      break if nbd >= @minimum_brightness_diff and ncd >= @minimum_color_diff
+      break if nbd >= @minimum_brightness_diff && ncd >= @minimum_color_diff
     end
+
     nfg
   end
 

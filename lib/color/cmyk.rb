@@ -5,11 +5,6 @@
 class Color::CMYK
   include Color
 
-  # The format of a DeviceCMYK colour for PDF. In color-tools 2.0 this will
-  # be removed from this package and added back as a modification by the
-  # PDF::Writer package.
-  PDF_FORMAT_STR = "%.3f %.3f %.3f %.3f %s"
-
   # Coerces the other Color object into CMYK.
   def coerce(other)
     other.to_cmyk
@@ -36,21 +31,9 @@ class Color::CMYK
   # managed as fractional values 0..1.
   #
   #   Color::CMYK.new(30, 0, 80, 30)
-  def initialize(c = 0, m = 0, y = 0, k = 0, radix = 100.0, &block) # :yields self:
-    @c, @m, @y, @k = [ c, m, y, k ].map { |v| Color.normalize(v / radix) }
-    block.call(self) if block
-  end
-
-  # Present the colour as a DeviceCMYK fill colour string for PDF. This will
-  # be removed from the default package in color-tools 2.0.
-  def pdf_fill
-    PDF_FORMAT_STR % [ @c, @m, @y, @k, "k" ]
-  end
-
-  # Present the colour as a DeviceCMYK stroke colour string for PDF. This
-  # will be removed from the default package in color-tools 2.0.
-  def pdf_stroke
-    PDF_FORMAT_STR % [ @c, @m, @y, @k, "K" ]
+  def initialize(c = 0, m = 0, y = 0, k = 0, radix = 100.0) # :yields self:
+    @c, @m, @y, @k = [c, m, y, k].map { |v| Color.normalize(v / radix) }
+    yield self
   end
 
   # Present the colour as an RGB HTML/CSS colour string (e.g., "#aabbcc").
@@ -154,7 +137,7 @@ class Color::CMYK
   end
 
   def inspect
-    "CMYK [%.2f%%, %.2f%%, %.2f%%, %.2f%%]" % [ cyan, magenta, yellow, black ]
+    "CMYK [%.2f%%, %.2f%%, %.2f%%, %.2f%%]" % [cyan, magenta, yellow, black]
   end
 
   # Converts to RGB then YIQ.
@@ -171,15 +154,16 @@ class Color::CMYK
   def cyan
     @c * 100.0
   end
+
   # Returns the cyan (C) component of the CMYK colour as a value in the
   # range 0.0 .. 1.0.
-  def c
-    @c
-  end
+  attr_reader :c
+
   # Sets the cyan (C) component of the CMYK colour as a percentage value.
   def cyan=(cc)
     @c = Color.normalize(cc / 100.0)
   end
+
   # Sets the cyan (C) component of the CMYK colour as a value in the range
   # 0.0 .. 1.0.
   def c=(cc)
@@ -191,15 +175,16 @@ class Color::CMYK
   def magenta
     @m * 100.0
   end
+
   # Returns the magenta (M) component of the CMYK colour as a value in the
   # range 0.0 .. 1.0.
-  def m
-    @m
-  end
+  attr_reader :m
+
   # Sets the magenta (M) component of the CMYK colour as a percentage value.
   def magenta=(mm)
     @m = Color.normalize(mm / 100.0)
   end
+
   # Sets the magenta (M) component of the CMYK colour as a value in the
   # range 0.0 .. 1.0.
   def m=(mm)
@@ -211,15 +196,16 @@ class Color::CMYK
   def yellow
     @y * 100.0
   end
+
   # Returns the yellow (Y) component of the CMYK colour as a value in the
   # range 0.0 .. 1.0.
-  def y
-    @y
-  end
+  attr_reader :y
+
   # Sets the yellow (Y) component of the CMYK colour as a percentage value.
   def yellow=(yy)
     @y = Color.normalize(yy / 100.0)
   end
+
   # Sets the yellow (Y) component of the CMYK colour as a value in the range
   # 0.0 .. 1.0.
   def y=(kk)
@@ -231,15 +217,16 @@ class Color::CMYK
   def black
     @k * 100.0
   end
+
   # Returns the black (K) component of the CMYK colour as a value in the
   # range 0.0 .. 1.0.
-  def k
-    @k
-  end
+  attr_reader :k
+
   # Sets the black (K) component of the CMYK colour as a percentage value.
   def black=(kk)
     @k = Color.normalize(kk / 100.0)
   end
+
   # Sets the black (K) component of the CMYK colour as a value in the range
   # 0.0 .. 1.0.
   def k=(kk)
@@ -247,17 +234,18 @@ class Color::CMYK
   end
 
   def to_a
-    [ c, m, y, k ]
+    [c, m, y, k]
   end
 
   private
+
   # Implements the Adobe PDF conversion of CMYK to RGB.
   def adobe_cmyk_rgb
-    [ @c, @m, @y ].map { |v| 1.0 - [ 1.0, v + @k ].min }
+    [@c, @m, @y].map { |v| 1.0 - [1.0, v + @k].min }
   end
 
   # Implements the standard conversion of CMYK to RGB.
   def standard_cmyk_rgb
-    [ @c, @m, @y ].map { |v| 1.0 - (v * (1.0 - k) + k) }
+    [@c, @m, @y].map { |v| 1.0 - (v * (1.0 - k) + k) }
   end
 end

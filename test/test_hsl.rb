@@ -1,14 +1,14 @@
 # -*- ruby encoding: utf-8 -*-
 
-require 'color'
-require 'minitest_helper'
+require "color"
+require "minitest_helper"
 
 module TestColor
   class TestHSL < Minitest::Test
     def setup
-#     @hsl = Color::HSL.new(262, 67, 42)
+      #     @hsl = Color::HSL.new(262, 67, 42)
       @hsl = Color::HSL.new(145, 20, 30)
-#     @rgb = Color::RGB.new(88, 35, 179)
+      #     @rgb = Color::RGB.new(88, 35, 179)
     end
 
     def test_rgb_roundtrip_conversion
@@ -118,8 +118,8 @@ module TestColor
     end
 
     def test_mix_with
-      red     = Color::RGB::Red.to_hsl
-      yellow  = Color::RGB::Yellow.to_hsl
+      red = Color::RGB::Red.to_hsl
+      yellow = Color::RGB::Yellow.to_hsl
       assert_in_delta 0, red.hue, Color::COLOR_TOLERANCE
       assert_in_delta 60, yellow.hue, Color::COLOR_TOLERANCE
       ry25 = red.mix_with yellow, 0.25

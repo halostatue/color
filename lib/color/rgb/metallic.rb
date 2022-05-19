@@ -7,6 +7,7 @@ class Color::RGB
 
   class << self
     private
+
     def metallic(rgb, *names)
       __named_color(Metallic, new(*rgb), *names)
     end

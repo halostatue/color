@@ -1,4 +1,4 @@
-require 'color/palette'
+require "color/palette"
 
 # A class that can read a GIMP (GNU Image Manipulation Program) palette file
 # and provide a Hash-like interface to the contents. GIMP colour palettes
@@ -30,29 +30,29 @@ class Color::Palette::Gimp
 
   # Create a new GIMP palette from the palette file as a string.
   def initialize(palette)
-    @colors   = []
-    @names    = {}
-    @valid    = false
-    @name     = "(unnamed)"
+    @colors = []
+    @names = {}
+    @valid = false
+    @name = "(unnamed)"
 
     palette.split($/).each do |line|
       line.chomp!
-      line.gsub!(/\s*#.*\Z/, '')
+      line.gsub!(/\s*#.*\Z/, "")
 
       next if line.empty?
 
-      if line =~ /\AGIMP Palette\Z/
+      if /\AGIMP Palette\Z/.match?(line)
         @valid = true
         next
       end
 
       info = /(\w+):\s(.*$)/.match(line)
       if info
-        @name = info.captures[1] if info.captures[0] =~ /name/i
+        @name = info.captures[1] if /name/i.match?(info.captures[0])
         next
       end
 
-      line.gsub!(/^\s+/, '')
+      line.gsub!(/^\s+/, "")
       data = line.split(/\s+/, 4)
       name = data.pop.strip
       data.map! { |el| el.to_i }
@@ -61,7 +61,7 @@ class Color::Palette::Gimp
 
       @colors << color
       @names[name] ||= []
-      @names[name]  << color
+      @names[name] << color
     end
   end
 
@@ -74,7 +74,7 @@ class Color::Palette::Gimp
   # will be returned. If a String +key+ is provided, the colour set (an
   # array) for that colour name will be returned.
   def [](key)
-    if key.kind_of?(Numeric)
+    if key.is_a?(Numeric)
       @colors[key]
     else
       @names[key]
@@ -87,7 +87,7 @@ class Color::Palette::Gimp
   end
 
   # Loops through each named colour set.
-  def each_name #:yields color_name, color_set:#
+  def each_name # :yields color_name, color_set:#
     @names.each { |color_name, color_set| yield color_name, color_set }
   end
 

@@ -1,4 +1,4 @@
-require 'color/palette'
+require "color/palette"
 
 # A class that can read an Adobe Color palette file (used for Photoshop
 # swatches) and provide a Hash-like interface to the contents. Not all
@@ -40,23 +40,23 @@ class Color::Palette::AdobeColor
   attr_reader :lost
 
   # Use this to convert the unsigned word to the signed word, if necessary.
-  UwToSw = proc { |n| (n >= (2 ** 16)) ? n - (2 ** 32) : n } #:nodoc:
+  UwToSw = proc { |n| n >= (2**16) ? n - (2**32) : n } # :nodoc:
 
   # Create a new AdobeColor palette from the palette file as a string.
   def initialize(palette)
-    @colors     = []
-    @names      = {}
+    @colors = []
+    @names = {}
     @statistics = Hash.new(0)
-    @lost       = []
-    @order      = []
-    @version    = nil
+    @lost = []
+    @order = []
+    @version = nil
 
     class << palette
       def readwords(count = 1)
         @offset ||= 0
-        raise IndexError if @offset >= self.size
+        raise IndexError if @offset >= size
         val = self[@offset, count * 2]
-        raise IndexError if val.nil? or val.size < (count * 2)
+        raise IndexError if val.nil? || val.size < (count * 2)
         val = val.unpack("n" * count)
         @offset += count * 2
         val
@@ -64,9 +64,9 @@ class Color::Palette::AdobeColor
 
       def readutf16(count = 1)
         @offset ||= 0
-        raise IndexError if @offset >= self.size
+        raise IndexError if @offset >= size
         val = self[@offset, count * 2]
-        raise IndexError if val.nil? or val.size < (count * 2)
+        raise IndexError if val.nil? || val.size < (count * 2)
         @offset += count * 2
         val
       end
@@ -74,97 +74,97 @@ class Color::Palette::AdobeColor
 
     @version, count = palette.readwords 2
 
-    raise "Unknown AdobeColor palette version #@version." unless @version.between?(1, 2)
+    raise "Unknown AdobeColor palette version #{@version}." unless @version.between?(1, 2)
 
     count.times do
       space, w, x, y, z = palette.readwords 5
       name = nil
       if @version == 2
-        raise IndexError unless palette.readwords == [ 0 ]
+        raise IndexError unless palette.readwords == [0]
         len = palette.readwords
         name = palette.readutf16(len[0] - 1)
-        raise IndexError unless palette.readwords == [ 0 ]
+        raise IndexError unless palette.readwords == [0]
       end
 
       color = case space
-              when 0 then # RGB
-                @statistics[:rgb] += 1
+      when 0 # RGB
+        @statistics[:rgb] += 1
 
-                Color::RGB.new(w / 256, x / 256, y / 256)
-              when 1 then # HS[BV] -- Convert to RGB
-                @statistics[:hsb] += 1
+        Color::RGB.new(w / 256, x / 256, y / 256)
+      when 1 # HS[BV] -- Convert to RGB
+        @statistics[:hsb] += 1
 
-                h = w / 65535.0
-                s = x / 65535.0
-                v = y / 65535.0
+        h = w / 65535.0
+        s = x / 65535.0
+        v = y / 65535.0
 
-                if defined?(Color::HSB)
-                  Color::HSB.from_fraction(h, s, v)
-                else
-                  @statistics[:converted] += 1
-                  if Color.near_zero_or_less?(s)
-                    Color::RGB.from_fraction(v, v, v)
-                  else
-                    if Color.near_one_or_more?(h)
-                      vh = 0
-                    else
-                      vh = h * 6.0
-                    end
+        if defined?(Color::HSB)
+          Color::HSB.from_fraction(h, s, v)
+        else
+          @statistics[:converted] += 1
+          if Color.near_zero_or_less?(s)
+            Color::RGB.from_fraction(v, v, v)
+          else
+            vh = if Color.near_one_or_more?(h)
+              0
+            else
+              h * 6.0
+            end
 
-                    vi = vh.floor
-                    v1 = v.to_f * (1 - s.to_f)
-                    v2 = v.to_f * (1 - s.to_f * (vh - vi))
-                    v3 = v.to_f * (1 - s.to_f * (1 - (vh - vi)))
+            vi = vh.floor
+            v1 = v.to_f * (1 - s.to_f)
+            v2 = v.to_f * (1 - s.to_f * (vh - vi))
+            v3 = v.to_f * (1 - s.to_f * (1 - (vh - vi)))
 
-                    case vi
-                    when 0 then Color::RGB.from_fraction(v, v3, v1)
-                    when 1 then Color::RGB.from_fraction(v2, v, v1)
-                    when 2 then Color::RGB.from_fraction(v1, v, v3)
-                    when 3 then Color::RGB.from_fraction(v1, v2, v)
-                    when 4 then Color::RGB.from_fraction(v3, v1, v)
-                    else Color::RGB.from_fraction(v, v1, v2)
-                    end
-                  end
-                end
-              when 2 then # CMYK
-                @statistics[:cmyk] += 1
-                Color::CMYK.from_percent(100 - (w / 655.35),
-                                         100 - (x / 655.35),
-                                         100 - (y / 655.35),
-                                         100 - (z / 655.35))
-              when 7 then # L*a*b*
-                @statistics[:lab] += 1
+            case vi
+            when 0 then Color::RGB.from_fraction(v, v3, v1)
+            when 1 then Color::RGB.from_fraction(v2, v, v1)
+            when 2 then Color::RGB.from_fraction(v1, v, v3)
+            when 3 then Color::RGB.from_fraction(v1, v2, v)
+            when 4 then Color::RGB.from_fraction(v3, v1, v)
+            else Color::RGB.from_fraction(v, v1, v2)
+            end
+          end
+        end
+      when 2 # CMYK
+        @statistics[:cmyk] += 1
+        Color::CMYK.from_percent(100 - (w / 655.35),
+          100 - (x / 655.35),
+          100 - (y / 655.35),
+          100 - (z / 655.35))
+      when 7 # L*a*b*
+        @statistics[:lab] += 1
 
-                l = [w, 10000].min / 100.0
-                a = [[-12800, UwToSw[x]].max, 12700].min / 100.0
-                b = [[-12800, UwToSw[x]].max, 12700].min / 100.0
+        l = [w, 10000].min / 100.0
+        a = [[-12800, UwToSw[x]].max, 12700].min / 100.0
+        b = [[-12800, UwToSw[x]].max, 12700].min / 100.0
 
-                if defined? Color::Lab
-                  Color::Lab.new(l, a, b)
-                else
-                  [ space, w, x, y, z ]
-                end
-              when 8 then # Grayscale
-                @statistics[:gray] += 1
+        if defined? Color::Lab
+          Color::Lab.new(l, a, b)
+        else
+          [space, w, x, y, z]
+        end
+      when 8 # Grayscale
+        @statistics[:gray] += 1
 
-                g = [w, 10000].min / 100.0
-                Color::GrayScale.new(g)
-              when 9 then # Wide CMYK
-                @statistics[:wcmyk] += 1
+        g = [w, 10000].min / 100.0
+        Color::GrayScale.new(g)
+      when 9 # Wide CMYK
+        @statistics[:wcmyk] += 1
 
-                c = [w, 10000].min / 100.0
-                m = [x, 10000].min / 100.0
-                y = [y, 10000].min / 100.0
-                k = [z, 10000].min / 100.0
-                Color::CMYK.from_percent(c, m, y, k)
-              else
-                @statistics[space] += 1
-                [ space, w, x, y, z ]
-              end
+        c = [w, 10000].min / 100.0
+        m = [x, 10000].min / 100.0
+        y = [y, 10000].min / 100.0
+        k = [z, 10000].min / 100.0
+        Color::CMYK.from_percent(c, m, y, k)
+      else
+        @statistics[space] += 1
+        [space, w, x, y, z]
+      end
 
-      @order << [ color, name ]
+      @order << [color, name]
 
-      if color.kind_of? Array
+      if color.is_a? Array
         @lost << color
       else
         @colors << color
@@ -186,7 +186,7 @@ class Color::Palette::AdobeColor
   # will be returned. If a String +key+ is provided, the colour set (an
   # array) for that colour name will be returned.
   def [](key)
-    if key.kind_of?(Numeric)
+    if key.is_a?(Numeric)
       @colors[key]
     else
       @names[key]
@@ -199,7 +199,7 @@ class Color::Palette::AdobeColor
   end
 
   # Loops through each named colour set.
-  def each_name #:yields color_name, color_set:#
+  def each_name # :yields color_name, color_set:#
     @names.each { |color_name, color_set| yield color_name, color_set }
   end
 
@@ -209,10 +209,10 @@ class Color::Palette::AdobeColor
 
   attr_reader :version
 
-  def to_aco(version = @version) #:nodoc:
+  def to_aco(version = @version) # :nodoc:
     res = ""
 
-    res << [ version, @order.size ].pack("nn")
+    res << [version, @order.size].pack("nn")
 
     @order.each do |cnpair|
       color, name = *cnpair
@@ -221,34 +221,34 @@ class Color::Palette::AdobeColor
       # import. They are turned into RGB and WCMYK, respectively.
 
       cstr = case color
-             when Array
-               color
-             when Color::RGB
-               r = [(color.red * 256).round, 65535].min
-               g = [(color.green * 256).round, 65535].min
-               b = [(color.blue * 256).round, 65535].min
-               [ 0, r, g, b, 0 ]
-             when Color::GrayScale
-               g = [(color.gray * 100).round, 10000].min
-               [ 8, g, 0, 0, 0 ]
-             when Color::CMYK
-               c = [(color.cyan * 100).round, 10000].min
-               m = [(color.magenta * 100).round, 10000].min
-               y = [(color.yellow * 100).round, 10000].min
-               k = [(color.black * 100).round, 10000].min
-               [ 9, c, m, y, k ]
-             end
+      when Array
+        color
+      when Color::RGB
+        r = [(color.red * 256).round, 65535].min
+        g = [(color.green * 256).round, 65535].min
+        b = [(color.blue * 256).round, 65535].min
+        [0, r, g, b, 0]
+      when Color::GrayScale
+        g = [(color.gray * 100).round, 10000].min
+        [8, g, 0, 0, 0]
+      when Color::CMYK
+        c = [(color.cyan * 100).round, 10000].min
+        m = [(color.magenta * 100).round, 10000].min
+        y = [(color.yellow * 100).round, 10000].min
+        k = [(color.black * 100).round, 10000].min
+        [9, c, m, y, k]
+      end
       cstr = cstr.pack("nnnnn")
 
       nstr = ""
 
       if version == 2
         if (name.size / 2 * 2) == name.size # only where s[0] == byte!
-          nstr << [ 0, (name.size / 2) + 1 ].pack("nn")
+          nstr << [0, (name.size / 2) + 1].pack("nn")
           nstr << name
-          nstr << [ 0 ].pack("n")
+          nstr << [0].pack("n")
         else
-          nstr << [ 0, 1, 0 ].pack("nnn")
+          nstr << [0, 1, 0].pack("nnn")
         end
       end
 

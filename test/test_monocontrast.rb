@@ -1,8 +1,8 @@
 # -*- ruby encoding: utf-8 -*-
 
-require 'color'
-require 'color/palette/monocontrast'
-require 'minitest_helper'
+require "color"
+require "color/palette/monocontrast"
+require "minitest_helper"
 
 module TestColor
   module TestPalette
@@ -10,7 +10,7 @@ module TestColor
       include Color::Palette
       def setup
         @high = Color::RGB.from_html("#c9e3a6")
-        @low  = Color::RGB.from_html("#746b8e")
+        @low = Color::RGB.from_html("#746b8e")
         @mcp1 = MonoContrast.new(@high)
         @mcp2 = MonoContrast.new(@low)
       end
@@ -21,7 +21,7 @@ module TestColor
         assert_equal("#657253", @mcp1.background[-3].html)
         assert_equal("#97aa7d", @mcp1.background[-2].html)
         assert_equal("#abc18d", @mcp1.background[-1].html)
-        assert_equal("#c9e3a6", @mcp1.background[ 0].html)
+        assert_equal("#c9e3a6", @mcp1.background[0].html)
         assert_equal("#d1e7b3", @mcp1.background[+1].html)
         assert_equal("#d7eabc", @mcp1.background[+2].html) # d7eabd
         assert_equal("#e4f1d3", @mcp1.background[+3].html) # e5f2d3
@@ -33,7 +33,7 @@ module TestColor
         assert_equal("#3a3647", @mcp2.background[-3].html)
         assert_equal("#57506b", @mcp2.background[-2].html)
         assert_equal("#635b79", @mcp2.background[-1].html)
-        assert_equal("#746b8e", @mcp2.background[ 0].html)
+        assert_equal("#746b8e", @mcp2.background[0].html)
         assert_equal("#89819f", @mcp2.background[+1].html)
         assert_equal("#9790aa", @mcp2.background[+2].html) # 9790ab
         assert_equal("#bab5c7", @mcp2.background[+3].html) # bab6c7
@@ -54,8 +54,8 @@ module TestColor
 
       def test_color_diff
         assert_in_delta(@mcp1.color_diff(@low, @high),
-                        @mcp1.color_diff(@high, @low),
-                        Color::COLOR_TOLERANCE)
+          @mcp1.color_diff(@high, @low),
+          Color::COLOR_TOLERANCE)
       end
 
       def test_foreground
@@ -64,7 +64,7 @@ module TestColor
         assert_equal("#ffffff", @mcp1.foreground[-3].html)
         assert_equal("#000000", @mcp1.foreground[-2].html)
         assert_equal("#000000", @mcp1.foreground[-1].html)
-        assert_equal("#000000", @mcp1.foreground[ 0].html)
+        assert_equal("#000000", @mcp1.foreground[0].html)
         assert_equal("#000000", @mcp1.foreground[+1].html)
         assert_equal("#000000", @mcp1.foreground[+2].html)
         assert_equal("#32392a", @mcp1.foreground[+3].html)
@@ -76,7 +76,7 @@ module TestColor
         assert_equal("#ffffff", @mcp2.foreground[-3].html)
         assert_equal("#ffffff", @mcp2.foreground[-2].html)
         assert_equal("#ffffff", @mcp2.foreground[-1].html)
-        assert_equal("#ffffff", @mcp2.foreground[ 0].html)
+        assert_equal("#ffffff", @mcp2.foreground[0].html)
         assert_equal("#000000", @mcp2.foreground[+1].html)
         assert_equal("#000000", @mcp2.foreground[+2].html)
         assert_equal("#000000", @mcp2.foreground[+3].html)
@@ -86,12 +86,12 @@ module TestColor
 
       def test_minimum_brightness_diff
         assert_in_delta(MonoContrast::DEFAULT_MINIMUM_BRIGHTNESS_DIFF,
-                        @mcp1.minimum_brightness_diff, Color::COLOR_TOLERANCE)
+          @mcp1.minimum_brightness_diff, Color::COLOR_TOLERANCE)
       end
 
       def test_minimum_brightness_diff_equals
         assert_in_delta(MonoContrast::DEFAULT_MINIMUM_BRIGHTNESS_DIFF,
-                        @mcp1.minimum_brightness_diff, Color::COLOR_TOLERANCE)
+          @mcp1.minimum_brightness_diff, Color::COLOR_TOLERANCE)
         mcps = @mcp1.dup
         @mcp1.minimum_brightness_diff = 0.75
         assert_in_delta(0.75, @mcp1.minimum_brightness_diff, Color::COLOR_TOLERANCE)
@@ -102,17 +102,17 @@ module TestColor
         assert_in_delta(0, @mcp1.minimum_brightness_diff, Color::COLOR_TOLERANCE)
         @mcp1.minimum_brightness_diff = nil
         assert_in_delta(MonoContrast::DEFAULT_MINIMUM_BRIGHTNESS_DIFF,
-                        @mcp1.minimum_brightness_diff, Color::COLOR_TOLERANCE)
+          @mcp1.minimum_brightness_diff, Color::COLOR_TOLERANCE)
       end
 
       def test_minimum_color_diff
         assert_in_delta(MonoContrast::DEFAULT_MINIMUM_COLOR_DIFF,
-                        @mcp1.minimum_color_diff, Color::COLOR_TOLERANCE)
+          @mcp1.minimum_color_diff, Color::COLOR_TOLERANCE)
       end
 
       def test_minimum_color_diff_equals
         assert_in_delta(MonoContrast::DEFAULT_MINIMUM_COLOR_DIFF,
-                        @mcp1.minimum_color_diff, Color::COLOR_TOLERANCE)
+          @mcp1.minimum_color_diff, Color::COLOR_TOLERANCE)
         mcps = @mcp1.dup
         @mcp1.minimum_color_diff = 0.75
         assert_in_delta(0.75, @mcp1.minimum_color_diff, Color::COLOR_TOLERANCE)
@@ -123,7 +123,7 @@ module TestColor
         assert_in_delta(0, @mcp1.minimum_color_diff, Color::COLOR_TOLERANCE)
         @mcp1.minimum_color_diff = nil
         assert_in_delta(MonoContrast::DEFAULT_MINIMUM_COLOR_DIFF,
-                        @mcp1.minimum_color_diff, Color::COLOR_TOLERANCE)
+          @mcp1.minimum_color_diff, Color::COLOR_TOLERANCE)
       end
     end
   end

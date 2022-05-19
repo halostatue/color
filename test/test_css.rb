@@ -1,6 +1,6 @@
-require 'color'
-require 'color/css'
-require 'minitest_helper'
+require "color"
+require "color/css"
+require "minitest_helper"
 
 module TestColor
   class TestCSS < Minitest::Test
@@ -13,7 +13,7 @@ module TestColor
     end
 
     def test_index_with_unknown_name
-      assert_equal(nil, Color::CSS['redx'])
+      assert_nil Color::CSS["redx"]
     end
   end
 end

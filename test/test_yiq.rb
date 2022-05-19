@@ -1,7 +1,7 @@
 # -*- ruby encoding: utf-8 -*-
 
-require 'color'
-require 'minitest_helper'
+require "color"
+require "minitest_helper"
 
 module TestColor
   class TestYIQ < Minitest::Test

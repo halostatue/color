@@ -1,6 +1,6 @@
 # -*- ruby encoding: utf-8 -*-
 
-require 'color'
+require "color"
 
-gem 'minitest'
-require 'minitest/autorun'
+gem "minitest"
+require "minitest/autorun"

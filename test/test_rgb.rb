@@ -1,7 +1,7 @@
 # -*- ruby encoding: utf-8 -*-
 
-require 'color'
-require 'minitest_helper'
+require "color"
+require "minitest_helper"
 
 module TestColor
   class TestRGB < Minitest::Test
@@ -17,9 +17,9 @@ module TestColor
 
     def test_adjust_saturation
       assert_equal("#ef9374",
-                   Color::RGB::DarkSalmon.adjust_saturation(10).html)
+        Color::RGB::DarkSalmon.adjust_saturation(10).html)
       assert_equal("#e39980",
-                   Color::RGB::DarkSalmon.adjust_saturation(-10).html)
+        Color::RGB::DarkSalmon.adjust_saturation(-10).html)
     end
 
     def test_red
@@ -70,7 +70,7 @@ module TestColor
 
     def test_darken_by
       assert_in_delta(0.5, Color::RGB::Blue.darken_by(50).b,
-                      Color::COLOR_TOLERANCE)
+        Color::COLOR_TOLERANCE)
     end
 
     def test_html
@@ -97,26 +97,26 @@ module TestColor
 
     def test_lighten_by
       assert_in_delta(1.0, Color::RGB::Blue.lighten_by(50).b,
-                      Color::COLOR_TOLERANCE)
+        Color::COLOR_TOLERANCE)
       assert_in_delta(0.5, Color::RGB::Blue.lighten_by(50).r,
-                      Color::COLOR_TOLERANCE)
+        Color::COLOR_TOLERANCE)
       assert_in_delta(0.5, Color::RGB::Blue.lighten_by(50).g,
-                      Color::COLOR_TOLERANCE)
+        Color::COLOR_TOLERANCE)
     end
 
     def test_mix_with
       assert_in_delta(0.5, Color::RGB::Red.mix_with(Color::RGB::Blue, 50).r,
-                      Color::COLOR_TOLERANCE)
+        Color::COLOR_TOLERANCE)
       assert_in_delta(0.0, Color::RGB::Red.mix_with(Color::RGB::Blue, 50).g,
-                      Color::COLOR_TOLERANCE)
+        Color::COLOR_TOLERANCE)
       assert_in_delta(0.5, Color::RGB::Red.mix_with(Color::RGB::Blue, 50).b,
-                      Color::COLOR_TOLERANCE)
+        Color::COLOR_TOLERANCE)
       assert_in_delta(0.5, Color::RGB::Blue.mix_with(Color::RGB::Red, 50).r,
-                      Color::COLOR_TOLERANCE)
+        Color::COLOR_TOLERANCE)
       assert_in_delta(0.0, Color::RGB::Blue.mix_with(Color::RGB::Red, 50).g,
-                      Color::COLOR_TOLERANCE)
+        Color::COLOR_TOLERANCE)
       assert_in_delta(0.5, Color::RGB::Blue.mix_with(Color::RGB::Red, 50).b,
-                      Color::COLOR_TOLERANCE)
+        Color::COLOR_TOLERANCE)
     end
 
     def test_pdf_fill
@@ -136,49 +136,49 @@ module TestColor
       assert_kind_of(Color::CMYK, Color::RGB::Black.to_cmyk)
       assert_equal(Color::CMYK.new(0, 0, 0, 100), Color::RGB::Black.to_cmyk)
       assert_equal(Color::CMYK.new(0, 0, 100, 0),
-                   Color::RGB::Yellow.to_cmyk)
+        Color::RGB::Yellow.to_cmyk)
       assert_equal(Color::CMYK.new(100, 0, 0, 0), Color::RGB::Cyan.to_cmyk)
       assert_equal(Color::CMYK.new(0, 100, 0, 0),
-                   Color::RGB::Magenta.to_cmyk)
+        Color::RGB::Magenta.to_cmyk)
       assert_equal(Color::CMYK.new(0, 100, 100, 0), Color::RGB::Red.to_cmyk)
       assert_equal(Color::CMYK.new(100, 0, 100, 0),
-                   Color::RGB::Lime.to_cmyk)
+        Color::RGB::Lime.to_cmyk)
       assert_equal(Color::CMYK.new(100, 100, 0, 0),
-                   Color::RGB::Blue.to_cmyk)
+        Color::RGB::Blue.to_cmyk)
       assert_equal(Color::CMYK.new(10.32, 60.52, 10.32, 39.47),
-                   Color::RGB::Purple.to_cmyk)
+        Color::RGB::Purple.to_cmyk)
       assert_equal(Color::CMYK.new(10.90, 59.13, 59.13, 24.39),
-                   Color::RGB::Brown.to_cmyk)
+        Color::RGB::Brown.to_cmyk)
       assert_equal(Color::CMYK.new(0, 63.14, 18.43, 0),
-                   Color::RGB::Carnation.to_cmyk)
+        Color::RGB::Carnation.to_cmyk)
       assert_equal(Color::CMYK.new(7.39, 62.69, 62.69, 37.32),
-                   Color::RGB::Cayenne.to_cmyk)
+        Color::RGB::Cayenne.to_cmyk)
     end
 
     def test_to_grayscale
       assert_kind_of(Color::GrayScale, Color::RGB::Black.to_grayscale)
       assert_equal(Color::GrayScale.from_fraction(0),
-                   Color::RGB::Black.to_grayscale)
+        Color::RGB::Black.to_grayscale)
       assert_equal(Color::GrayScale.from_fraction(0.5),
-                   Color::RGB::Yellow.to_grayscale)
+        Color::RGB::Yellow.to_grayscale)
       assert_equal(Color::GrayScale.from_fraction(0.5),
-                   Color::RGB::Cyan.to_grayscale)
+        Color::RGB::Cyan.to_grayscale)
       assert_equal(Color::GrayScale.from_fraction(0.5),
-                   Color::RGB::Magenta.to_grayscale)
+        Color::RGB::Magenta.to_grayscale)
       assert_equal(Color::GrayScale.from_fraction(0.5),
-                   Color::RGB::Red.to_grayscale)
+        Color::RGB::Red.to_grayscale)
       assert_equal(Color::GrayScale.from_fraction(0.5),
-                   Color::RGB::Lime.to_grayscale)
+        Color::RGB::Lime.to_grayscale)
       assert_equal(Color::GrayScale.from_fraction(0.5),
-                   Color::RGB::Blue.to_grayscale)
+        Color::RGB::Blue.to_grayscale)
       assert_equal(Color::GrayScale.from_fraction(0.2510),
-                   Color::RGB::Purple.to_grayscale)
+        Color::RGB::Purple.to_grayscale)
       assert_equal(Color::GrayScale.new(40.58),
-                   Color::RGB::Brown.to_grayscale)
+        Color::RGB::Brown.to_grayscale)
       assert_equal(Color::GrayScale.new(68.43),
-                   Color::RGB::Carnation.to_grayscale)
+        Color::RGB::Carnation.to_grayscale)
       assert_equal(Color::GrayScale.new(27.65),
-                   Color::RGB::Cayenne.to_grayscale)
+        Color::RGB::Cayenne.to_grayscale)
     end
 
     def test_to_hsl
@@ -191,52 +191,52 @@ module TestColor
       assert_equal(Color::HSL.new(120, 100, 50), Color::RGB::Lime.to_hsl)
       assert_equal(Color::HSL.new(240, 100, 50), Color::RGB::Blue.to_hsl)
       assert_equal(Color::HSL.new(300, 100, 25.10),
-                   Color::RGB::Purple.to_hsl)
+        Color::RGB::Purple.to_hsl)
       assert_equal(Color::HSL.new(0, 59.42, 40.59),
-                   Color::RGB::Brown.to_hsl)
+        Color::RGB::Brown.to_hsl)
       assert_equal(Color::HSL.new(317.5, 100, 68.43),
-                   Color::RGB::Carnation.to_hsl)
+        Color::RGB::Carnation.to_hsl)
       assert_equal(Color::HSL.new(0, 100, 27.64),
-                   Color::RGB::Cayenne.to_hsl)
+        Color::RGB::Cayenne.to_hsl)
 
       assert_equal("hsl(0.00, 0.00%, 0.00%)", Color::RGB::Black.css_hsl)
       assert_equal("hsl(60.00, 100.00%, 50.00%)",
-                   Color::RGB::Yellow.css_hsl)
+        Color::RGB::Yellow.css_hsl)
       assert_equal("hsl(180.00, 100.00%, 50.00%)", Color::RGB::Cyan.css_hsl)
       assert_equal("hsl(300.00, 100.00%, 50.00%)",
-                   Color::RGB::Magenta.css_hsl)
+        Color::RGB::Magenta.css_hsl)
       assert_equal("hsl(0.00, 100.00%, 50.00%)", Color::RGB::Red.css_hsl)
       assert_equal("hsl(120.00, 100.00%, 50.00%)", Color::RGB::Lime.css_hsl)
       assert_equal("hsl(240.00, 100.00%, 50.00%)", Color::RGB::Blue.css_hsl)
       assert_equal("hsl(300.00, 100.00%, 25.10%)",
-                   Color::RGB::Purple.css_hsl)
+        Color::RGB::Purple.css_hsl)
       assert_equal("hsl(0.00, 59.42%, 40.59%)", Color::RGB::Brown.css_hsl)
       assert_equal("hsl(317.52, 100.00%, 68.43%)",
-                   Color::RGB::Carnation.css_hsl)
+        Color::RGB::Carnation.css_hsl)
       assert_equal("hsl(0.00, 100.00%, 27.65%)", Color::RGB::Cayenne.css_hsl)
 
       assert_equal("hsla(0.00, 0.00%, 0.00%, 1.00)",
-                   Color::RGB::Black.css_hsla)
+        Color::RGB::Black.css_hsla)
       assert_equal("hsla(60.00, 100.00%, 50.00%, 1.00)",
-                   Color::RGB::Yellow.css_hsla)
+        Color::RGB::Yellow.css_hsla)
       assert_equal("hsla(180.00, 100.00%, 50.00%, 1.00)",
-                   Color::RGB::Cyan.css_hsla)
+        Color::RGB::Cyan.css_hsla)
       assert_equal("hsla(300.00, 100.00%, 50.00%, 1.00)",
-                   Color::RGB::Magenta.css_hsla)
+        Color::RGB::Magenta.css_hsla)
       assert_equal("hsla(0.00, 100.00%, 50.00%, 1.00)",
-                   Color::RGB::Red.css_hsla)
+        Color::RGB::Red.css_hsla)
       assert_equal("hsla(120.00, 100.00%, 50.00%, 1.00)",
-                   Color::RGB::Lime.css_hsla)
+        Color::RGB::Lime.css_hsla)
       assert_equal("hsla(240.00, 100.00%, 50.00%, 1.00)",
-                   Color::RGB::Blue.css_hsla)
+        Color::RGB::Blue.css_hsla)
       assert_equal("hsla(300.00, 100.00%, 25.10%, 1.00)",
-                   Color::RGB::Purple.css_hsla)
+        Color::RGB::Purple.css_hsla)
       assert_equal("hsla(0.00, 59.42%, 40.59%, 1.00)",
-                   Color::RGB::Brown.css_hsla)
+        Color::RGB::Brown.css_hsla)
       assert_equal("hsla(317.52, 100.00%, 68.43%, 1.00)",
-                   Color::RGB::Carnation.css_hsla)
+        Color::RGB::Carnation.css_hsla)
       assert_equal("hsla(0.00, 100.00%, 27.65%, 1.00)",
-                   Color::RGB::Cayenne.css_hsla)
+        Color::RGB::Cayenne.css_hsla)
 
       # The following tests a bug reported by Jean Krohn on 10 June 2006
       # where HSL conversion was not quite correct, resulting in a bad
@@ -263,18 +263,18 @@ module TestColor
       assert_equal(Color::YIQ.new(88.6, 32.1, 0), Color::RGB::Yellow.to_yiq)
       assert_equal(Color::YIQ.new(70.1, 0, 0), Color::RGB::Cyan.to_yiq)
       assert_equal(Color::YIQ.new(41.3, 27.5, 52.3),
-                   Color::RGB::Magenta.to_yiq)
+        Color::RGB::Magenta.to_yiq)
       assert_equal(Color::YIQ.new(29.9, 59.6, 21.2), Color::RGB::Red.to_yiq)
       assert_equal(Color::YIQ.new(58.7, 0, 0), Color::RGB::Lime.to_yiq)
       assert_equal(Color::YIQ.new(11.4, 0, 31.1), Color::RGB::Blue.to_yiq)
       assert_equal(Color::YIQ.new(20.73, 13.80, 26.25),
-                   Color::RGB::Purple.to_yiq)
+        Color::RGB::Purple.to_yiq)
       assert_equal(Color::YIQ.new(30.89, 28.75, 10.23),
-                   Color::RGB::Brown.to_yiq)
+        Color::RGB::Brown.to_yiq)
       assert_equal(Color::YIQ.new(60.84, 23.28, 27.29),
-                   Color::RGB::Carnation.to_yiq)
+        Color::RGB::Carnation.to_yiq)
       assert_equal(Color::YIQ.new(16.53, 32.96, 11.72),
-                   Color::RGB::Cayenne.to_yiq)
+        Color::RGB::Cayenne.to_yiq)
     end
 
     def test_to_lab
@@ -302,7 +302,7 @@ module TestColor
       # (more precise match)
       match_from += [Color::RGB::DarkRed, Color::RGB::Crimson]
       assert_equal(Color::RGB::Crimson,
-                   Color::RGB::Firebrick.closest_match(match_from))
+        Color::RGB::Firebrick.closest_match(match_from))
       # Specifying a threshold low enough will cause even that match to
       # fail, though.
       assert_nil(Color::RGB::Firebrick.closest_match(match_from, 8.0))
@@ -312,7 +312,7 @@ module TestColor
       # RGB::Green is 0,128,0, so we'll pick something VERY close to it, visually
       jnd_green = Color::RGB.new(3, 132, 3)
       assert_equal(Color::RGB::Green,
-                   jnd_green.closest_match(match_from, :jnd))
+        jnd_green.closest_match(match_from, :jnd))
       # And then something that's just barely out of the tolerance range
       diff_green = Color::RGB.new(9, 142, 9)
       assert_nil(diff_green.closest_match(match_from, :jnd))
@@ -342,9 +342,8 @@ module TestColor
     end
 
     def test_mean_grayscale
-      c1        = Color::RGB.new(0x85, 0x80, 0x00)
-      c1_max    = c1.max_rgb_as_greyscale
-      c1_max    = c1.max_rgb_as_greyscale
+      c1 = Color::RGB.new(0x85, 0x80, 0x00)
+      c1_max = c1.max_rgb_as_greyscale
       c1_result = Color::GrayScale.from_fraction(0x85 / 255.0)
 
       assert_equal(c1_result, c1_max)
@@ -362,38 +361,38 @@ module TestColor
     end
 
     def test_by_hex
-      assert_same(Color::RGB::Cyan, Color::RGB.by_hex('#0ff'))
-      assert_same(Color::RGB::Cyan, Color::RGB.by_hex('#00ffff'))
+      assert_same(Color::RGB::Cyan, Color::RGB.by_hex("#0ff"))
+      assert_same(Color::RGB::Cyan, Color::RGB.by_hex("#00ffff"))
       assert_equal("RGB [#333333]", Color::RGB.by_hex("#333").inspect)
       assert_equal("RGB [#333333]", Color::RGB.by_hex("333").inspect)
       assert_raises(ArgumentError) { Color::RGB.by_hex("5555555") }
       assert_raises(ArgumentError) { Color::RGB.by_hex("#55555") }
-      assert_equal(:boom, Color::RGB.by_hex('#55555') { :boom })
+      assert_equal(:boom, Color::RGB.by_hex("#55555") { :boom })
     end
 
     def test_by_name
-      assert_same(Color::RGB::Cyan, Color::RGB.by_name('cyan'))
+      assert_same(Color::RGB::Cyan, Color::RGB.by_name("cyan"))
 
       fetch_error = if RUBY_VERSION < "1.9"
-                      IndexError
-                    else
-                      KeyError
-                    end
+        IndexError
+      else
+        KeyError
+      end
 
-      assert_raises(fetch_error) { Color::RGB.by_name('cyanide') }
-      assert_equal(:boom, Color::RGB.by_name('cyanide') { :boom })
+      assert_raises(fetch_error) { Color::RGB.by_name("cyanide") }
+      assert_equal(:boom, Color::RGB.by_name("cyanide") { :boom })
     end
 
     def test_by_css
-      assert_same(Color::RGB::Cyan, Color::RGB.by_css('#0ff'))
-      assert_same(Color::RGB::Cyan, Color::RGB.by_css('cyan'))
-      assert_raises(ArgumentError) { Color::RGB.by_css('cyanide') }
-      assert_equal(:boom, Color::RGB.by_css('cyanide') { :boom })
+      assert_same(Color::RGB::Cyan, Color::RGB.by_css("#0ff"))
+      assert_same(Color::RGB::Cyan, Color::RGB.by_css("cyan"))
+      assert_raises(ArgumentError) { Color::RGB.by_css("cyanide") }
+      assert_equal(:boom, Color::RGB.by_css("cyanide") { :boom })
     end
 
     def test_extract_colors
-      assert_equal([ Color::RGB::BlanchedAlmond, Color::RGB::Cyan ],
-                   Color::RGB.extract_colors('BlanchedAlmond is a nice shade, but #00ffff is not.'))
+      assert_equal([Color::RGB::BlanchedAlmond, Color::RGB::Cyan],
+        Color::RGB.extract_colors("BlanchedAlmond is a nice shade, but #00ffff is not."))
     end
 
     def test_inspect

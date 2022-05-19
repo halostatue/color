@@ -20,11 +20,11 @@ class Color::HSL
 
   # Creates an HSL colour object from the standard values of degrees and
   # percentages (e.g., 145 deg, 30%, 50%).
-  def initialize(h = 0, s = 0, l = 0, radix1 = 360.0, radix2 = 100.0, &block) # :yields self:
+  def initialize(h = 0, s = 0, l = 0, radix1 = 360.0, radix2 = 100.0) # :yields self:
     @h = Color.normalize(h / radix1)
     @s = Color.normalize(s / radix2)
     @l = Color.normalize(l / radix2)
-    block.call if block
+    yield self
   end
 
   # Present the colour as an HTML/CSS colour string.
@@ -49,13 +49,13 @@ class Color::HSL
   # Present the colour as an HSL HTML/CSS colour string (e.g., "hsl(180,
   # 25%, 35%)").
   def css_hsl
-    "hsl(%3.2f, %3.2f%%, %3.2f%%)" % [ hue, saturation, luminosity ]
+    "hsl(%3.2f, %3.2f%%, %3.2f%%)" % [hue, saturation, luminosity]
   end
 
   # Present the colour as an HSLA (with alpha) HTML/CSS colour string (e.g.,
   # "hsla(180, 25%, 35%, 1)").
   def css_hsla
-    "hsla(%3.2f, %3.2f%%, %3.2f%%, %3.2f)" % [ hue, saturation, luminosity, 1 ]
+    "hsla(%3.2f, %3.2f%%, %3.2f%%, %3.2f)" % [hue, saturation, luminosity, 1]
   end
 
   # Converting from HSL to RGB. As with all colour conversions, this is
@@ -80,7 +80,7 @@ class Color::HSL
     else
       # Only needed for Ruby 1.8. For Ruby 1.9+, we can do:
       # Color::RGB.new(*compute_fvd_rgb, 1.0)
-      Color::RGB.new(*(compute_fvd_rgb + [ 1.0 ]))
+      Color::RGB.new(*(compute_fvd_rgb + [1.0]))
     end
   end
 
@@ -98,6 +98,7 @@ class Color::HSL
   def brightness
     @l
   end
+
   def to_greyscale
     Color::GrayScale.from_fraction(@l)
   end
@@ -107,36 +108,39 @@ class Color::HSL
   def hue
     @h * 360.0
   end
+
   # Returns the hue of the colour in the range 0.0 .. 1.0.
-  def h
-    @h
-  end
+  attr_reader :h
+
   # Sets the hue of the colour in degrees. Colour is perceived as a wheel,
   # so values should be set properly even with negative degree values.
   def hue=(hh)
-    hh = hh / 360.0
+    hh /= 360.0
 
     hh += 1.0 if hh < 0.0
     hh -= 1.0 if hh > 1.0
 
     @h = Color.normalize(hh)
   end
+
   # Sets the hue of the colour in the range 0.0 .. 1.0.
   def h=(hh)
     @h = Color.normalize(hh)
   end
+
   # Returns the percentage of saturation of the colour.
   def saturation
     @s * 100.0
   end
+
   # Returns the saturation of the colour in the range 0.0 .. 1.0.
-  def s
-    @s
-  end
+  attr_reader :s
+
   # Sets the percentage of saturation of the colour.
   def saturation=(ss)
     @s = Color.normalize(ss / 100.0)
   end
+
   # Sets the saturation of the colour in the ragne 0.0 .. 1.0.
   def s=(ss)
     @s = Color.normalize(ss)
@@ -148,9 +152,8 @@ class Color::HSL
   end
   alias_method :lightness, :luminosity
   # Returns the luminosity of the colour in the range 0.0 .. 1.0.
-  def l
-    @l
-  end
+  attr_reader :l
+
   # Sets the percentage of luminosity of the colour.
   def luminosity=(ll)
     @l = Color.normalize(ll / 100.0)
@@ -166,7 +169,7 @@ class Color::HSL
   end
 
   def inspect
-    "HSL [%.2f deg, %.2f%%, %.2f%%]" % [ hue, saturation, luminosity ]
+    "HSL [%.2f deg, %.2f%%, %.2f%%]" % [hue, saturation, luminosity]
   end
 
   # Mix the mask colour (which will be converted to an HSL colour) with the
@@ -181,7 +184,7 @@ class Color::HSL
   end
 
   def to_a
-    [ h, s, l ]
+    [h, s, l]
   end
 
   private
@@ -193,7 +196,7 @@ class Color::HSL
   # #hue_to_rgb for more information.
   def compute_fvd_rgb
     t1, t2 = fvd_mix_sat_lum
-    [ h + (1 / 3.0), h, h - (1 / 3.0) ].map { |v|
+    [h + (1 / 3.0), h, h - (1 / 3.0)].map { |v|
       hue_to_rgb(rotate_hue(v), t1, t2)
     }
   end
@@ -202,11 +205,11 @@ class Color::HSL
   # different depending on whether luminance is <= 50% or > 50%.
   def fvd_mix_sat_lum
     t = if Color.near_zero_or_less?(l - 0.5)
-             l * (1.0 + s.to_f)
-           else
-             l + s - (l * s.to_f)
-           end
-    [ 2.0 * l - t, t ]
+      l * (1.0 + s.to_f)
+    else
+      l + s - (l * s.to_f)
+    end
+    [2.0 * l - t, t]
   end
 
   # In HSL, hues are referenced as degrees in a colour circle. The flow

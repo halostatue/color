@@ -1,12 +1,12 @@
 # -*- ruby encoding: utf-8 -*-
 
-require 'color'
-require 'minitest_helper'
+require "color"
+require "minitest_helper"
 
 module TestColor
   class TestColor < Minitest::Test
     def test_const
-      assert_raises(NameError) { Color::AliceBlue  }
+      assert_raises(NameError) { Color::AliceBlue }
       assert_raises(NameError) { Color::VERSION }
       assert_raises(NameError) { Color::COLOR_TOOLS_VERSION }
     end
@@ -28,7 +28,7 @@ module TestColor
       end
       (0..255).each do |i|
         assert_in_delta(i / 255.0, Color.normalize(i / 255.0),
-                        1e-2)
+          1e-2)
       end
     end
 
