@@ -199,7 +199,7 @@ class Color::Palette::AdobeColor
   end
 
   # Loops through each named colour set.
-  def each_name # :yields color_name, color_set:#
+  def each_name
     @names.each { |color_name, color_set| yield color_name, color_set }
   end
 

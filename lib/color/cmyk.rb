@@ -31,9 +31,9 @@ class Color::CMYK
   # managed as fractional values 0..1.
   #
   #   Color::CMYK.new(30, 0, 80, 30)
-  def initialize(c = 0, m = 0, y = 0, k = 0, radix = 100.0) # :yields self:
+  def initialize(c = 0, m = 0, y = 0, k = 0, radix = 100.0)
     @c, @m, @y, @k = [c, m, y, k].map { |v| Color.normalize(v / radix) }
-    yield self
+    yield self if block_given?
   end
 
   # Present the colour as an RGB HTML/CSS colour string (e.g., "#aabbcc").

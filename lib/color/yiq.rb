@@ -12,9 +12,9 @@ class Color::YIQ
   # Creates a YIQ colour object from percentages 0 .. 100.
   #
   #   Color::YIQ.new(10, 20, 30)
-  def initialize(y = 0, i = 0, q = 0, radix = 100.0) # :yields self:
+  def initialize(y = 0, i = 0, q = 0, radix = 100.0)
     @y, @i, @q = [y, i, q].map { |v| Color.normalize(v / radix) }
-    yield self
+    yield self if block_given?
   end
 
   def coerce(other)
