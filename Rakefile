@@ -83,5 +83,3 @@ namespace :test do
     Rake::Task["test"].execute
   end
 end
-
-# vim: syntax=ruby
