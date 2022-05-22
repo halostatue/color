@@ -232,7 +232,6 @@ class Color::RGB
       a: (500 * (fx - fy)),
       b: (200 * (fy - fz))
     })
->>>>>> a4bdd71d7d71 (Mostly tooling updates)
   end
 
   # Mix the RGB hue with White so that the RGB hue is the specified
