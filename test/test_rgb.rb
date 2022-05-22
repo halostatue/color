@@ -119,19 +119,6 @@ module TestColor
         Color::COLOR_TOLERANCE)
     end
 
-    def test_pdf_fill
-      assert_equal("0.000 0.000 0.000 rg", Color::RGB::Black.pdf_fill)
-      assert_equal("0.000 0.000 1.000 rg", Color::RGB::Blue.pdf_fill)
-      assert_equal("0.000 1.000 0.000 rg", Color::RGB::Lime.pdf_fill)
-      assert_equal("1.000 0.000 0.000 rg", Color::RGB::Red.pdf_fill)
-      assert_equal("1.000 1.000 1.000 rg", Color::RGB::White.pdf_fill)
-      assert_equal("0.000 0.000 0.000 RG", Color::RGB::Black.pdf_stroke)
-      assert_equal("0.000 0.000 1.000 RG", Color::RGB::Blue.pdf_stroke)
-      assert_equal("0.000 1.000 0.000 RG", Color::RGB::Lime.pdf_stroke)
-      assert_equal("1.000 0.000 0.000 RG", Color::RGB::Red.pdf_stroke)
-      assert_equal("1.000 1.000 1.000 RG", Color::RGB::White.pdf_stroke)
-    end
-
     def test_to_cmyk
       assert_kind_of(Color::CMYK, Color::RGB::Black.to_cmyk)
       assert_equal(Color::CMYK.new(0, 0, 0, 100), Color::RGB::Black.to_cmyk)
