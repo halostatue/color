@@ -11,7 +11,7 @@ class Color::RGB
   #
   #   Color::RGB.new(32, 64, 128)
   #   Color::RGB.new(0x20, 0x40, 0x80)
-  def initialize(r = 0, g = 0, b = 0, radix = 255.0)
+  def initialize(r = 0, g = 0, b = 0, radix = 255.0, alpha: 100)
     @r, @g, @b = [r, g, b].map { |v| Color.normalize(v / radix) }
     yield self if block_given?
   end
