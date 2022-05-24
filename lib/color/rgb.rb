@@ -1,5 +1,6 @@
 # An RGB colour object.
 class Color::RGB
+  # standardrb:disable Naming/VariableName
   include Color
 
   # The format of a DeviceRGB colour for PDF. In color-tools 2.0 this will
@@ -721,6 +722,7 @@ class << Color::RGB
       raise ArgumentError, "Not a supported HTML colour type."
     end
   end
+  # standardrb:enable Naming/VariableName
 end
 
 require "color/rgb/colors"
