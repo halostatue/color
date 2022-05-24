@@ -56,7 +56,7 @@ class Color::Palette::AdobeColor
         @offset ||= 0
         raise IndexError if @offset >= size
         val = self[@offset, count * 2]
-        raise IndexError if val.nil? or val.size < (count * 2)
+        raise IndexError if val.nil? || val.size < (count * 2)
         val = val.unpack("n" * count)
         @offset += count * 2
         val
@@ -66,7 +66,7 @@ class Color::Palette::AdobeColor
         @offset ||= 0
         raise IndexError if @offset >= size
         val = self[@offset, count * 2]
-        raise IndexError if val.nil? or val.size < (count * 2)
+        raise IndexError if val.nil? || val.size < (count * 2)
         @offset += count * 2
         val
       end
