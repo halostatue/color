@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'color'
-require 'minitest_helper'
+require "color"
+require "minitest_helper"
 
 module TestColor
   class TestCMYK < Minitest::Test

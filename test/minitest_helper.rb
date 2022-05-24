@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'color'
+require "color"
 
-gem 'minitest'
-require 'minitest/autorun'
+gem "minitest"
+require "minitest/autorun"

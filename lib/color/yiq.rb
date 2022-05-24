@@ -13,7 +13,7 @@ class Color::YIQ
   #
   #   Color::YIQ.new(10, 20, 30)
   def initialize(y = 0, i = 0, q = 0, radix = 100.0, &block) # :yields self:
-    @y, @i, @q = [ y, i, q ].map { |v| Color.normalize(v / radix) }
+    @y, @i, @q = [y, i, q].map { |v| Color.normalize(v / radix) }
     block.call if block
   end
 
@@ -28,35 +28,35 @@ class Color::YIQ
   def brightness
     @y
   end
+
   def to_grayscale
     Color::GrayScale.new(@y)
   end
-  alias to_greyscale to_grayscale
+  alias_method :to_greyscale, :to_grayscale
 
-  def y
-    @y
-  end
+  attr_reader :y
+
   def y=(yy)
     @y = Color.normalize(yy)
   end
-  def i
-    @i
-  end
+
+  attr_reader :i
+
   def i=(ii)
     @i = Color.normalize(ii)
   end
-  def q
-    @q
-  end
+
+  attr_reader :q
+
   def q=(qq)
     @q = Color.normalize(qq)
   end
 
   def inspect
-    "YIQ [%.2f%%, %.2f%%, %.2f%%]" % [ @y * 100, @i * 100, @q * 100 ]
+    "YIQ [%.2f%%, %.2f%%, %.2f%%]" % [@y * 100, @i * 100, @q * 100]
   end
 
   def to_a
-    [ y, i, q ]
+    [y, i, q]
   end
 end

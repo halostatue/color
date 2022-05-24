@@ -6,7 +6,7 @@ class Color::GrayScale
   # The format of a DeviceGrey colour for PDF. In color-tools 2.0 this will
   # be removed from this package and added back as a modification by the
   # PDF::Writer package.
-  PDF_FORMAT_STR  = "%.3f %s"
+  PDF_FORMAT_STR = "%.3f %s"
 
   class << self
     # Creates a greyscale colour object from fractional values 0..1.
@@ -40,13 +40,13 @@ class Color::GrayScale
   # Present the colour as a DeviceGrey fill colour string for PDF. This will
   # be removed from the default package in color-tools 2.0.
   def pdf_fill
-    PDF_FORMAT_STR % [ @g, "g" ]
+    PDF_FORMAT_STR % [@g, "g"]
   end
 
   # Present the colour as a DeviceGrey stroke colour string for PDF. This
   # will be removed from the default package in color-tools 2.0.
   def pdf_stroke
-    PDF_FORMAT_STR % [ @g, "G" ]
+    PDF_FORMAT_STR % [@g, "G"]
   end
 
   def to_255
@@ -63,13 +63,13 @@ class Color::GrayScale
   # Present the colour as an RGB HTML/CSS colour string (e.g., "rgb(0%, 50%,
   # 100%)").
   def css_rgb
-    "rgb(%3.2f%%, %3.2f%%, %3.2f%%)" % [ gray, gray, gray ]
+    "rgb(%3.2f%%, %3.2f%%, %3.2f%%)" % [gray, gray, gray]
   end
 
   # Present the colour as an RGBA (with alpha) HTML/CSS colour string (e.g.,
   # "rgb(0%, 50%, 100%, 1)").
   def css_rgba(alpha = 1)
-    "rgba(%3.2f%%, %3.2f%%, %3.2f%%, %1.2f)" % [ gray, gray, gray, alpha ]
+    "rgba(%3.2f%%, %3.2f%%, %3.2f%%, %1.2f)" % [gray, gray, gray, alpha]
   end
 
   # Present the colour as an HSL HTML/CSS colour string (e.g., "hsl(180,
@@ -100,7 +100,7 @@ class Color::GrayScale
   def to_grayscale
     self
   end
-  alias to_greyscale to_grayscale
+  alias_method :to_greyscale, :to_grayscale
 
   # Lightens the greyscale colour by the stated percent.
   def lighten_by(percent)
@@ -121,7 +121,7 @@ class Color::GrayScale
   def to_yiq
     y = @g
     i = (@g * 0.596) + (@g * -0.275) + (@g * -0.321)
-    q = (@g * 0.212) + (@g * -0.523) + (@g *  0.311)
+    q = (@g * 0.212) + (@g * -0.523) + (@g * 0.311)
     Color::YIQ.from_fraction(y, i, q)
   end
 
@@ -141,17 +141,16 @@ class Color::GrayScale
   def gray
     @g * 100.0
   end
-  alias grey gray
+  alias_method :grey, :gray
   # Returns the grayscale value as a fractional value of white in the range
   # 0.0 .. 1.0.
-  def g
-    @g
-  end
+  attr_reader :g
+
   # Sets the grayscale value as a percentage of white.
   def gray=(gg)
     @g = Color.normalize(gg / 100.0)
   end
-  alias grey= gray= ;
+  alias_method :grey=, :gray=
   # Returns the grayscale value as a fractional value of white in the range
   # 0.0 .. 1.0.
   def g=(gg)
@@ -175,19 +174,19 @@ class Color::GrayScale
   # The subtraction is done using the grayscale accessor methods to ensure a
   # valid colour in the result.
   def -(other)
-    self + (-other)
+    self + -other
   end
 
   def inspect
-    "Gray [%.2f%%]" % [ gray ]
+    "Gray [%.2f%%]" % [gray]
   end
 
   def to_a
-    [ g ]
+    [g]
   end
 
   def -@
-    gs = self.dup
+    gs = dup
     gs.instance_variable_set(:@g, -g)
     gs
   end

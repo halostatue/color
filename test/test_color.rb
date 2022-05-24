@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'color'
-require 'minitest_helper'
+require "color"
+require "minitest_helper"
 
 module TestColor
   class TestColor < Minitest::Test
     def setup
       Kernel.module_eval do
-        alias old_warn warn
+        alias_method :old_warn, :warn
 
         def warn(message)
           $last_warn = message
@@ -18,7 +18,7 @@ module TestColor
     def teardown
       Kernel.module_eval do
         undef warn
-        alias warn old_warn
+        alias_method :warn, :old_warn
         undef old_warn
       end
     end
@@ -66,7 +66,7 @@ module TestColor
       end
       (0..255).each do |i|
         assert_in_delta(i / 255.0, Color.normalize(i / 255.0),
-                        1e-2)
+          1e-2)
       end
     end
 
