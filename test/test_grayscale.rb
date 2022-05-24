@@ -39,11 +39,6 @@ module TestColor
       assert_in_delta(0.363, @gs.lighten_by(10).g, Color::COLOR_TOLERANCE)
     end
 
-    def test_pdf_fill
-      assert_equal("0.330 g", @gs.pdf_fill)
-      assert_equal("0.330 G", @gs.pdf_stroke)
-    end
-
     def test_to_cmyk
       cmyk = @gs.to_cmyk
       assert_kind_of(Color::CMYK, cmyk)

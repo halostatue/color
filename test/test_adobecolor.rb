@@ -384,7 +384,6 @@ module TestColor
         assert_equal(216, @aco.size)
         assert_equal(2, @aco.version)
         @aco.each_name do |n, s|
-          assert_equal(0, n[0]) if RUBY_VERSION < "1.9"
           assert_equal(1, s.size)
           assert_kind_of(Color::RGB, s[0])
         end

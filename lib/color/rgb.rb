@@ -2,11 +2,6 @@
 class Color::RGB
   include Color
 
-  # The format of a DeviceRGB colour for PDF. In color-tools 2.0 this will
-  # be removed from this package and added back as a modification by the
-  # PDF::Writer package.
-  PDF_FORMAT_STR = "%.3f %.3f %.3f %s"
-
   # Coerces the other Color object into RGB.
   def coerce(other)
     other.to_rgb
@@ -19,18 +14,6 @@ class Color::RGB
   def initialize(r = 0, g = 0, b = 0, radix = 255.0)
     @r, @g, @b = [r, g, b].map { |v| Color.normalize(v / radix) }
     yield self if block_given?
-  end
-
-  # Present the colour as a DeviceRGB fill colour string for PDF. This will
-  # be removed from the default package in color-tools 2.0.
-  def pdf_fill
-    PDF_FORMAT_STR % [@r, @g, @b, "rg"]
-  end
-
-  # Present the colour as a DeviceRGB stroke colour string for PDF. This
-  # will be removed from the default package in color-tools 2.0.
-  def pdf_stroke
-    PDF_FORMAT_STR % [@r, @g, @b, "RG"]
   end
 
   # Present the colour as an RGB hex triplet.
@@ -619,8 +602,7 @@ class << Color::RGB
   #   Color::RGB.from_html("#cabbed")
   #   Color::RGB.from_html("cabbed")
   def from_html(html_colour, &block)
-    # When we can move to 1.9+ only, this will be \h
-    h = html_colour.scan(/[0-9a-f]/i)
+    h = html_colour.scan(/\h/)
     case h.size
     when 3
       new(*h.map { |v| (v * 2).to_i(16) }, &block)
@@ -641,11 +623,11 @@ class << Color::RGB
   # If a block is provided, the value that is returned by the block will
   # be returned instead of the exception caused by an error in providing a
   # correct hex format.
-  def by_hex(hex, &block)
+  def by_hex(hex)
     __by_hex.fetch(html_hexify(hex)) { from_html(hex) }
   rescue
-    if block
-      block.call
+    if block_given?
+      yield
     else
       raise
     end

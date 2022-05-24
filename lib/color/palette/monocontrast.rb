@@ -139,6 +139,7 @@ class Color::Palette::MonoContrast
 
       break if nbd >= @minimum_brightness_diff && ncd >= @minimum_color_diff
     end
+
     nfg
   end
 

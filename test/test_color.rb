@@ -4,50 +4,20 @@ require "color"
 require "minitest_helper"
 
 module TestColor
-  # standard:disable Style/GlobalVars
   class TestColor < Minitest::Test
-    def setup
-      Kernel.module_eval do
-        alias_method :old_warn, :warn
-
-        def warn(message)
-          $last_warn = message
+    def test_const
+      2.times do
+        assert_output(nil, "Color::COLOR_VERSION has been deprecated and will be removed in v2.1. Use Color::VERSION instead.\n") do
+          assert_equal(Color::VERSION, Color::COLOR_VERSION)
         end
       end
-    end
 
-    def teardown
-      Kernel.module_eval do
-        undef warn
-        alias_method :warn, :old_warn
-        undef old_warn
+      assert_output do
+        refute_nil(Color::VERSION)
+        refute_nil(Color::COLOR_EPSILON)
       end
-    end
 
-    def test_const
-      $last_warn = nil
-      assert_equal(Color::RGB::AliceBlue, Color::AliceBlue)
-      assert_equal("Color::AliceBlue has been deprecated. Use Color::RGB::AliceBlue instead.", $last_warn)
-
-      $last_warn = nil # Do this twice to make sure it always happens...
-      assert(Color::AliceBlue)
-      assert_equal("Color::AliceBlue has been deprecated. Use Color::RGB::AliceBlue instead.", $last_warn)
-
-      $last_warn = nil
-      assert_equal(Color::COLOR_VERSION, Color::VERSION)
-      assert_equal("Color::VERSION has been deprecated. Use Color::COLOR_VERSION instead.", $last_warn)
-
-      $last_warn = nil
-      assert_equal(Color::COLOR_VERSION, Color::COLOR_TOOLS_VERSION)
-      assert_equal("Color::COLOR_TOOLS_VERSION has been deprecated. Use Color::COLOR_VERSION instead.", $last_warn)
-
-      $last_warn = nil
-      assert(Color::COLOR_VERSION)
-      assert_nil($last_warn)
-      assert(Color::COLOR_EPSILON)
-      assert_nil($last_warn)
-
-      assert_raises(NameError) { assert(Color::MISSING_VALUE) }
+      assert_raises(NameError) { Color::MISSING_VALUE }
     end
 
     def test_equivalent
@@ -107,30 +77,10 @@ module TestColor
     end
 
     def test_new
-      $last_warn = nil
-      c = Color.new("#fff")
-      assert_kind_of(Color::HSL, c)
-      assert_equal(Color::RGB::White.to_hsl, c)
-      assert_equal("Color.new has been deprecated. Use Color::RGB.new instead.", $last_warn)
-
-      $last_warn = nil
-      c = Color.new([0, 0, 0])
-      assert_kind_of(Color::HSL, c)
-      assert_equal(Color::RGB::Black.to_hsl, c)
-      assert_equal("Color.new has been deprecated. Use Color::RGB.new instead.", $last_warn)
-
-      $last_warn = nil
-      c = Color.new([10, 20, 30], :hsl)
-      assert_kind_of(Color::HSL, c)
-      assert_equal(Color::HSL.new(10, 20, 30), c)
-      assert_equal("Color.new has been deprecated. Use Color::HSL.new instead.", $last_warn)
-
-      $last_warn = nil
-      c = Color.new([10, 20, 30, 40], :cmyk)
-      assert_kind_of(Color::HSL, c)
-      assert_equal(Color::CMYK.new(10, 20, 30, 40).to_hsl, c)
-      assert_equal("Color.new has been deprecated. Use Color::CMYK.new instead.", $last_warn)
+      assert_raises(NoMethodError) { Color.new("#fff") }
+      assert_raises(NoMethodError) { Color.new([0, 0, 0]) }
+      assert_raises(NoMethodError) { Color.new([10, 20, 30], :hsl) }
+      assert_raises(NoMethodError) { Color.new([10, 20, 30, 40], :cmyk) }
     end
   end
-  # standard:enable Style/GlobalVars
 end

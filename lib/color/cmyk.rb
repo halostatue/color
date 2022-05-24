@@ -5,11 +5,6 @@
 class Color::CMYK
   include Color
 
-  # The format of a DeviceCMYK colour for PDF. In color-tools 2.0 this will
-  # be removed from this package and added back as a modification by the
-  # PDF::Writer package.
-  PDF_FORMAT_STR = "%.3f %.3f %.3f %.3f %s"
-
   # Coerces the other Color object into CMYK.
   def coerce(other)
     other.to_cmyk
@@ -39,18 +34,6 @@ class Color::CMYK
   def initialize(c = 0, m = 0, y = 0, k = 0, radix = 100.0)
     @c, @m, @y, @k = [c, m, y, k].map { |v| Color.normalize(v / radix) }
     yield self if block_given?
-  end
-
-  # Present the colour as a DeviceCMYK fill colour string for PDF. This will
-  # be removed from the default package in color-tools 2.0.
-  def pdf_fill
-    PDF_FORMAT_STR % [@c, @m, @y, @k, "k"]
-  end
-
-  # Present the colour as a DeviceCMYK stroke colour string for PDF. This
-  # will be removed from the default package in color-tools 2.0.
-  def pdf_stroke
-    PDF_FORMAT_STR % [@c, @m, @y, @k, "K"]
   end
 
   # Present the colour as an RGB HTML/CSS colour string (e.g., "#aabbcc").

@@ -119,19 +119,6 @@ module TestColor
         Color::COLOR_TOLERANCE)
     end
 
-    def test_pdf_fill
-      assert_equal("0.000 0.000 0.000 rg", Color::RGB::Black.pdf_fill)
-      assert_equal("0.000 0.000 1.000 rg", Color::RGB::Blue.pdf_fill)
-      assert_equal("0.000 1.000 0.000 rg", Color::RGB::Lime.pdf_fill)
-      assert_equal("1.000 0.000 0.000 rg", Color::RGB::Red.pdf_fill)
-      assert_equal("1.000 1.000 1.000 rg", Color::RGB::White.pdf_fill)
-      assert_equal("0.000 0.000 0.000 RG", Color::RGB::Black.pdf_stroke)
-      assert_equal("0.000 0.000 1.000 RG", Color::RGB::Blue.pdf_stroke)
-      assert_equal("0.000 1.000 0.000 RG", Color::RGB::Lime.pdf_stroke)
-      assert_equal("1.000 0.000 0.000 RG", Color::RGB::Red.pdf_stroke)
-      assert_equal("1.000 1.000 1.000 RG", Color::RGB::White.pdf_stroke)
-    end
-
     def test_to_cmyk
       assert_kind_of(Color::CMYK, Color::RGB::Black.to_cmyk)
       assert_equal(Color::CMYK.new(0, 0, 0, 100), Color::RGB::Black.to_cmyk)
@@ -373,14 +360,11 @@ module TestColor
     def test_by_name
       assert_same(Color::RGB::Cyan, Color::RGB.by_name("cyan"))
 
-      fetch_error = if RUBY_VERSION < "1.9"
-        IndexError
-      else
-        KeyError
-      end
-
-      assert_raises(fetch_error) { Color::RGB.by_name("cyanide") }
       assert_equal(:boom, Color::RGB.by_name("cyanide") { :boom })
+    end
+
+    def test_removed_deprecated_name
+      assert_raises(NameError) { Color::RGB::BeccaPurple }
     end
 
     def test_by_css

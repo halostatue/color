@@ -3,11 +3,6 @@
 class Color::GrayScale
   include Color
 
-  # The format of a DeviceGrey colour for PDF. In color-tools 2.0 this will
-  # be removed from this package and added back as a modification by the
-  # PDF::Writer package.
-  PDF_FORMAT_STR = "%.3f %s"
-
   class << self
     # Creates a greyscale colour object from fractional values 0..1.
     #
@@ -35,18 +30,6 @@ class Color::GrayScale
   # Coerces the other Color object to grayscale.
   def coerce(other)
     other.to_grayscale
-  end
-
-  # Present the colour as a DeviceGrey fill colour string for PDF. This will
-  # be removed from the default package in color-tools 2.0.
-  def pdf_fill
-    PDF_FORMAT_STR % [@g, "g"]
-  end
-
-  # Present the colour as a DeviceGrey stroke colour string for PDF. This
-  # will be removed from the default package in color-tools 2.0.
-  def pdf_stroke
-    PDF_FORMAT_STR % [@g, "G"]
   end
 
   def to_255

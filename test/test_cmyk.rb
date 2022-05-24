@@ -53,11 +53,6 @@ module TestColor
       assert_in_delta(0.0, @cmyk.k, Color::COLOR_TOLERANCE)
     end
 
-    def test_pdf
-      assert_equal("0.100 0.200 0.300 0.400 k", @cmyk.pdf_fill)
-      assert_equal("0.100 0.200 0.300 0.400 K", @cmyk.pdf_stroke)
-    end
-
     def test_to_cmyk
       assert(@cmyk.to_cmyk == @cmyk)
     end
