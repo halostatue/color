@@ -418,8 +418,8 @@ class Color::RGB
 
     k_C = k_H = 1
 
-    l_1, a_1, b_1 = color_1.values_at(:L, :a, :b)
-    l_2, a_2, b_2 = color_2.values_at(:L, :a, :b)
+    _l_1, a_1, b_1 = color_1.values_at(:L, :a, :b)
+    _l_2, a_2, b_2 = color_2.values_at(:L, :a, :b)
 
     delta_a = a_1 - a_2
     delta_b = b_1 - b_2

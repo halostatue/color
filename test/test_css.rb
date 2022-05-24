@@ -13,7 +13,7 @@ module TestColor
     end
 
     def test_index_with_unknown_name
-      assert_equal(nil, Color::CSS['redx'])
+      assert_nil(Color::CSS['redx'])
     end
   end
 end
