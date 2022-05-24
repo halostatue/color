@@ -1,6 +1,5 @@
 # An RGB colour object.
 class Color::RGB
-  # standardrb:disable Naming/VariableName
   include Color
 
   # The format of a DeviceRGB colour for PDF. In color-tools 2.0 this will
@@ -387,6 +386,7 @@ class Color::RGB
   #
   # NOTE: This should be moved to Color::Lab.
   def delta_e94(color_1, color_2, weighting_type = :graphic_arts)
+    # standard:disable Naming/VariableName
     case weighting_type
     when :graphic_arts
       k_1 = 0.045
@@ -442,6 +442,7 @@ class Color::RGB
     composite_C = (delta_C / (k_C * s_C))**2
     composite_H = delta_H2 / ((k_H * s_H)**2)
     Math.sqrt(composite_L + composite_C + composite_H)
+    # standard:enable Naming/VariableName
   end
 
   # Returns the red component of the colour in the normal 0 .. 255 range.
@@ -722,7 +723,6 @@ class << Color::RGB
       raise ArgumentError, "Not a supported HTML colour type."
     end
   end
-  # standardrb:enable Naming/VariableName
 end
 
 require "color/rgb/colors"
