@@ -1,4 +1,4 @@
-# -*- ruby encoding: utf-8 -*-
+# frozen_string_literal: true
 
 # An HSL colour object. Internally, the hue (#h), saturation (#s), and
 # luminosity/lightness (#l) values are dealt with as fractional values in

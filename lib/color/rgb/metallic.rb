@@ -1,4 +1,4 @@
-# -*- ruby encoding: utf-8 -*-
+# frozen_string_literal: true
 
 class Color::RGB
   # This namespace contains some RGB metallic colours suggested by Jim
