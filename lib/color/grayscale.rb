@@ -27,9 +27,9 @@ class Color::GrayScale
   # Creates a greyscale colour object from percentages 0..100.
   #
   #   Color::GrayScale.new(50)
-  def initialize(g = 0, radix = 100.0, &block) # :yields self:
+  def initialize(g = 0, radix = 100.0)
     @g = Color.normalize(g / radix)
-    block.call if block
+    yield self if block_given?
   end
 
   # Coerces the other Color object to grayscale.
