@@ -16,7 +16,7 @@ spec = Hoe.spec 'color' do
 
   license 'MIT'
 
-  self.history_file = 'History.rdoc'
+  self.history_file = 'History.md'
   self.readme_file = 'README.rdoc'
 
   extra_dev_deps << ['hoe-doofus', '~> 1.0']
@@ -53,10 +53,18 @@ if RUBY_VERSION >= '1.9'
         Rake::Task['test'].execute
       end
 
-      Rake::Task['travis'].prerequisites.replace(%w(test:coveralls))
+      Rake::Task['travis'].prerequisites.replace(%w[test:coveralls])
     end
 
     desc 'Runs test coverage. Only works Ruby 1.9+ and assumes 'simplecov' is installed.'
+    task :coverage do
+      spec.test_prelude = [
+        'require "simplecov"',
+        'SimpleCov.start("test_frameworks") { command_name "Minitest" }',
+        'gem "minitest"'
+      ].join('; ')
+      Rake::Task['test'].execute
+    end
 
     CLOBBER << 'coverage'
   end
