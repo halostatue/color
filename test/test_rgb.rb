@@ -344,7 +344,6 @@ module TestColor
     def test_mean_grayscale
       c1 = Color::RGB.new(0x85, 0x80, 0x00)
       c1_max = c1.max_rgb_as_greyscale
-      c1_max = c1.max_rgb_as_greyscale
       c1_result = Color::GrayScale.from_fraction(0x85 / 255.0)
 
       assert_equal(c1_result, c1_max)
