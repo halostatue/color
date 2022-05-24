@@ -4,6 +4,7 @@ require "color"
 require "minitest_helper"
 
 module TestColor
+  # standard:disable Style/GlobalVars
   class TestColor < Minitest::Test
     def setup
       Kernel.module_eval do
@@ -131,4 +132,5 @@ module TestColor
       assert_equal("Color.new has been deprecated. Use Color::CMYK.new instead.", $last_warn)
     end
   end
+  # standard:enable Style/GlobalVars
 end
