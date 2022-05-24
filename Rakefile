@@ -8,8 +8,7 @@ Hoe.plugin :doofus
 Hoe.plugin :gemspec2
 Hoe.plugin :git
 Hoe.plugin :minitest
-Hoe.plugin :travis
-Hoe.plugin :email unless ENV['CI'] or ENV['TRAVIS']
+Hoe.plugin :email unless ENV['CI']
 
 spec = Hoe.spec 'color' do
   developer('Austin Ziegler', 'halostatue@gmail.com')
@@ -23,7 +22,6 @@ spec = Hoe.spec 'color' do
   extra_dev_deps << ['hoe-doofus', '~> 1.0']
   extra_dev_deps << ['hoe-gemspec2', '~> 1.1']
   extra_dev_deps << ['hoe-git', '~> 1.6']
-  extra_dev_deps << ['hoe-travis', '~> 1.2']
   extra_dev_deps << ['minitest', '~> 5.8']
   extra_dev_deps << ['minitest-around', '~> 0.3']
   extra_dev_deps << ['minitest-autotest', '~> 1.0']
@@ -35,14 +33,14 @@ spec = Hoe.spec 'color' do
 
   if RUBY_VERSION >= '1.9'
     extra_dev_deps << ['simplecov', '~> 0.7']
-    extra_dev_deps << ['coveralls', '~> 0.7'] if ENV['CI'] or ENV['TRAVIS']
+    extra_dev_deps << ['coveralls', '~> 0.7'] if ENV['CI']
   end
 end
 
 if RUBY_VERSION >= '1.9'
   namespace :test do
-    if ENV['CI'] or ENV['TRAVIS']
-      desc "Submit test coverage to Coveralls"
+    if ENV['CI']
+      desc 'Submit test coverage to Coveralls'
       task :coveralls do
         spec.test_prelude = [
           'require "psych"',
@@ -58,18 +56,8 @@ if RUBY_VERSION >= '1.9'
       Rake::Task['travis'].prerequisites.replace(%w(test:coveralls))
     end
 
-    desc "Runs test coverage. Only works Ruby 1.9+ and assumes 'simplecov' is installed."
-    task :coverage do
-      spec.test_prelude = [
-        'require "simplecov"',
-        'SimpleCov.start("test_frameworks") { command_name "Minitest" }',
-        'gem "minitest"'
-      ].join('; ')
-      Rake::Task['test'].execute
-    end
+    desc 'Runs test coverage. Only works Ruby 1.9+ and assumes 'simplecov' is installed.'
 
     CLOBBER << 'coverage'
   end
 end
-
-# vim: syntax=ruby
