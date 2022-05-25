@@ -9,61 +9,51 @@ name: CI
 
 on:
   push:
-    branches: [main, color-2]
+    branches:
   pull_request:
-    branches: [main, color-2]
+    branches: [main, color-2, new-color]
 
 jobs:
   test:
     strategy:
       matrix:
         os:
-          - ubuntu
-          - macos
-          - windows
+          - macos-latest
+          - ubuntu-20.04
         ruby:
           - '2.7'
           - '3.0'
           - '3.1'
           - head
-          - debug
-          - mingw
-          - mswin
           - jruby
           - jruby-head
           - truffleruby
           - truffleruby-head
-        exclude:
-          - os: macos
+          - truffleruby+graalvm
+          - truffleruby+graalvm-head
+        include:
+          - ruby: head
+            continue-on-error: true
+          - ruby: jruby-head
+            continue-on-error: true
+          - os: windows-latest
             ruby: mingw
-          - os: macos
+          - os: windows-latest
             ruby: mswin
-          - os: ubuntu
-            ruby: mingw
-          - os: ubuntu
-            ruby: mswin
-          - os: windows
-            ruby: debug
-          - os: windows
+          - os: windows-latest
             ruby: jruby
-          - os: windows
-            ruby: jruby-head
-          - os: windows
-            ruby: truffleruby
-          - os: windows
-            ruby: truffleruby-head
-    runs-on: ${{ matrix.os }}-latest
-    continue-on-error: ${{
-      endsWith(matrix.ruby, 'head') ||
-      matrix.ruby == 'debug' ||
-      (startsWith(matrix.ruby, 'jruby') && matrix.os == 'windows')
-      }}
+            continue-on-error: true
+          - os: ubuntu-22.04
+            ruby: head
+          - os: ubuntu-22.04
+            ruby: '3.1'
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.continue-on-error || false }}
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true # 'bundle install' and cache
+          bundler-cache: true
       - name: Run tests
         run: bundle exec ruby -S rake test --trace
