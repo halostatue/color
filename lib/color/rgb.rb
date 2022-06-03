@@ -174,20 +174,20 @@ class Color::RGB
     # Inverse sRGB companding. Linearizes RGB channels with respect to
     # energy.
     r, g, b = [@r, @g, @b].map { |v|
-      if v > 0.04045
-        (((v + 0.055) / 1.055)**2.4) * 100
+      100 * if v > 0.04045
+        (((v + 0.055) / 1.055)**2.4)
       else
-        (v / 12.92) * 100
+        v / 12.92
       end
     }
 
     # Convert using the RGB/XYZ matrix at:
     # http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html#WSMatrices
-    {
-      x: (r * 0.4124564 + g * 0.3575761 + b * 0.1804375),
-      y: (r * 0.2126729 + g * 0.7151522 + b * 0.0721750),
-      z: (r * 0.0193339 + g * 0.1191920 + b * 0.9503041)
-    }
+    Color::XYZ.new(
+      x: r * 0.4124564 + g * 0.3575761 + b * 0.1804375,
+      y: r * 0.2126729 + g * 0.7151522 + b * 0.0721750,
+      z: r * 0.0193339 + g * 0.1191920 + b * 0.9503041
+    )
   end
 
   # Returns the L*a*b* colour encoding of the value via the XYZ colour
@@ -197,40 +197,12 @@ class Color::RGB
   #
   # Currently only the sRGB colour space is supported and defaults to using
   # a D65 reference white.
-  def to_lab(color_space = :sRGB, reference_white = [95.047, 100.00, 108.883])
-    xyz = to_xyz
+  def to_lab(color_space = :sRGB, reference_white = Color::XYZ.d65_reference_white)
+    to_xyz(color_space).to_lab(reference_white)
+  end
 
-    # Calculate the ratio of the XYZ values to the reference white.
-    # http://www.brucelindbloom.com/index.html?Equations.html
-    xr = xyz[:x] / reference_white[0]
-    yr = xyz[:y] / reference_white[1]
-    zr = xyz[:z] / reference_white[2]
-
-    # NOTE: This should be using Rational instead of floating point values,
-    # otherwise there will be discontinuities.
-    # http://www.brucelindbloom.com/LContinuity.html
-    epsilon = (216 / 24389.0)
-    kappa = (24389 / 27.0)
-
-    # And now transform
-    # http://en.wikipedia.org/wiki/Lab_color_space#Forward_transformation
-    # There is a brief explanation there as far as the nature of the calculations,
-    # as well as a much nicer looking modeling of the algebra.
-    fx, fy, fz = [xr, yr, zr].map { |t|
-      if t > (epsilon)
-        t**(1.0 / 3)
-      else # t <= epsilon
-        ((kappa * t) + 16) / 116.0
-        # The 4/29 here is for when t = 0 (black). 4/29 * 116 = 16, and 16 -
-        # 16 = 0, which is the correct value for L* with black.
-        #       ((1.0/3)*((29.0/6)**2) * t) + (4.0/29)
-      end
-    }
-    {
-      L: ((116 * fy) - 16),
-      a: (500 * (fx - fy)),
-      b: (200 * (fy - fz))
-    }
+  def to_s
+    "rgb(#{@r}, #{@g}, #{@b})"
   end
 
   # Mix the RGB hue with White so that the RGB hue is the specified
@@ -322,28 +294,25 @@ class Color::RGB
   # provided colours. Returns +nil+ if +color_list+ is empty or if there is
   # no colour within the +threshold_distance+.
   #
-  # +threshold_distance+ is used to determine the minimum colour distance
-  # permitted. Uses the CIE Delta E 1994 algorithm (CIE94) to find near
-  # matches based on perceived visual colour. The default value (1000.0) is
-  # an arbitrarily large number. The values <tt>:jnd</tt> and
-  # <tt>:just_noticeable</tt> may be passed as the +threshold_distance+ to
-  # use the value <tt>2.3</tt>.
-  def closest_match(color_list, threshold_distance = 1000.0)
+  # threshhold_distance removed to instead allow choice of algorithms used
+  # to calculate the contrast between each color.
+  def closest_match(color_list, algorithm = :delta_e94, options = {})
     color_list = [color_list].flatten(1)
     return nil if color_list.empty?
 
-    threshold_distance = case threshold_distance
-    when :jnd, :just_noticeable
-      2.3
-    else
-      threshold_distance.to_f
-    end
-    lab = to_lab
-    closest_distance = threshold_distance
+    # threshold_distance = case threshold_distance
+    #                      when :jnd, :just_noticeable
+    #                        2.3
+    #                      else
+    #                        threshold_distance.to_f
+    #                      end
+    # lab = to_lab
+    closest_distance = 999_999.9
     best_match = nil
 
     color_list.each do |c|
-      distance = delta_e94(lab, c.to_lab)
+      distance = contrast(c, algorithm) # delta_e94(lab, c.to_lab)
+      # distance = Color::LAB.delta_e94(lab, c.to_lab)
       if distance < closest_distance
         closest_distance = distance
         best_match = c
@@ -426,6 +395,104 @@ class Color::RGB
     composite_H = delta_H2 / ((k_H * s_H)**2)
     Math.sqrt(composite_L + composite_C + composite_H)
     # standard:enable Naming/VariableName
+  end
+
+  def rad_to_deg(rad)
+    @@_ratio ||= 180 / Math::PI
+    if rad < 0
+      r = rad % -Math::PI
+      r = (Math::PI + r) * @@_ratio + 180
+    else
+      r = rad % Math::PI
+      r *= @@_ratio
+    end
+  end
+
+  def deg_to_rad(deg)
+    deg = ((deg % 360) + 360) % 360
+    if deg >= 180
+      Math::PI * (deg - 360) / 180.0
+    else
+      Math::PI * deg / 180.0
+    end
+  end
+
+  def delta_e2000(rgb1, rgb2) # l1 and l2 should be of type Color::RGB
+    color_1 = rgb1.to_lab
+    color_2 = rgb2.to_lab
+    delta_e2000_lab(color_1, color_2)
+  end
+
+  # http://www.brucelindbloom.com/index.html?Eqn_DeltaE_CIE2000.html
+  # www.ece.rochester.edu/~gsharma/ciede2000/ciede2000noteCRNA.pdf
+  def delta_e2000_lab(color_1, color_2) # l1 and l2 should be of type Color::RGB
+    @@tf7 ||= 25**7
+    @@twopi ||= Math::PI * 2
+    @@halfpi ||= Math::PI / 2
+    @@thirty ||= Math::PI * 30 / 180.0
+    @@six ||= Math::PI * 6 / 180.0
+    @@sixty_three ||= Math::PI * 63.0 / 180
+    @@two_seventy_five ||= (275.0 - 360) * Math::PI
+
+    k_C = k_H = k_L = 1
+    l_1, a_1, b_1 = color_1.values_at(:L, :a, :b)
+    l_2, a_2, b_2 = color_2.values_at(:L, :a, :b)
+    l_bar_prime = (l_1 + l_2) / 2
+    c_1 = Math.sqrt((a_1**2) + (b_1**2))
+    c_2 = Math.sqrt((a_2**2) + (b_2**2))
+    c_bar = (c_1 + c_2) / 2.0
+
+    c_bar7 = c_bar**7.0
+    g = 0.5 * (1 - Math.sqrt(c_bar7.to_f / (c_bar7 + @@tf7)))
+    a1_prime = a_1 * (1 + g)
+    a2_prime = a_2 * (1 + g)
+    c1_prime = Math.sqrt(a1_prime**2 + b_1**2)
+    c2_prime = Math.sqrt(a2_prime**2 + b_2**2)
+    c_bar_prime = (c1_prime + c2_prime) / 2.0
+    h1_prime =
+      if a1_prime == 0 && b_1 == 0
+        0.0
+      else
+        Math.atan2(b_1, a1_prime)
+      end
+    h2_prime =
+      if a2_prime == 0 && b_2 == 0
+        0.0
+      else
+        Math.atan2(b_2, a2_prime)
+      end
+    h_diff = (h1_prime - h2_prime).abs
+    h_bar_prime = h_diff > Math::PI ? (h2_prime + h1_prime + @@twopi) / 2 : (h2_prime + h1_prime) / 2
+
+    t = 1 - 0.17 * Math.cos(h_bar_prime - @@thirty) +
+      0.24 * Math.cos(2 * h_bar_prime) +
+      0.32 * Math.cos(3 * h_bar_prime + @@six) -
+      0.2 * Math.cos(4 * h_bar_prime - @@sixty_three)
+
+    delta_h_prime =
+      if (c_1 * c_2) == 0
+        0
+      elsif h_diff <= Math::PI
+        h2_prime - h1_prime
+      elsif (h2_prime - h1_prime) > Math::PI # && h2_prime > h1_prime
+        h2_prime - h1_prime - @@twopi
+      elsif (h2_prime - h1_prime) <= Math::PI # && h2_prime <= h1_prime
+        h2_prime - h1_prime + @@twopi
+      end
+    delta_l_prime = l_2 - l_1
+    delta_c_prime = c2_prime - c1_prime
+    delta_H_prime = (2 * Math.sqrt(c1_prime * c2_prime) * Math.sin(delta_h_prime / 2.0))
+    s_L = 1 + (0.015 * (l_bar_prime - 50)**2) / Math.sqrt(20 + (l_bar_prime - 50.0)**2)
+    s_C = 1 + 0.045 * c_bar_prime
+    s_H = 1 + 0.015 * c_bar_prime * t
+    delta_theta = 30 * Math.exp(-((rad_to_deg(h_bar_prime) - 275.0) / 25.0)**2)
+    cbp7 = c_bar_prime**7
+    r_C = 2 * Math.sqrt(cbp7 / (cbp7 + @@tf7))
+    r_T = r_C * -Math.sin(2 * deg_to_rad(delta_theta))
+    Math.sqrt((delta_l_prime / (k_L * s_L))**2 +
+               (delta_c_prime / (k_C * s_C))**2 +
+               (delta_H_prime / (k_H * s_H))**2 +
+               r_T * (delta_c_prime / (k_C * s_C)) * (delta_H_prime / (k_H * s_H)))
   end
 
   # Returns the red component of the colour in the normal 0 .. 255 range.
@@ -549,6 +616,7 @@ class Color::RGB
     "RGB [#{html}]"
   end
 
+  # Return array of color components
   def to_a
     [r, g, b]
   end
@@ -561,6 +629,62 @@ class Color::RGB
     rgb.instance_variable_set(:@g, -rgb.g)
     rgb.instance_variable_set(:@b, -rgb.b)
     rgb
+  end
+
+  # Outputs how much contrast this color has with another rgb color. Computes the same
+  # regardless of which one is considered foreground.
+  # If the other color does not have a to_rgb method, this will throw an exception
+  # anything over about 0.22 should have a high likelihood of begin legible.
+  # otherwise, to be safe go with something > 0.3
+  def contrast(other_rgb)
+    if !other_rgb.respond_to?(:to_rgb)
+      raise "rgb.rb unable to calculate contrast with object #{other_rgb}"
+    end
+
+    # the following numbers have been set with some care.
+    (
+     diff_bri(other_rgb) * 0.65 +
+     diff_hue(other_rgb) * 0.20 +
+     diff_lum(other_rgb) * 0.15
+   )
+  end
+
+  # provides the luminosity difference between two rbg vals
+  def diff_lum(rgb)
+    rgb = rgb.to_rgb
+    l1 = 0.2126 * rgb.r**2.2 +
+      0.7152 * rgb.b**2.2 +
+      0.0722 * rgb.g**2.2
+
+    l2 = 0.2126 * r**2.2 +
+      0.7152 * b**2.2 +
+      0.0722 * g**2.2
+
+    (([l1, l2].max + 0.05) / ([l1, l2].min + 0.05) - 1) / 20
+  end
+
+  # provides the brightness difference.
+  def diff_bri(rgb)
+    rgb = rgb.to_rgb
+    br1 = (299 * rgb.r + 587 * rgb.g + 114 * rgb.b)
+    br2 = (299 * r + 587 * g + 114 * b)
+    (br1 - br2).abs / 1000
+  end
+
+  # provides the euclidean distance between the two color values
+  def diff_pyt(rgb)
+    rgb = rgb.to_rgb
+    (((rgb.r - r)**2 +
+    (rgb.g - g)**2 +
+    (rgb.b - b)**2)**0.5) / 1.7320508075688772
+  end
+
+  # difference in the two colors' hue
+  def diff_hue(rgb)
+    rgb = rgb.to_rgb
+    ((r - rgb.r).abs +
+           (g - rgb.g).abs +
+           (b - rgb.b).abs) / 3
   end
 
   private
@@ -683,9 +807,7 @@ class << Color::RGB
     if used.length < names.length
       raise ArgumentError, "#{names.join(", ")} already defined in #{mod}"
     end
-
     names.each { |n| mod.const_set(n, rgb) }
-
     rgb.names = names
     rgb.names.each { |n| __by_name[n] = rgb }
     __by_hex[rgb.hex] = rgb
@@ -715,3 +837,5 @@ class << Color::RGB
 end
 
 require "color/rgb/colors"
+require "color/rgb/metallic"
+require "color/rgb/contrast"
