@@ -226,11 +226,12 @@ class Color::RGB
         #       ((1.0/3)*((29.0/6)**2) * t) + (4.0/29)
       end
     }
-    {
+
+    Color::LAB.new({
       L: ((116 * fy) - 16),
       a: (500 * (fx - fy)),
       b: (200 * (fy - fz))
-    }
+    })
   end
 
   # Mix the RGB hue with White so that the RGB hue is the specified
@@ -322,110 +323,31 @@ class Color::RGB
   # provided colours. Returns +nil+ if +color_list+ is empty or if there is
   # no colour within the +threshold_distance+.
   #
-  # +threshold_distance+ is used to determine the minimum colour distance
-  # permitted. Uses the CIE Delta E 1994 algorithm (CIE94) to find near
-  # matches based on perceived visual colour. The default value (1000.0) is
-  # an arbitrarily large number. The values <tt>:jnd</tt> and
-  # <tt>:just_noticeable</tt> may be passed as the +threshold_distance+ to
-  # use the value <tt>2.3</tt>.
-  def closest_match(color_list, threshold_distance = 1000.0)
+  # threshhold_distance removed to instead allow choice of algorithms used to calculate the contrast
+  # between each color.
+  def closest_match(color_list, algorithm = :delta_e94, options = {})
     color_list = [color_list].flatten(1)
     return nil if color_list.empty?
 
-    threshold_distance = case threshold_distance
-    when :jnd, :just_noticeable
-      2.3
-    else
-      threshold_distance.to_f
-    end
-    lab = to_lab
-    closest_distance = threshold_distance
+    # threshold_distance = case threshold_distance
+    #                      when :jnd, :just_noticeable
+    #                        2.3
+    #                      else
+    #                        threshold_distance.to_f
+    #                      end
+    # lab = to_lab
+    closest_distance = 999_999.9
     best_match = nil
 
     color_list.each do |c|
-      distance = delta_e94(lab, c.to_lab)
+      # distance = Color::LAB.delta_e94(lab, c.to_lab)
+      distance = contrast(c, algorithm) # delta_e94(lab, c.to_lab)
       if distance < closest_distance
         closest_distance = distance
         best_match = c
       end
     end
     best_match
-  end
-
-  # The Delta E (CIE94) algorithm
-  # http://en.wikipedia.org/wiki/Color_difference#CIE94
-  #
-  # There is a newer version, CIEDE2000, that uses slightly more complicated
-  # math, but addresses "the perceptual uniformity issue" left lingering by
-  # the CIE94 algorithm. color_1 and color_2 are both L*a*b* hashes,
-  # rendered by #to_lab.
-  #
-  # Since our source is treated as sRGB, we use the "graphic arts" presets
-  # for k_L, k_1, and k_2
-  #
-  # The calculations go through LCH(ab). (?)
-  #
-  # See also http://www.brucelindbloom.com/index.html?Eqn_DeltaE_CIE94.html
-  #
-  # NOTE: This should be moved to Color::Lab.
-  def delta_e94(color_1, color_2, weighting_type = :graphic_arts)
-    # standard:disable Naming/VariableName
-    case weighting_type
-    when :graphic_arts
-      k_1 = 0.045
-      k_2 = 0.015
-      k_L = 1
-    when :textiles
-      k_1 = 0.048
-      k_2 = 0.014
-      k_L = 2
-    else
-      raise ArgumentError, "Unsupported weighting type #{weighting_type}."
-    end
-
-    # delta_E = Math.sqrt(
-    #   ((delta_L / (k_L * s_L)) ** 2) +
-    #   ((delta_C / (k_C * s_C)) ** 2) +
-    #   ((delta_H / (k_H * s_H)) ** 2)
-    # )
-    #
-    # Under some circumstances in real computers, delta_H could be an
-    # imaginary number (it's a square root value), so we're going to treat
-    # this as:
-    #
-    # delta_E = Math.sqrt(
-    #   ((delta_L / (k_L * s_L)) ** 2) +
-    #   ((delta_C / (k_C * s_C)) ** 2) +
-    #   (delta_H2 / ((k_H * s_H) ** 2)))
-    # )
-    #
-    # And not perform the square root when calculating delta_H2.
-
-    k_C = k_H = 1
-
-    _l_1, a_1, b_1 = color_1.values_at(:L, :a, :b)
-    _l_2, a_2, b_2 = color_2.values_at(:L, :a, :b)
-
-    delta_a = a_1 - a_2
-    delta_b = b_1 - b_2
-
-    c_1 = Math.sqrt((a_1**2) + (b_1**2))
-    c_2 = Math.sqrt((a_2**2) + (b_2**2))
-
-    delta_L = color_1[:L] - color_2[:L]
-    delta_C = c_1 - c_2
-
-    delta_H2 = (delta_a**2) + (delta_b**2) - (delta_C**2)
-
-    s_L = 1
-    s_C = 1 + k_1 * c_1
-    s_H = 1 + k_2 * c_1
-
-    composite_L = (delta_L / (k_L * s_L))**2
-    composite_C = (delta_C / (k_C * s_C))**2
-    composite_H = delta_H2 / ((k_H * s_H)**2)
-    Math.sqrt(composite_L + composite_C + composite_H)
-    # standard:enable Naming/VariableName
   end
 
   # Returns the red component of the colour in the normal 0 .. 255 range.
@@ -563,6 +485,61 @@ class Color::RGB
     rgb
   end
 
+  # Outputs how much contrast this color has with another rgb color. Computes the same
+  # regardless of which one is considered foreground.
+  # If the other color does not have a to_rgb method, this will throw an exception
+  # anything over about 0.22 should have a high likelihood of begin legible.
+  # otherwise, to be safe go with something > 0.3
+  def contrast(other_rgb)
+    if !other_rgb.respond_to?(:to_rgb)
+      raise "rgb.rb unable to calculate contrast with object #{other_rgb}"
+    end
+    # the following numbers have been set with some care.
+    (
+    diff_bri(other_rgb) * 0.65 +
+    diff_hue(other_rgb) * 0.20 +
+    diff_lum(other_rgb) * 0.15
+  )
+  end
+
+  # provides the luminosity difference between two rbg vals
+  def diff_lum(rgb)
+    rgb = rgb.to_rgb
+    l1 = 0.2126 * rgb.r**2.2 +
+      0.7152 * rgb.b**2.2 +
+      0.0722 * rgb.g**2.2
+
+    l2 = 0.2126 * r**2.2 +
+      0.7152 * b**2.2 +
+      0.0722 * g**2.2
+
+    (([l1, l2].max + 0.05) / ([l1, l2].min + 0.05) - 1) / 20
+  end
+
+  # provides the brightness difference.
+  def diff_bri(rgb)
+    rgb = rgb.to_rgb
+    br1 = (299 * rgb.r + 587 * rgb.g + 114 * rgb.b)
+    br2 = (299 * r + 587 * g + 114 * b)
+    (br1 - br2).abs / 1000
+  end
+
+  # provides the euclidean distance between the two color values
+  def diff_pyt(rgb)
+    rgb = rgb.to_rgb
+    (((rgb.r - r)**2 +
+    (rgb.g - g)**2 +
+    (rgb.b - b)**2)**0.5) / 1.7320508075688772
+  end
+
+  # difference in the two colors' hue
+  def diff_hue(rgb)
+    rgb = rgb.to_rgb
+    ((r - rgb.r).abs +
+           (g - rgb.g).abs +
+           (b - rgb.b).abs) / 3
+  end
+
   private
 
   def normalize_percent(percent)
@@ -683,9 +660,7 @@ class << Color::RGB
     if used.length < names.length
       raise ArgumentError, "#{names.join(", ")} already defined in #{mod}"
     end
-
     names.each { |n| mod.const_set(n, rgb) }
-
     rgb.names = names
     rgb.names.each { |n| __by_name[n] = rgb }
     __by_hex[rgb.hex] = rgb
@@ -715,3 +690,5 @@ class << Color::RGB
 end
 
 require "color/rgb/colors"
+require "color/rgb/metallic"
+require "color/rgb/contrast"
