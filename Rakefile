@@ -1,75 +1,88 @@
-# -*- ruby -*-
-
 require "rubygems"
 require "hoe"
 require "rake/clean"
+require "rdoc/task"
+require "minitest"
+require "minitest/test_task"
 
-Hoe.plugin :doofus
-Hoe.plugin :gemspec2
-Hoe.plugin :git
-Hoe.plugin :minitest
-Hoe.plugin :travis
-Hoe.plugin :email unless ENV["CI"] || ENV["TRAVIS"]
+Hoe.plugin :halostatue
+Hoe.plugin :rubygems
 
-spec = Hoe.spec "color" do
+Hoe.plugins.delete :debug
+Hoe.plugins.delete :newb
+Hoe.plugins.delete :publish
+Hoe.plugins.delete :signing
+Hoe.plugins.delete :test
+
+hoe = Hoe.spec "color" do
   developer("Austin Ziegler", "halostatue@gmail.com")
   developer("Matt Lyon", "matt@postsomnia.com")
 
+  self.trusted_release = ENV["rubygems_release_gem"] == "true"
+
+  require_ruby_version ">= 3.2"
+
   license "MIT"
 
-  self.history_file = "History.rdoc"
-  self.readme_file = "README.rdoc"
+  spec_extras[:metadata] = ->(val) {
+    val.merge!({"rubygems_mfa_required" => "true"})
+  }
 
+  extra_dev_deps << ["hoe", "~> 4.0"]
+  extra_dev_deps << ["hoe-halostatue", "~> 2.0"]
   extra_dev_deps << ["hoe-doofus", "~> 1.0"]
+  extra_dev_deps << ["hoe-rubygems", "~> 1.0"]
   extra_dev_deps << ["hoe-gemspec2", "~> 1.1"]
   extra_dev_deps << ["hoe-git", "~> 1.6"]
-  extra_dev_deps << ["hoe-travis", "~> 1.2"]
   extra_dev_deps << ["minitest", "~> 5.8"]
-  extra_dev_deps << ["minitest-around", "~> 0.3"]
   extra_dev_deps << ["minitest-autotest", "~> 1.0"]
-  extra_dev_deps << ["minitest-bisect", "~> 1.2"]
   extra_dev_deps << ["minitest-focus", "~> 1.1"]
   extra_dev_deps << ["minitest-moar", "~> 0.0"]
-  extra_dev_deps << ["minitest-pretty_diff", "~> 0.1"]
-  extra_dev_deps << ["rake", "<14"]
-
-  if RUBY_VERSION >= "1.9"
-    extra_dev_deps << ["simplecov", "~> 0.7"]
-    extra_dev_deps << ["coveralls", "~> 0.7"] if ENV["CI"] || ENV["TRAVIS"]
-  end
+  extra_dev_deps << ["rake", ">= 10.0", "< 14"]
+  extra_dev_deps << ["rdoc", ">= 0.0"]
+  extra_dev_deps << ["standard", "~> 1.0"]
+  extra_dev_deps << ["json", ">= 0.0"]
 end
 
-if RUBY_VERSION >= "1.9"
-  namespace :test do
-    if ENV["CI"] || ENV["TRAVIS"]
-      desc "Submit test coverage to Coveralls"
-      task :coveralls do
-        spec.test_prelude = [
-          'require "psych"',
-          'require "simplecov"',
-          'require "coveralls"',
-          "SimpleCov.formatter = Coveralls::SimpleCov::Formatter",
-          'SimpleCov.start("test_frameworks") { command_name "Minitest" }',
-          'gem "minitest"'
-        ].join("; ")
-        Rake::Task["test"].execute
-      end
+Minitest::TestTask.create :test
+Minitest::TestTask.create :coverage do |t|
+  formatters = <<-RUBY.split($/).join(" ")
+    SimpleCov::Formatter::MultiFormatter.new([
+      SimpleCov::Formatter::HTMLFormatter,
+      SimpleCov::Formatter::LcovFormatter,
+      SimpleCov::Formatter::SimpleFormatter
+    ])
+  RUBY
+  t.test_prelude = <<-RUBY.split($/).join("; ")
+  require "simplecov"
+  require "simplecov-lcov"
 
-      Rake::Task["travis"].prerequisites.replace(%w[test:coveralls])
-    end
-
-    desc "Runs test coverage. Only works Ruby 1.9+ and assumes 'simplecov' is installed."
-    task :coverage do
-      spec.test_prelude = [
-        'require "simplecov"',
-        'SimpleCov.start("test_frameworks") { command_name "Minitest" }',
-        'gem "minitest"'
-      ].join("; ")
-      Rake::Task["test"].execute
-    end
-
-    CLOBBER << "coverage"
+  SimpleCov::Formatter::LcovFormatter.config do |config|
+    config.report_with_single_file = true
+    config.lcov_file_name = "lcov.info"
   end
+
+  SimpleCov.start "test_frameworks" do
+    enable_coverage :branch
+    primary_coverage :branch
+    formatter #{formatters}
+  end
+  RUBY
 end
 
-# vim: syntax=ruby
+task default: :test
+
+task :version do
+  require "color/version"
+  puts Color::VERSION
+end
+
+RDoc::Task.new do
+  _1.title = "Color -- Color Math with Ruby"
+  _1.main = "lib/color.rb"
+  _1.rdoc_dir = "doc"
+  _1.rdoc_files = hoe.spec.require_paths - ["Manifest.txt"] + hoe.spec.extra_rdoc_files
+  _1.markup = "markdown"
+end
+
+task docs: :rerdoc

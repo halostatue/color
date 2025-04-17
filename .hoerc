@@ -1,2 +1,38 @@
 ---
-exclude: !ruby/regexp /(tmp|swp)$|CVS|TAGS|\.(svn|git|hg|DS_Store|idea)|Gemfile\.lock|research\/|\.gemspec$/
+exclude: !ruby/regexp '/
+    (?i:TAGS)$
+  | [Aa]ppraisals$
+  | [gG]emfile(?:\.lock)?$
+  | \.gemspec$
+  | \.swp$
+  | \.tmp$
+  | ^\.appveyor\.ya?ml$
+  | ^\.autotest$
+  | ^\.bundle\/
+  | ^\.byebug_history$
+  | ^\.coveralls\.ya?ml$
+  | ^\.DS_Store$
+  | ^\.fasterer\.ya?ml$
+  | ^\.gemtest$
+  | ^\.git\/
+  | ^\.gitattributes$
+  | ^\.github\/
+  | ^\.gitignore$
+  | ^\.hg\/
+  | ^\.hoerc$
+  | ^\.idea\/
+  | ^\.pullreview\.ya?ml$
+  | ^\.rubocop.*\.ya?ml$
+  | ^\.standard.*\.ya?ml$
+  | ^\.svn\/
+  | ^\.travis\.ya?ml$
+  | ^\.typos\.toml$
+  | ^\.unused\.ya?ml$
+  | ^mise\.toml$
+  | ^benchmarks\/
+  | ^coverage\/
+  | ^doc\/
+  | ^research\/
+  | ^support\/
+  | ^vendor\/
+/x'

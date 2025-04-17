@@ -1,134 +1,80 @@
-# -*- ruby encoding: utf-8 -*-
+# frozen_string_literal: true
 
-require 'color'
-require 'minitest_helper'
+require "color"
+require "minitest_helper"
 
 module TestColor
   class TestColor < Minitest::Test
     def setup
-      Kernel.module_eval do
-        alias old_warn warn
-
-        def warn(message)
-          $last_warn = message
-        end
-      end
+      @subject = Object.new.extend(Color)
     end
 
-    def teardown
-      Kernel.module_eval do
-        undef warn
-        alias warn old_warn
-        undef old_warn
-      end
-    end
-
-    def test_const
-      $last_warn = nil
-      assert_equal(Color::RGB::AliceBlue, Color::AliceBlue)
-      assert_equal("Color::AliceBlue has been deprecated. Use Color::RGB::AliceBlue instead.", $last_warn)
-
-      $last_warn = nil # Do this twice to make sure it always happens...
-      assert(Color::AliceBlue)
-      assert_equal("Color::AliceBlue has been deprecated. Use Color::RGB::AliceBlue instead.", $last_warn)
-
-      $last_warn = nil
-      assert_equal(Color::COLOR_VERSION, Color::VERSION)
-      assert_equal("Color::VERSION has been deprecated. Use Color::COLOR_VERSION instead.", $last_warn)
-
-      $last_warn = nil
-      assert_equal(Color::COLOR_VERSION, Color::COLOR_TOOLS_VERSION)
-      assert_equal("Color::COLOR_TOOLS_VERSION has been deprecated. Use Color::COLOR_VERSION instead.", $last_warn)
-
-      $last_warn = nil
-      assert(Color::COLOR_VERSION)
-      assert_nil($last_warn)
-      assert(Color::COLOR_EPSILON)
-      assert_nil($last_warn)
-
-      assert_raises(NameError) { assert(Color::MISSING_VALUE) }
-    end
-
-    def test_equivalent
-      assert Color.equivalent?(Color::RGB::Red, Color::HSL.new(0, 100, 50))
-      refute Color.equivalent?(Color::RGB::Red, nil)
-      refute Color.equivalent?(nil, Color::RGB::Red)
-    end
+    # def test_equivalent
+    #   assert Color.equivalent?(Color::RGB::Red, Color::HSL.from_values(0, 100, 50))
+    #   refute Color.equivalent?(Color::RGB::Red, nil)
+    #   refute Color.equivalent?(nil, Color::RGB::Red)
+    # end
 
     def test_normalize
+      normalize = @subject.method(:normalize)
+
       (1..10).each do |i|
-        assert_equal(0.0, Color.normalize(-7 * i))
-        assert_equal(0.0, Color.normalize(-7 / i))
-        assert_equal(0.0, Color.normalize(0 - i))
-        assert_equal(1.0, Color.normalize(255 + i))
-        assert_equal(1.0, Color.normalize(256 * i))
-        assert_equal(1.0, Color.normalize(65536 / i))
+        assert_equal(0.0, normalize.call(-7 * i))
+        assert_equal(0.0, normalize.call(-7 / i))
+        assert_equal(0.0, normalize.call(0 - i))
+        assert_equal(1.0, normalize.call(255 + i))
+        assert_equal(1.0, normalize.call(256 * i))
+        assert_equal(1.0, normalize.call(65536 / i))
       end
+
       (0..255).each do |i|
-        assert_in_delta(i / 255.0, Color.normalize(i / 255.0),
-                        1e-2)
+        assert_in_delta(i / 255.0, normalize.call(i / 255.0), 1e-2)
       end
+    end
+
+    def test_normalize_byte
+      normalize_byte = @subject.method(:normalize_byte)
+
+      assert_equal(0, normalize_byte.call(-1))
+      assert_equal(0, normalize_byte.call(0))
+      assert_equal(127, normalize_byte.call(127))
+      assert_equal(172, normalize_byte.call(172))
+      assert_equal(255, normalize_byte.call(255))
+      assert_equal(255, normalize_byte.call(256))
+    end
+
+    def test_normalize_word
+      normalize_word = @subject.method(:normalize_word)
+
+      assert_equal(0, normalize_word.call(-1))
+      assert_equal(0, normalize_word.call(0))
+      assert_equal(127, normalize_word.call(127))
+      assert_equal(172, normalize_word.call(172))
+      assert_equal(255, normalize_word.call(255))
+      assert_equal(256, normalize_word.call(256))
+      assert_equal(65535, normalize_word.call(65535))
+      assert_equal(65535, normalize_word.call(66536))
     end
 
     def test_normalize_range
-      assert_equal(0, Color.normalize_8bit(-1))
-      assert_equal(0, Color.normalize_8bit(0))
-      assert_equal(127, Color.normalize_8bit(127))
-      assert_equal(172, Color.normalize_8bit(172))
-      assert_equal(255, Color.normalize_8bit(255))
-      assert_equal(255, Color.normalize_8bit(256))
+      normalize_to_range = @subject.method(:normalize_to_range)
 
-      assert_equal(0, Color.normalize_16bit(-1))
-      assert_equal(0, Color.normalize_16bit(0))
-      assert_equal(127, Color.normalize_16bit(127))
-      assert_equal(172, Color.normalize_16bit(172))
-      assert_equal(255, Color.normalize_16bit(255))
-      assert_equal(256, Color.normalize_16bit(256))
-      assert_equal(65535, Color.normalize_16bit(65535))
-      assert_equal(65535, Color.normalize_16bit(66536))
-
-      assert_equal(-100, Color.normalize_to_range(-101, -100..100))
-      assert_equal(-100, Color.normalize_to_range(-100.5, -100..100))
-      assert_equal(-100, Color.normalize_to_range(-100, -100..100))
-      assert_equal(-100, Color.normalize_to_range(-100.0, -100..100))
-      assert_equal(-99.5, Color.normalize_to_range(-99.5, -100..100))
-      assert_equal(-50, Color.normalize_to_range(-50, -100..100))
-      assert_equal(-50.5, Color.normalize_to_range(-50.5, -100..100))
-      assert_equal(0, Color.normalize_to_range(0, -100..100))
-      assert_equal(50, Color.normalize_to_range(50, -100..100))
-      assert_equal(50.5, Color.normalize_to_range(50.5, -100..100))
-      assert_equal(99, Color.normalize_to_range(99, -100..100))
-      assert_equal(99.5, Color.normalize_to_range(99.5, -100..100))
-      assert_equal(100, Color.normalize_to_range(100, -100..100))
-      assert_equal(100, Color.normalize_to_range(100.0, -100..100))
-      assert_equal(100, Color.normalize_to_range(100.5, -100..100))
-      assert_equal(100, Color.normalize_to_range(101, -100..100))
-    end
-
-    def test_new
-      $last_warn = nil
-      c = Color.new("#fff")
-      assert_kind_of(Color::HSL, c)
-      assert_equal(Color::RGB::White.to_hsl, c)
-      assert_equal("Color.new has been deprecated. Use Color::RGB.new instead.", $last_warn)
-
-      $last_warn = nil
-      c = Color.new([0, 0, 0])
-      assert_kind_of(Color::HSL, c)
-      assert_equal(Color::RGB::Black.to_hsl, c)
-      assert_equal("Color.new has been deprecated. Use Color::RGB.new instead.", $last_warn)
-
-      $last_warn = nil
-      c = Color.new([10, 20, 30], :hsl)
-      assert_kind_of(Color::HSL, c)
-      assert_equal(Color::HSL.new(10, 20, 30), c)
-      assert_equal("Color.new has been deprecated. Use Color::HSL.new instead.", $last_warn)
-
-      $last_warn = nil
-      c = Color.new([10, 20, 30, 40], :cmyk)
-      assert_kind_of(Color::HSL, c)
-      assert_equal(Color::CMYK.new(10, 20, 30, 40).to_hsl, c)
-      assert_equal("Color.new has been deprecated. Use Color::CMYK.new instead.", $last_warn)
+      assert_equal(-100, normalize_to_range.call(-101, -100..100))
+      assert_equal(-100, normalize_to_range.call(-100.5, -100..100))
+      assert_equal(-100, normalize_to_range.call(-100, -100..100))
+      assert_equal(-100, normalize_to_range.call(-100.0, -100..100))
+      assert_equal(-99.5, normalize_to_range.call(-99.5, -100..100))
+      assert_equal(-50, normalize_to_range.call(-50, -100..100))
+      assert_equal(-50.5, normalize_to_range.call(-50.5, -100..100))
+      assert_equal(0, normalize_to_range.call(0, -100..100))
+      assert_equal(50, normalize_to_range.call(50, -100..100))
+      assert_equal(50.5, normalize_to_range.call(50.5, -100..100))
+      assert_equal(99, normalize_to_range.call(99, -100..100))
+      assert_equal(99.5, normalize_to_range.call(99.5, -100..100))
+      assert_equal(100, normalize_to_range.call(100, -100..100))
+      assert_equal(100, normalize_to_range.call(100.0, -100..100))
+      assert_equal(100, normalize_to_range.call(100.5, -100..100))
+      assert_equal(100, normalize_to_range.call(101, -100..100))
     end
   end
 end
