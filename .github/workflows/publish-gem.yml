@@ -1,0 +1,100 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - lib/color/version.rb
+
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+    paths:
+      - lib/color/version.rb
+
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  release:
+    if: github.repository == 'halostatue/color' && (github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.merged))
+
+    runs-on: ubuntu-latest
+    environment: release
+
+    env:
+      rubygems_release_gem: true
+
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            fulcio.sigstore.dev:443
+            github.com:443
+            index.rubygems.org:443
+            objects.githubusercontent.com:443
+            rekor.sigstore.dev:443
+            rubygems.org:443
+            tuf-repo-cdn.sigstore.dev:443
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: true
+
+      - id: rubygems
+        run: |
+          ruby -e \
+            'print "version=", Gem::Specification.load(ARGV[0]).rubygems_version, "\n"' \
+            color.gemspec >>"${GITHUB_OUTPUT}"
+
+      - uses: ruby/setup-ruby@a4effe49ee8ee5b8b5091268c473a4628afb5651 # v1.245.0
+        with:
+          bundler-cache: false
+          ruby-version: ruby
+
+      - name: Install dependencies
+        run: |
+          gem update --system="${RUBYGEMS_VERSION}"
+          bundle install --jobs 4 --retry 3
+        env:
+          RUBYGEMS_VERSION: ${{ steps.rubygems.outputs.version }}
+
+      - name: Get gem version
+        run: |
+          echo gem_version="$(rake version)" >>"${GITHUB_OUTPUT}"
+
+      - name: Ensure that gemspec is up-to-date
+        run: |
+          rake gemspec
+
+          if ! git diff >/dev/null 2>/dev/null; then
+            git commit -m "chore: Automatically update gemspec for ${gem_version} for release"
+            git push origin main
+          fi
+
+      - uses: rubygems/release-gem@a25424ba2ba8b387abc8ef40807c2c85b96cbe32 # v1.1.1
+
+      - name: Update documentation
+        run: |
+          rake docs
+          git checkout gh-pages
+
+          find . -mindepth 1 -maxdepth 1 \
+            \( ! -name '.git' -a ! -name '.gitignore' -a ! -name 'doc' \) \
+            -exec rm -rf {} +
+
+          cp -r doc/* .
+          git add .
+          git commit -m "Update documentation for ${gem_version}"
+          git push origin gh-pages
