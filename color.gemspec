@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.metadata = { "bug_tracker_uri" => "https://github.com/halostatue/color/issues", "changelog_uri" => "https://github.com/halostatue/color/blob/main/CHANGELOG.md", "rubygems_mfa_required" => "true", "source_code_uri" => "https://github.com/halostatue/color" } if s.respond_to? :metadata=
   s.require_paths = ["lib".freeze]
   s.authors = ["Austin Ziegler".freeze, "Matt Lyon".freeze]
-  s.date = "1980-01-02"
+  s.date = "2025-06-15"
   s.description = "Color is a Ruby library to provide RGB, CMYK, HSL, and other color space\nmanipulation support to applications that require it. It provides optional named\nRGB colors that are commonly supported in HTML, # SVG, and X11 applications.\n\nThe Color library performs purely mathematical manipulation of the colors based\non color theory without reference to device color profiles (such as sRGB or\nAdobe RGB). For most purposes, when working with RGB and HSL color spaces, this\nwon't matter. Absolute color spaces (like CIE LAB and CIE XYZ) cannot be\nreliably converted to relative color spaces (like RGB) without color profiles.\nWhen necessary for conversions, Color provides D65 and D50 reference white\nvalues in Color::XYZ.\n\nColor 2.0 is a major release, dropping support for all versions of Ruby prior to\n3.2 as well as removing or renaming a number of features. The main breaking\nchanges are:\n\n- Color classes are immutable Data objects; they are no longer mutable.\n- RGB named colors are no longer loaded on gem startup, but must be required\n  explicitly (this is _not_ done via `autoload` because there are more than 100\n  named colors with spelling variations) with `require \"color/rgb/colors\"`.\n- Color palettes have been removed.\n- `Color::CSS` and `Color::CSS#[]` have been removed.".freeze
   s.email = ["halostatue@gmail.com".freeze, "matt@postsomnia.com".freeze]
   s.extra_rdoc_files = ["CHANGELOG.md".freeze, "CODE_OF_CONDUCT.md".freeze, "CONTRIBUTING.md".freeze, "CONTRIBUTORS.md".freeze, "LICENCE.md".freeze, "Manifest.txt".freeze, "README.md".freeze, "SECURITY.md".freeze]
@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency(%q<hoe-halostatue>.freeze, ["~> 2.0".freeze])
   s.add_development_dependency(%q<hoe-doofus>.freeze, ["~> 1.0".freeze])
   s.add_development_dependency(%q<hoe-rubygems>.freeze, ["~> 1.0".freeze])
-  s.add_development_dependency(%q<hoe-gemspec2>.freeze, ["~> 1.1".freeze])
+  s.add_development_dependency(%q<hoe-gemspec2>.freeze, ["~> 1.4".freeze])
   s.add_development_dependency(%q<hoe-git>.freeze, ["~> 1.6".freeze])
   s.add_development_dependency(%q<minitest>.freeze, ["~> 5.8".freeze])
   s.add_development_dependency(%q<minitest-autotest>.freeze, ["~> 1.0".freeze])
