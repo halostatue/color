@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module Color
-  VERSION = "2.0.0.pre.0" # :nodoc:
+  VERSION = "2.0.0.pre.1" # :nodoc:
 end
