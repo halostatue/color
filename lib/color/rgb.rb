@@ -638,6 +638,7 @@ class << Color::RGB
   ##
   # Extract named or hex colors from the provided text.
   def extract_colors(text, mode = :both)
+    require "color/rgb/colors"
     text = text.downcase
     regex = case mode
     when :name
@@ -646,6 +647,8 @@ class << Color::RGB
       Regexp.union(__by_hex.keys)
     when :both
       Regexp.union(__by_hex.keys + __by_name.keys)
+    else
+      raise ArgumentError, "Unknown mode #{mode}"
     end
 
     text.scan(regex).map { |match|
@@ -683,11 +686,13 @@ class << Color::RGB
 
   ##
   def __by_hex # :nodoc:
+    require "color/rgb/colors"
     @__by_hex ||= {}
   end
 
   ##
   def __by_name # :nodoc:
+    require "color/rgb/colors"
     @__by_name ||= {}
   end
 

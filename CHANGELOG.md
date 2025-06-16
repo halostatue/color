@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0.pre.0 / 2025-06-15
+## 2.0.0.pre.1 / 2025-06-16
 
 Color 2.0.0 is a major release of the Color library.
 
@@ -56,7 +56,10 @@ this release without warning.
 - The `#html` method has been removed from all color classes except Color::RGB.
 
 - Named RGB colors are no longer defined automatically, but must be loaded
-  explicitly by requiring `color/rgb/colors`. This resolves [#30][issue-30].
+  explicitly by requiring `color/rgb/colors`. This resolves [#30][issue-30]. The
+  use of `Color::RGB#extract_colors`, `Color::RGB.by_hex`, `Color::RGB.by_name`,
+  or `Color::RGB.by_css` will require `color/rgb/colors` automatically as they
+  require the presence of the named colors.
 
 - `Color:CSS#[]` has been removed, as has the containing namespace. It has
   always been a shallow wrapper around `Color::RGB.by_name`.
