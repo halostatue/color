@@ -8,3 +8,4 @@
 - Luke Bennellick
 - @stiff (CIELAB color support)
 - Matthew Draper
+- Charles Nutter

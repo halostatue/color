@@ -187,7 +187,7 @@ jobs:
         uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
         with:
           disable-sudo: true
-          egress-policy: audit
+          egress-policy: block
           allowed-endpoints: >
             github.com:443
             index.rubygems.org:443
@@ -224,7 +224,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Harden the runner (audit)
+      - name: Harden the runner
         uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
         with:
           disable-sudo: true
