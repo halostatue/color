@@ -25,3 +25,23 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+## Developer Certificate of Origin
+
+All contributors **must** certify they are willing and able to provide their
+contributions under the terms of this project's licences with the certification
+of the [Developer Certificate of Origin (Version 1.1)](licences/dco.txt).
+
+Such certification is provided by ensuring that a `Signed-off-by`
+[commit trailer][trailer] is present on every commit:
+
+    Signed-off-by: FirstName LastName <email@example.org>
+
+The `Signed-off-by` trailer can be automatically added by git with the `-s` or
+`--signoff` option on `git commit`:
+
+```sh
+git commit --signoff
+```
+
+[trailer]: https://git-scm.com/docs/git-interpret-trailers

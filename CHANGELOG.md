@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0.pre.1 / 2025-06-16
+## 2.0.0.pre.2 / 2025-06-24
 
 Color 2.0.0 is a major release of the Color library.
 
@@ -78,6 +78,14 @@ this release without warning.
   includes increased release security (MFA is required for all releases,
   automated releases are enabled), full GitHub Actions, Dependabot, Standard
   Ruby, and more.
+
+- Charles Nutter re-added JRuby support in CI. [#36][pr-36]
+
+### Governance
+
+Color 2.0 and later requires that all contributions be signed-off attesting that
+the developer created the change and has the appropriate permissions or
+ownership to contribute it to this project under the licence terms.
 
 ## 1.8 / 2015-10-26
 
@@ -299,3 +307,4 @@ this release without warning.
 [issue-30]: https://github.com/halostatue/color/issues/30
 [pr-11]: https://github.com/halostatue/color/pull/11
 [pr-8]: https://github.com/halostatue/color/pulls/8
+[pr-36]: https://github.com/halostatue/color/pull/36
