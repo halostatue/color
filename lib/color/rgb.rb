@@ -666,34 +666,15 @@ class << Color::RGB
   private
 
   ##
-  def __create_named_color(mod, rgb, *names) # :nodoc:
-    used = names - mod.constants.map(&:to_sym)
-
-    if used.length < names.length
-      raise ArgumentError, "#{names.join(", ")} already defined in #{mod}"
-    end
-
-    rgb = rgb.with(names: Array(names).flatten.compact.map { _1.to_s.downcase }.sort.uniq)
-
-    names.each { mod.const_set(_1, rgb) }
-
-    rgb.names.each { __by_name[_1] = __by_name[_1.to_s] = rgb }
-    lower = rgb.name.downcase
-
-    __by_name[lower] = __by_name[lower.to_s] = rgb
-    __by_hex[rgb.hex] = rgb
-  end
-
-  ##
   def __by_hex # :nodoc:
     require "color/rgb/colors"
-    @__by_hex ||= {}
+    @__by_hex
   end
 
   ##
   def __by_name # :nodoc:
     require "color/rgb/colors"
-    @__by_name ||= {}
+    @__by_name
   end
 
   ##
