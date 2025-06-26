@@ -86,7 +86,7 @@ jobs:
       - uses: rubygems/release-gem@a25424ba2ba8b387abc8ef40807c2c85b96cbe32 # v1.1.1
 
       - name: What went wrong?
-        if: failed()
+        if: failure()
         run: |
           git status
           git diff
