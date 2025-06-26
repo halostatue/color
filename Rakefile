@@ -29,7 +29,7 @@ hoe = Hoe.spec "color" do
   }
 
   extra_dev_deps << ["hoe", "~> 4.0"]
-  extra_dev_deps << ["hoe-halostatue", "~> 2.0"]
+  extra_dev_deps << ["hoe-halostatue", "~> 2.1", ">= 2.1.1"]
   extra_dev_deps << ["hoe-doofus", "~> 1.0"]
   extra_dev_deps << ["hoe-rubygems", "~> 1.0"]
   extra_dev_deps << ["hoe-gemspec2", "~> 1.4"]

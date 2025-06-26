@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0.pre.2 / 2025-06-25
+## 2.0.0.pre.2 / 2025-06-26
 
 Color 2.0.0 is a major release of the Color library.
 
