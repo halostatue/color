@@ -1,0 +1,5 @@
+
+rules:
+  artipacked:
+    ignore:
+      - publish-gem.yml:53 # publish-gem adds and pushes a tag.

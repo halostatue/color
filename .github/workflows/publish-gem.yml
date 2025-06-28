@@ -21,6 +21,8 @@ permissions: {}
 
 jobs:
   release:
+    name: Publish Gem Version with Trusted Publishing
+
     if: github.repository == 'halostatue/color' && (github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.merged))
 
     runs-on: ubuntu-latest
