@@ -1,14 +1,15 @@
-name: Update docs
+name: Publish docs
 
 on:
   workflow_dispatch:
 
   workflow_call:
-    secrets:
-      - GITHUB_TOKEN
+
+permissions: {}
 
 jobs:
-  build_and_upload:
+  publish_docs:
+    name: Publish docs from main
     runs-on: ubuntu-latest
     environment: release
 
@@ -59,9 +60,9 @@ jobs:
           rake docs
 
       - name: Upload documentation artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
           path: doc
 
       - name: Deploy documentation
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
