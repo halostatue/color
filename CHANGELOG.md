@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1 / 2025-07-05
+
+Color 2.0.1 is a minor documentation update.
+
 ## 2.0.0 / 2025-07-05
 
 Color 2.0.0 is a major release of the Color library.

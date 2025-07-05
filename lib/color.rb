@@ -7,29 +7,25 @@
 # - **changelog**: [CHANGELOG](rdoc-ref:CHANGELOG.md)
 #
 # \Color is a Ruby library to provide RGB, CMYK, HSL, and other color space manipulation
-# support to applications that require it. It provides 152 named RGB colors that are
+# support to applications that require it. It provides optional named RGB colors that are
 # commonly supported in HTML, SVG, and X11 applications.
 #
 # The \Color library performs purely mathematical manipulation of the colors based on
 # color theory without reference to device color profiles (such as sRGB or Adobe RGB). For
 # most purposes, when working with RGB and HSL color spaces, this won't matter. Absolute
-# color spaces (like CIE LAB and CIE XYZ), however, cannot be reliably converted to
-# relative color spaces (like RGB) without color profiles. When necessary for conversions,
-# \Color provides \D65 and \D50 reference white values in Color::XYZ.
+# color spaces (like CIE LAB and CIE XYZ) cannot be reliably converted to relative color
+# spaces (like RGB) without color profiles. When necessary for conversions, \Color
+# provides \D65 and \D50 reference white values in Color::XYZ.
 #
-# \Color 2.0 is a major release to the \Color library, dropping support for all versions of
-# Ruby prior to 3.2.
+# Color 2.0 is a major release, dropping support for all versions of Ruby prior to 3.2 as
+# well as removing or renaming a number of features. The main breaking changes are:
 #
-# > **NOTE**: This is a pre-release version of \Color 2.0.
-# > The main goals for a 2.0 release have been met: modernizing the codebase, but
-# > consideration will be given to improving color transformation robustness and accuracy
-# > with Matrix operations and Rational numbers instead of floating point decimal values.
-#
-# In \Color 2.0, color objects are immutable (derived from Data) and do not expose the
-# `new` class method, instead using only `from_*` class methods. There is always
-# a `from_values` class method which represents the native color channel values (which may
-# not match the internal representation). This method _may_ have a counterpart that is
-# recommended for readability.
+# - Color classes are immutable Data objects; they are no longer mutable.
+# - RGB named colors are no longer loaded on gem startup, but must be required explicitly
+#   (this is _not_ done via `autoload` because there are more than 100 named colors with
+#   spelling variations) with `require "color/rgb/colors"`.
+# - Color palettes have been removed.
+# - `Color::CSS` and `Color::CSS#[]` have been removed.
 module Color
   ##
   # The maximum "resolution" for color math; if any value is less than or equal to this

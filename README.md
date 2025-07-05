@@ -12,7 +12,7 @@
 
 Color is a Ruby library to provide RGB, CMYK, HSL, and other color space
 manipulation support to applications that require it. It provides optional named
-RGB colors that are commonly supported in HTML, # SVG, and X11 applications.
+RGB colors that are commonly supported in HTML, SVG, and X11 applications.
 
 The Color library performs purely mathematical manipulation of the colors based
 on color theory without reference to device color profiles (such as sRGB or
@@ -33,7 +33,7 @@ changes are:
 - Color palettes have been removed.
 - `Color::CSS` and `Color::CSS#[]` have been removed.
 
-## Examples
+## Example
 
 Suppose you want to make a given RGB color a little lighter. Adjusting the RGB
 color curves will change the hue and saturation will also change. Instead, use
