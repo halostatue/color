@@ -95,4 +95,8 @@ jobs:
 
   publish_docs:
     needs: release
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     uses: ./.github/workflows/publish-docs.yml
