@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Harden the runner
-        uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
+        uses: step-security/harden-runner@6c439dc8bdf85cadbbce9ed30d1c7b959517bc49 # v2.12.2
         with:
           disable-sudo: true
           egress-policy: block
@@ -37,13 +37,9 @@ jobs:
           ruby-version: '3.4'
           rubygems: latest
           bundler: 2
-          bundler-cache: false
+          bundler-cache: true
 
-      - run: |
-          bundle install --jobs 4 --retry 3
-          bundle exec standardrb
-        env:
-          MAINTENANCE: true
+      - run: bundle exec standardrb
 
   coverage:
     name: Generate Coverage Report
@@ -54,7 +50,7 @@ jobs:
 
     steps:
       - name: Harden the runner
-        uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
+        uses: step-security/harden-runner@6c439dc8bdf85cadbbce9ed30d1c7b959517bc49 # v2.12.2
         with:
           disable-sudo: true
           egress-policy: block
@@ -74,10 +70,9 @@ jobs:
           ruby-version: '3.4'
           rubygems: latest
           bundler: 2
-          bundler-cache: false
+          bundler-cache: true
 
       - run: |
-          bundle install --jobs 4 --retry 3
           bundle exec ruby -S rake coverage --trace
         env:
           COVERAGE: true
@@ -106,7 +101,7 @@ jobs:
 
     steps:
       - name: Harden the runner
-        uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
+        uses: step-security/harden-runner@6c439dc8bdf85cadbbce9ed30d1c7b959517bc49 # v2.12.2
         with:
           disable-sudo: true
           egress-policy: block
@@ -151,7 +146,7 @@ jobs:
 
     steps:
       - name: Harden the runner
-        uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
+        uses: step-security/harden-runner@6c439dc8bdf85cadbbce9ed30d1c7b959517bc49 # v2.12.2
         with:
           disable-sudo: true
           egress-policy: block
@@ -190,15 +185,15 @@ jobs:
           - '3.2'
           - '3.3'
           - '3.4'
+          - mingw
           - mswin
           - ucrt
-          - mingw
 
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Harden the runner
-        uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
+        uses: step-security/harden-runner@6c439dc8bdf85cadbbce9ed30d1c7b959517bc49 # v2.12.2
         with:
           disable-sudo: true
           egress-policy: block
@@ -242,7 +237,7 @@ jobs:
 
     steps:
       - name: Harden the runner
-        uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
+        uses: step-security/harden-runner@6c439dc8bdf85cadbbce9ed30d1c7b959517bc49 # v2.12.2
         with:
           disable-sudo: true
           egress-policy: block
@@ -288,7 +283,7 @@ jobs:
 
     steps:
       - name: Harden the runner
-        uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
+        uses: step-security/harden-runner@6c439dc8bdf85cadbbce9ed30d1c7b959517bc49 # v2.12.2
         with:
           disable-sudo: true
           egress-policy: block

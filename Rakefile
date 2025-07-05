@@ -25,23 +25,22 @@ hoe = Hoe.spec "color" do
   license "MIT"
 
   spec_extras[:metadata] = ->(val) {
-    val.merge!({"rubygems_mfa_required" => "true"})
+    val["rubygems_mfa_required"] = "true"
   }
 
   extra_dev_deps << ["hoe", "~> 4.0"]
   extra_dev_deps << ["hoe-halostatue", "~> 2.1", ">= 2.1.1"]
-  extra_dev_deps << ["hoe-doofus", "~> 1.0"]
-  extra_dev_deps << ["hoe-rubygems", "~> 1.0"]
-  extra_dev_deps << ["hoe-gemspec2", "~> 1.4"]
   extra_dev_deps << ["hoe-git", "~> 1.6"]
   extra_dev_deps << ["minitest", "~> 5.8"]
   extra_dev_deps << ["minitest-autotest", "~> 1.0"]
   extra_dev_deps << ["minitest-focus", "~> 1.1"]
   extra_dev_deps << ["minitest-moar", "~> 0.0"]
   extra_dev_deps << ["rake", ">= 10.0", "< 14"]
-  extra_dev_deps << ["rdoc", ">= 0.0"]
+  extra_dev_deps << ["rdoc", ">= 0.0", "< 7"]
   extra_dev_deps << ["standard", "~> 1.0"]
   extra_dev_deps << ["json", ">= 0.0"]
+  extra_dev_deps << ["simplecov", "~> 0.22"]
+  extra_dev_deps << ["simplecov-lcov", "~> 0.8"]
 end
 
 Minitest::TestTask.create :test
@@ -84,5 +83,4 @@ RDoc::Task.new do
   _1.rdoc_files = hoe.spec.require_paths - ["Manifest.txt"] + hoe.spec.extra_rdoc_files
   _1.markup = "markdown"
 end
-
 task docs: :rerdoc

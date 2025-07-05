@@ -39,8 +39,8 @@ contributions. There are a few DOs and DON'Ts that should be followed.
 Color is a library full of complex math and subtle decisions (some of them
 possibly even wrong). It is extremely important that any issues or pull requests
 be well understood by the submitter and that, especially for pull requests, the
-developer can attest to the [Developer Certificate of Origin](licences/dco.txt)
-for each pull request (see [LICENCE](LICENCE.md)).
+developer can attest to the [Developer Certificate of Origin][dco] for each pull
+request (see [LICENCE](LICENCE.md)).
 
 If LLM assistance is used in writing pull requests, this must be documented in
 the commit message and pull request. If there is evidence of LLM assistance
@@ -77,8 +77,8 @@ Here's the most direct way to get your work merged into the project:
 - Create a pull request against halostatue/color and describe what your change
   does and the why you think it should be merged.
 
+[dco]: licences/dco.txt
 [hoe]: https://github.com/seattlerb/hoe
 [minitest]: https://github.com/seattlerb/minitest
-[mtd]: https://github.com/mime-types/mime-types-data
 [qcm]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
 [standardrb]: https://github.com/standardrb/standard

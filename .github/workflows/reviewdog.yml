@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
+        uses: step-security/harden-runner@6c439dc8bdf85cadbbce9ed30d1c7b959517bc49 # v2.12.2
         with:
           disable-sudo: true
           egress-policy: block
@@ -31,13 +31,7 @@ jobs:
         with:
           persist-credentials: false
 
-      # Currently failing on install of typos via crate-ci/gh-install internal to
-      # reviewdog/action-typos.
-      # - uses: reviewdog/action-typos@627388e238f182b925d9acd151432f9b68f1d666 # v1.17.2
-
-      # Use typos action directly in the short term.
-      - uses: crate-ci/typos@b1ae8d918b6e85bd611117d3d9a3be4f903ee5e4 # v1.33.1
-
+      - uses: reviewdog/action-typos@627388e238f182b925d9acd151432f9b68f1d666 # v1.17.2
 
   actionlint:
     if: ${{ github.event.action != 'closed' }}
@@ -50,7 +44,7 @@ jobs:
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
+        uses: step-security/harden-runner@6c439dc8bdf85cadbbce9ed30d1c7b959517bc49 # v2.12.2
         with:
           disable-sudo: true
           egress-policy: block
@@ -75,7 +69,7 @@ jobs:
 
   #   steps:
   #     - name: Harden Runner
-  #       uses: step-security/harden-runner@4d991eb9b905ef189e4c376166672c3f2f230481 # v2.11.0
+  #       uses: step-security/harden-runner@c6295a65d1254861815972266d5933fd6e532bdf # v2.11.1
   #       with:
   #         disable-sudo: true
   #         egress-policy: block

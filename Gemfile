@@ -11,9 +11,4 @@ if ENV["DEV"]
   gem "memory_profiler", platforms: [:mri]
 end
 
-if ENV["COVERAGE"]
-  gem "simplecov", require: false, platforms: [:mri]
-  gem "simplecov-lcov", require: false, platforms: [:mri]
-end
-
 gemspec
