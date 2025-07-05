@@ -17,7 +17,7 @@ lib/color/rgb/colors.rb
 lib/color/version.rb
 lib/color/xyz.rb
 lib/color/yiq.rb
-licenses/dco.txt
+licences/dco.txt
 test/fixtures/cielab.json
 test/minitest_helper.rb
 test/test_cmyk.rb

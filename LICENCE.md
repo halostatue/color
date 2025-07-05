@@ -1,5 +1,7 @@
 # Licence
 
+- SPDX-License-Identifier: [MIT][mit]
+
 - Copyright 2005-2025 Austin Ziegler, Matt Lyon, and other contributors.
 
 The software in this repository is made available under the MIT license.
@@ -44,4 +46,5 @@ The `Signed-off-by` trailer can be automatically added by git with the `-s` or
 git commit --signoff
 ```
 
+[mit]: https://spdx.org/licenses/MIT.html
 [trailer]: https://git-scm.com/docs/git-interpret-trailers

@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0.pre.2 / 2025-06-26
+## 2.0.0 / 2025-07-05
 
 Color 2.0.0 is a major release of the Color library.
 
@@ -8,7 +8,7 @@ Color 2.0.0 is a major release of the Color library.
 
 Color 2.0 contains breaking changes. Functionality previously deprecated has
 been removed, but other functionality has been changed or removed as part of
-this release without warning.
+this release without prior warning.
 
 - The minimum supported version of Ruby is 3.2.
 
