@@ -317,6 +317,15 @@ module TestColor
       end
     end
 
+    def test_fix_45_invalid_rgb_to_lab
+      assert_equal(
+        Color::CIELAB[56.2562, 88.1033, -18.8203],
+        Color::RGB.by_hex("#ff00aa").to_lab
+      )
+
+      assert_equal("#ff00aa", Color::RGB.by_hex("#ff00aa").to_lab.to_rgb.html)
+    end
+
     # # An RGB color round-tripped through CIELAB should still have more or less the same
     # # RGB values, but this doesn't really work because the color math here is slightly
     # # wrong.

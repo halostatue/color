@@ -1,5 +1,27 @@
 # Changelog
 
+## 2.1.0 / 2025-07-20
+
+Color 2.1.0 fixes a computation bug where CIE XYZ values were improperly clamped
+and adds more Color::XYZ white points for standard illuminants.
+
+- Fixes a bug where standard illuminant white points were improperly clamped and
+  was seen in `Color::RGB#to_lab` since CIELAB conversions must go through the
+  XYZ color model. Even though we were using the D65 white point, the Z value
+  was being clamped to 1.0 instead of the correct value of ≅1.08. Reported by
+  @r-plus in [#45][issue-45] and fixed in [#45][pr-46].
+
+  The resulting Color::LAB values are not _exactly_ the same values under Color
+  1.8, but they are within fractional differences deemed acceptable.
+
+- Added more white points for standard illuminants in the Color::XYZ::WP2
+  constant. The values here were derived from the
+  [White points of standard illuminants][wp-std-illuminant] using the `xyY` to
+  `XYZ` conversion formula where `X = (x * Y) / y` and
+  `Z = ((1 - x - y) * Y) / y`. Only the values for CIE 1931 2° were computed.
+  The values for Color::XYZ::D50 and Color::XYZ::D65 were replaced with these
+  computed values.
+
 ## 2.0.1 / 2025-07-05
 
 Color 2.0.1 is a minor documentation update.
@@ -309,6 +331,9 @@ ownership to contribute it to this project under the licence terms.
 [css-device-cmyk]: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/device-cmyk
 [issue-10]: https://github.com/halostatue/color/issues/10
 [issue-30]: https://github.com/halostatue/color/issues/30
+[issue-45]: https://github.com/halostatue/color/issues/45
 [pr-11]: https://github.com/halostatue/color/pull/11
-[pr-8]: https://github.com/halostatue/color/pulls/8
 [pr-36]: https://github.com/halostatue/color/pull/36
+[pr-46]: https://github.com/halostatue/pull/46
+[pr-8]: https://github.com/halostatue/color/pulls/8
+[wp-std-illuminant]: https://en.wikipedia.org/wiki/Standard_illuminant#White_points_of_standard_illuminants

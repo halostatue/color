@@ -7,5 +7,6 @@
 - Aaron Hill (CIE94 color matching)
 - Luke Bennellick
 - @stiff (CIELAB color support)
+- @r-plus
 - Matthew Draper
 - Charles Nutter
