@@ -47,6 +47,7 @@ jobs:
             index.rubygems.org:443
             objects.githubusercontent.com:443
             rekor.sigstore.dev:443
+            release-assets.githubusercontent.com:443
             rubygems.org:443
             tuf-repo-cdn.sigstore.dev:443
 
