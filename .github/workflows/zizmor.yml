@@ -25,6 +25,7 @@ jobs:
           egress-policy: block
           allowed-endpoints: >
             api.github.com:443
+            release-assets.githubusercontent.com:443
             files.pythonhosted.org:443
             github.com:443
             objects.githubusercontent.com:443
