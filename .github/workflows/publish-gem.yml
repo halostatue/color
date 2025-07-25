@@ -19,10 +19,13 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   release:
-    name: Publish Gem Version with Trusted Publishing
-
+    name: Release color
     if: github.repository == 'halostatue/color' && (github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.merged))
 
     runs-on: ubuntu-latest
@@ -61,7 +64,7 @@ jobs:
             'print "version=", Gem::Specification.load(ARGV[0]).rubygems_version, "\n"' \
             color.gemspec >>"${GITHUB_OUTPUT}"
 
-      - uses: ruby/setup-ruby@472790540115ce5bd69d399a020189a8c87d641f # v1.247.0
+      - uses: ruby/setup-ruby@65937904bcddfb93f8130882d9afa8597c45f3b5 # v1.249.0
         with:
           bundler-cache: false
           ruby-version: ruby
