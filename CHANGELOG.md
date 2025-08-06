@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.1 / 2025-08-08
+
+Color 2.1.1 fixes a bug where `Color::RGB::Black` and `Color::RGB::White` are no
+longer defined automatically because they are part of `color/rgb/colors`.
+Internally, this defines `Color::RGB::Black000` and `Color::RGB::WhiteFFF`.
+
 ## 2.1.0 / 2025-07-20
 
 Color 2.1.0 fixes a computation bug where CIE XYZ values were improperly clamped
