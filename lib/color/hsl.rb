@@ -93,8 +93,8 @@ class Color::HSL
   # fvd and van Dam, originally found at [1] (implemented similarly at [2]). This
   # simplifies the calculations with the following assumptions:
   #
-  # - Luminance values <= 0 always translate to Color::RGB::Black.
-  # - Luminance values >= 1 always translate to Color::RGB::White.
+  # - Luminance values <= 0 always translate to a black Color::RGB value.
+  # - Luminance values >= 1 always translate to a white Color::RGB value.
   # - Saturation values <= 0 always translate to a shade of gray using luminance as
   #   a percentage of gray.
   #
@@ -102,9 +102,9 @@ class Color::HSL
   # [2] http://support.microsoft.com/kb/29240
   def to_rgb(...)
     if near_zero_or_less?(l)
-      Color::RGB::Black
+      Color::RGB::Black000
     elsif near_one_or_more?(l)
-      Color::RGB::White
+      Color::RGB::WhiteFFF
     elsif near_zero?(s)
       Color::RGB.from_fraction(l, l, l)
     else

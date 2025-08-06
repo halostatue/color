@@ -63,6 +63,9 @@ class Color::RGB
     super(r: normalize(r), g: normalize(g), b: normalize(b), names: names)
   end
 
+  Black000 = new(r: 0x00, g: 0x00, b: 0x00) # :nodoc:
+  WhiteFFF = new(r: 0xff, g: 0xff, b: 0xff) # :nodoc:
+
   ##
   # :attr_reader: name
   # The primary name for this \RGB color.
@@ -263,18 +266,18 @@ class Color::RGB
   def delta_e2000(other) = to_lab.delta_e2000(coerce(other).to_lab)
 
   ##
-  # Mix the \RGB hue with White so that the \RGB hue is the specified percentage of the
+  # Mix the \RGB hue with white so that the \RGB hue is the specified percentage of the
   # resulting color.
   #
   # Strictly speaking, this isn't a `lighten_by` operation, but it mostly works.
-  def lighten_by(percent) = mix_with(Color::RGB::White, percent)
+  def lighten_by(percent) = mix_with(Color::RGB::WhiteFFF, percent)
 
   ##
-  # Mix the \RGB hue with Black so that the \RGB hue is the specified percentage of the
+  # Mix the \RGB hue with black so that the \RGB hue is the specified percentage of the
   # resulting color.
   #
   # Strictly speaking, this isn't a `darken_by` operation, but it mostly works.
-  def darken_by(percent) = mix_with(Color::RGB::Black, percent)
+  def darken_by(percent) = mix_with(Color::RGB::Black000, percent)
 
   ##
   # Mix the mask color with the current color at the stated opacity percentage (0..100).
