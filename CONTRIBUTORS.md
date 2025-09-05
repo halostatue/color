@@ -10,3 +10,4 @@
 - @r-plus
 - Matthew Draper
 - Charles Nutter
+- Paul Gallagher
