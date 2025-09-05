@@ -76,19 +76,6 @@ jobs:
         env:
           RUBYGEMS_VERSION: ${{ steps.rubygems.outputs.version }}
 
-      - name: Get gem version
-        run: |
-          echo gem_version="$(rake version)" >>"${GITHUB_OUTPUT}"
-
-      - name: Ensure that gemspec is up-to-date
-        run: |
-          rake gemspec
-
-          if ! git diff >/dev/null 2>/dev/null; then
-            git commit -m "chore: Automatically update gemspec for ${gem_version} for release"
-            git push origin main
-          fi
-
       - uses: rubygems/release-gem@a25424ba2ba8b387abc8ef40807c2c85b96cbe32 # v1.1.1
 
       - name: Show the status if release failed
