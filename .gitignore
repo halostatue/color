@@ -16,3 +16,4 @@
 /website/index.html
 Gemfile.lock
 mise.toml
+.ruby*
