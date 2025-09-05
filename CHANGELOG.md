@@ -1,5 +1,10 @@
 # Changelog
 
+## NEXT / YYYY-MM-DD
+
+- Full coverage of conversion tests. Adds CIELAB to_yiq and Grayscale to_xyz
+  methods. Only YIQ now lacking conversions support. Fixed in [#69][pr-69].
+
 ## 2.1.1 / 2025-08-08
 
 Color 2.1.1 fixes a bug where `Color::RGB::Black` and `Color::RGB::White` are no
@@ -343,3 +348,4 @@ ownership to contribute it to this project under the licence terms.
 [pr-46]: https://github.com/halostatue/pull/46
 [pr-8]: https://github.com/halostatue/color/pulls/8
 [wp-std-illuminant]: https://en.wikipedia.org/wiki/Standard_illuminant#White_points_of_standard_illuminants
+[pr-69]: https://github.com/halostatue/color/pull/69

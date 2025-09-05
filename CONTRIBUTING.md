@@ -24,6 +24,8 @@ contributions. There are a few DOs and DON'Ts that should be followed.
   is RDoc; color does not use extensions that may be present in alternative
   documentation generators.
 
+- Include your DCO sign-off in each commit message (see [LICENCE](LICENCE.md)).
+
 ## DO NOT
 
 - Modify `VERSION` in `lib/color/version.rb`. When your patch is accepted and a

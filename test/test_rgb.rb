@@ -91,97 +91,6 @@ module TestColor
       assert_in_tolerance(0.5, Color::RGB::Blue.mix_with(Color::RGB::Red, 50).b)
     end
 
-    def test_to_cmyk
-      assert_kind_of(Color::CMYK, Color::RGB::Black.to_cmyk)
-      assert_equal(Color::CMYK.from_percentage(0, 0, 0, 100), Color::RGB::Black.to_cmyk)
-      assert_equal(Color::CMYK.from_percentage(0, 0, 100, 0), Color::RGB::Yellow.to_cmyk)
-      assert_equal(Color::CMYK.from_percentage(100, 0, 0, 0), Color::RGB::Cyan.to_cmyk)
-      assert_equal(Color::CMYK.from_percentage(0, 100, 0, 0), Color::RGB::Magenta.to_cmyk)
-      assert_equal(Color::CMYK.from_percentage(0, 100, 100, 0), Color::RGB::Red.to_cmyk)
-      assert_equal(Color::CMYK.from_percentage(100, 0, 100, 0), Color::RGB::Lime.to_cmyk)
-      assert_equal(Color::CMYK.from_percentage(100, 100, 0, 0), Color::RGB::Blue.to_cmyk)
-      assert_equal(Color::CMYK.from_percentage(10.32, 60.52, 10.32, 39.47), Color::RGB::Purple.to_cmyk)
-      assert_equal(Color::CMYK.from_percentage(10.90, 59.13, 59.13, 24.39), Color::RGB::Brown.to_cmyk)
-      assert_equal(Color::CMYK.from_percentage(0, 63.14, 18.43, 0), Color::RGB::Carnation.to_cmyk)
-      assert_equal(Color::CMYK.from_percentage(7.39, 62.69, 62.69, 37.32), Color::RGB::Cayenne.to_cmyk)
-    end
-
-    def test_to_grayscale
-      assert_kind_of(Color::Grayscale, Color::RGB::Black.to_grayscale)
-      assert_equal(Color::Grayscale.from_fraction(0), Color::RGB::Black.to_grayscale)
-      assert_equal(Color::Grayscale.from_fraction(0.5), Color::RGB::Yellow.to_grayscale)
-      assert_equal(Color::Grayscale.from_fraction(0.5), Color::RGB::Cyan.to_grayscale)
-      assert_equal(Color::Grayscale.from_fraction(0.5), Color::RGB::Magenta.to_grayscale)
-      assert_equal(Color::Grayscale.from_fraction(0.5), Color::RGB::Red.to_grayscale)
-      assert_equal(Color::Grayscale.from_fraction(0.5), Color::RGB::Lime.to_grayscale)
-      assert_equal(Color::Grayscale.from_fraction(0.5), Color::RGB::Blue.to_grayscale)
-      assert_equal(Color::Grayscale.from_fraction(0.2510), Color::RGB::Purple.to_grayscale)
-      assert_equal(Color::Grayscale.from_percentage(40.58), Color::RGB::Brown.to_grayscale)
-      assert_equal(Color::Grayscale.from_percentage(68.43), Color::RGB::Carnation.to_grayscale)
-      assert_equal(Color::Grayscale.from_percentage(27.65), Color::RGB::Cayenne.to_grayscale)
-    end
-
-    def test_to_hsl
-      assert_kind_of(Color::HSL, Color::RGB::Black.to_hsl)
-      assert_equal(Color::HSL.from_values(0, 0, 0), Color::RGB::Black.to_hsl)
-      assert_equal(Color::HSL.from_values(60, 100, 50), Color::RGB::Yellow.to_hsl)
-      assert_equal(Color::HSL.from_values(180, 100, 50), Color::RGB::Cyan.to_hsl)
-      assert_equal(Color::HSL.from_values(300, 100, 50), Color::RGB::Magenta.to_hsl)
-      assert_equal(Color::HSL.from_values(0, 100, 50), Color::RGB::Red.to_hsl)
-      assert_equal(Color::HSL.from_values(120, 100, 50), Color::RGB::Lime.to_hsl)
-      assert_equal(Color::HSL.from_values(240, 100, 50), Color::RGB::Blue.to_hsl)
-      assert_equal(Color::HSL.from_values(300, 100, 25.10), Color::RGB::Purple.to_hsl)
-      assert_equal(Color::HSL.from_values(0, 59.42, 40.59), Color::RGB::Brown.to_hsl)
-      assert_equal(Color::HSL.from_values(317.5, 100, 68.43), Color::RGB::Carnation.to_hsl)
-      assert_equal(Color::HSL.from_values(0, 100, 27.64), Color::RGB::Cayenne.to_hsl)
-
-      # The following tests a bug reported by Jean Krohn on 10 June 2006 where HSL
-      # conversion was not quite correct, resulting in a bad round-trip.
-      assert_equal("RGB [#008800]", Color::RGB.from_html("#008800").to_hsl.to_rgb.inspect)
-      refute_equal("RGB [#002288]", Color::RGB.from_html("#008800").to_hsl.to_rgb.inspect)
-
-      # The following tests a bug reported by Adam Johnson on 29 October
-      # 2010.
-      hsl = Color::HSL.from_values(262, 67, 42)
-      c = Color::RGB.from_fraction(0.34496, 0.1386, 0.701399).to_hsl
-      assert_in_tolerance hsl.h, c.h, "Hue"
-      assert_in_tolerance hsl.s, c.s, "Saturation"
-      assert_in_tolerance hsl.l, c.l, "Luminance"
-    end
-
-    def test_to_rgb
-      assert_same(Color::RGB::Black, Color::RGB::Black.to_rgb)
-    end
-
-    def test_to_yiq
-      assert_kind_of(Color::YIQ, Color::RGB::Black.to_yiq)
-      assert_equal(Color::YIQ.from_values(0, 0, 0), Color::RGB::Black.to_yiq)
-      assert_equal(Color::YIQ.from_values(88.6, 32.1, 0), Color::RGB::Yellow.to_yiq)
-      assert_equal(Color::YIQ.from_values(70.1, 0, 0), Color::RGB::Cyan.to_yiq)
-      assert_equal(Color::YIQ.from_values(41.3, 27.5, 52.3), Color::RGB::Magenta.to_yiq)
-      assert_equal(Color::YIQ.from_values(29.9, 59.6, 21.2), Color::RGB::Red.to_yiq)
-      assert_equal(Color::YIQ.from_values(58.7, 0, 0), Color::RGB::Lime.to_yiq)
-      assert_equal(Color::YIQ.from_values(11.4, 0, 31.1), Color::RGB::Blue.to_yiq)
-      assert_equal(Color::YIQ.from_values(20.73, 13.80, 26.25), Color::RGB::Purple.to_yiq)
-      assert_equal(Color::YIQ.from_values(30.89, 28.75, 10.23), Color::RGB::Brown.to_yiq)
-      assert_equal(Color::YIQ.from_values(60.84, 23.28, 27.29), Color::RGB::Carnation.to_yiq)
-      assert_equal(Color::YIQ.from_values(16.53, 32.96, 11.72), Color::RGB::Cayenne.to_yiq)
-    end
-
-    def test_to_lab
-      # Luminosity can be an absolute.
-      assert_in_tolerance(0.0, Color::RGB::Black.to_lab.l)
-      assert_in_tolerance(100.0, Color::RGB::White.to_lab.l)
-
-      # It's not really possible to have absolute
-      # numbers here because of how L*a*b* works, but
-      # negative/positive comparisons work
-      assert(Color::RGB::Green.to_lab.a < 0)
-      assert(Color::RGB::Magenta.to_lab.a > 0)
-      assert(Color::RGB::Blue.to_lab.b < 0)
-      assert(Color::RGB::Yellow.to_lab.b > 0)
-    end
-
     def test_closest_match
       # It should match Blue to Indigo (very simple match)
       match_from = [Color::RGB::Red, Color::RGB::Green, Color::RGB::Blue]
@@ -325,6 +234,80 @@ module TestColor
 
       assert_equal("#ff00aa", Color::RGB.by_hex("#ff00aa").to_lab.to_rgb.html)
     end
+  end
+
+  class TestRGBConversions < Minitest::Test
+    def test_to_cmyk
+      assert_kind_of(Color::CMYK, Color::RGB::Black.to_cmyk)
+      assert_equal(Color::CMYK.from_percentage(0, 0, 0, 100), Color::RGB::Black.to_cmyk)
+      assert_equal(Color::CMYK.from_percentage(0, 0, 100, 0), Color::RGB::Yellow.to_cmyk)
+      assert_equal(Color::CMYK.from_percentage(100, 0, 0, 0), Color::RGB::Cyan.to_cmyk)
+      assert_equal(Color::CMYK.from_percentage(0, 100, 0, 0), Color::RGB::Magenta.to_cmyk)
+      assert_equal(Color::CMYK.from_percentage(0, 100, 100, 0), Color::RGB::Red.to_cmyk)
+      assert_equal(Color::CMYK.from_percentage(100, 0, 100, 0), Color::RGB::Lime.to_cmyk)
+      assert_equal(Color::CMYK.from_percentage(100, 100, 0, 0), Color::RGB::Blue.to_cmyk)
+      assert_equal(Color::CMYK.from_percentage(10.32, 60.52, 10.32, 39.47), Color::RGB::Purple.to_cmyk)
+      assert_equal(Color::CMYK.from_percentage(10.90, 59.13, 59.13, 24.39), Color::RGB::Brown.to_cmyk)
+      assert_equal(Color::CMYK.from_percentage(0, 63.14, 18.43, 0), Color::RGB::Carnation.to_cmyk)
+      assert_equal(Color::CMYK.from_percentage(7.39, 62.69, 62.69, 37.32), Color::RGB::Cayenne.to_cmyk)
+    end
+
+    def test_to_grayscale
+      assert_kind_of(Color::Grayscale, Color::RGB::Black.to_grayscale)
+      assert_equal(Color::Grayscale.from_fraction(0), Color::RGB::Black.to_grayscale)
+      assert_equal(Color::Grayscale.from_fraction(0.5), Color::RGB::Yellow.to_grayscale)
+      assert_equal(Color::Grayscale.from_fraction(0.5), Color::RGB::Cyan.to_grayscale)
+      assert_equal(Color::Grayscale.from_fraction(0.5), Color::RGB::Magenta.to_grayscale)
+      assert_equal(Color::Grayscale.from_fraction(0.5), Color::RGB::Red.to_grayscale)
+      assert_equal(Color::Grayscale.from_fraction(0.5), Color::RGB::Lime.to_grayscale)
+      assert_equal(Color::Grayscale.from_fraction(0.5), Color::RGB::Blue.to_grayscale)
+      assert_equal(Color::Grayscale.from_fraction(0.2510), Color::RGB::Purple.to_grayscale)
+      assert_equal(Color::Grayscale.from_percentage(40.58), Color::RGB::Brown.to_grayscale)
+      assert_equal(Color::Grayscale.from_percentage(68.43), Color::RGB::Carnation.to_grayscale)
+      assert_equal(Color::Grayscale.from_percentage(27.65), Color::RGB::Cayenne.to_grayscale)
+    end
+
+    def test_to_hsl
+      assert_kind_of(Color::HSL, Color::RGB::Black.to_hsl)
+      assert_equal(Color::HSL.from_values(0, 0, 0), Color::RGB::Black.to_hsl)
+      assert_equal(Color::HSL.from_values(60, 100, 50), Color::RGB::Yellow.to_hsl)
+      assert_equal(Color::HSL.from_values(180, 100, 50), Color::RGB::Cyan.to_hsl)
+      assert_equal(Color::HSL.from_values(300, 100, 50), Color::RGB::Magenta.to_hsl)
+      assert_equal(Color::HSL.from_values(0, 100, 50), Color::RGB::Red.to_hsl)
+      assert_equal(Color::HSL.from_values(120, 100, 50), Color::RGB::Lime.to_hsl)
+      assert_equal(Color::HSL.from_values(240, 100, 50), Color::RGB::Blue.to_hsl)
+      assert_equal(Color::HSL.from_values(300, 100, 25.10), Color::RGB::Purple.to_hsl)
+      assert_equal(Color::HSL.from_values(0, 59.42, 40.59), Color::RGB::Brown.to_hsl)
+      assert_equal(Color::HSL.from_values(317.5, 100, 68.43), Color::RGB::Carnation.to_hsl)
+      assert_equal(Color::HSL.from_values(0, 100, 27.64), Color::RGB::Cayenne.to_hsl)
+
+      # The following tests a bug reported by Jean Krohn on 10 June 2006 where HSL
+      # conversion was not quite correct, resulting in a bad round-trip.
+      assert_equal("RGB [#008800]", Color::RGB.from_html("#008800").to_hsl.to_rgb.inspect)
+      refute_equal("RGB [#002288]", Color::RGB.from_html("#008800").to_hsl.to_rgb.inspect)
+
+      # The following tests a bug reported by Adam Johnson on 29 October
+      # 2010.
+      hsl = Color::HSL.from_values(262, 67, 42)
+      c = Color::RGB.from_fraction(0.34496, 0.1386, 0.701399).to_hsl
+      assert_in_tolerance hsl.h, c.h, "Hue"
+      assert_in_tolerance hsl.s, c.s, "Saturation"
+      assert_in_tolerance hsl.l, c.l, "Luminance"
+    end
+
+    def test_to_lab
+      # Luminosity can be an absolute.
+      assert_in_tolerance(0.0, Color::RGB::Black.to_lab.l)
+      assert_in_tolerance(100.0, Color::RGB::White.to_lab.l)
+
+      # It's not really possible to have absolute
+      # numbers here because of how L*a*b* works, but
+      # negative/positive comparisons work
+      assert(Color::RGB::Green.to_lab.a < 0)
+      assert(Color::RGB::Magenta.to_lab.a > 0)
+      assert(Color::RGB::Blue.to_lab.b < 0)
+      assert(Color::RGB::Yellow.to_lab.b > 0)
+    end
 
     # # An RGB color round-tripped through CIELAB should still have more or less the same
     # # RGB values, but this doesn't really work because the color math here is slightly
@@ -340,5 +323,36 @@ module TestColor
     #     assert_in_tolerance(c1.b, c2.b)
     #   end
     # end
+
+    def test_to_rgb
+      assert_same(Color::RGB::Black, Color::RGB::Black.to_rgb)
+    end
+
+    def test_to_xyz
+      assert_kind_of(Color::XYZ, Color::RGB::Black.to_xyz)
+      assert_equal(Color::XYZ.from_values(0, 0, 0), Color::RGB::Black.to_xyz)
+      assert_equal(Color::XYZ.from_fraction(0.4124564, 0.2126729, 0.0193339), Color::RGB::Red.to_xyz)
+      assert_equal(Color::XYZ.from_fraction(0.0771865, 0.1543731, 0.0257288), Color::RGB::Green.to_xyz)
+      assert_equal(Color::XYZ.from_fraction(0.1804375, 0.072175, 0.9503041), Color::RGB::Blue.to_xyz)
+    end
+
+    def test_to_yiq
+      assert_kind_of(Color::YIQ, Color::RGB::Black.to_yiq)
+      assert_equal(Color::YIQ.from_values(0, 0, 0), Color::RGB::Black.to_yiq)
+      assert_equal(Color::YIQ.from_values(88.6, 32.1, 0), Color::RGB::Yellow.to_yiq)
+      assert_equal(Color::YIQ.from_values(70.1, 0, 0), Color::RGB::Cyan.to_yiq)
+      assert_equal(Color::YIQ.from_values(41.3, 27.5, 52.3), Color::RGB::Magenta.to_yiq)
+      assert_equal(Color::YIQ.from_values(29.9, 59.6, 21.2), Color::RGB::Red.to_yiq)
+      assert_equal(Color::YIQ.from_values(58.7, 0, 0), Color::RGB::Lime.to_yiq)
+      assert_equal(Color::YIQ.from_values(11.4, 0, 31.1), Color::RGB::Blue.to_yiq)
+      assert_equal(Color::YIQ.from_values(20.73, 13.80, 26.25), Color::RGB::Purple.to_yiq)
+      assert_equal(Color::YIQ.from_values(30.89, 28.75, 10.23), Color::RGB::Brown.to_yiq)
+      assert_equal(Color::YIQ.from_values(60.84, 23.28, 27.29), Color::RGB::Carnation.to_yiq)
+      assert_equal(Color::YIQ.from_values(16.53, 32.96, 11.72), Color::RGB::Cayenne.to_yiq)
+    end
+
+    def test_to_internal
+      assert_equal([0.0, 0.0, 0.0], Color::RGB::Black.to_internal)
+    end
   end
 end

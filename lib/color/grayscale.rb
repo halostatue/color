@@ -82,6 +82,10 @@ class Color::Grayscale
   def to_grayscale(...) = self
 
   ##
+  # Converts \Grayscale to Color::XYZ via Color::RGB.
+  def to_xyz(...) = to_rgb(...).to_xyz(...)
+
+  ##
   # Convert \Grayscale to Color::YIQ.
   #
   # This approximates the actual value, as I and Q are calculated by treating the
