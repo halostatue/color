@@ -150,6 +150,10 @@ class Color::CIELAB
   end
 
   ##
+  # Converts \CIELAB to Color::YIQ via Color::XYZ.
+  def to_yiq(...) = to_xyz(...).to_yiq(...)
+
+  ##
   # Render the CSS `lab()` function for this \CIELAB object, adding an `alpha` if
   # provided.
   def css(alpha: nil, **)
