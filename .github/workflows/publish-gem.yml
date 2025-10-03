@@ -35,8 +35,8 @@ jobs:
       rubygems_release_gem: true
 
     permissions:
-      contents: write
-      id-token: write
+      contents: write # Create a new tag
+      id-token: write # Authenticate for gem publishing
 
     steps:
       - name: Harden the runner
