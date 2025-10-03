@@ -88,6 +88,7 @@ jobs:
     needs: release
     permissions:
       contents: read
-      pages: write
-      id-token: write
+      pages: write    # Publish documentation
+      id-token: write # Authenticate for gem publishing
+
     uses: ./.github/workflows/publish-docs.yml
