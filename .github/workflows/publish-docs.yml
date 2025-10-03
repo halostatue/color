@@ -19,8 +19,8 @@ jobs:
 
     permissions:
       contents: read
-      pages: write
-      id-token: write
+      pages: write    # Publish documentation to pages
+      id-token: write # Publish documentation to pages
 
     steps:
       - name: Harden the runner
