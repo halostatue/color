@@ -11,3 +11,4 @@
 - Matthew Draper
 - Charles Nutter
 - Paul Gallagher
+- Alex Chan

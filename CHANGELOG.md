@@ -4,6 +4,16 @@
 
 - Full coverage of conversion tests. Adds CIELAB to_yiq and Grayscale to_xyz
   methods. Only YIQ now lacking conversions support. Fixed in [#69][pr-69].
+- Fix an incorrect comparison when converting CIE XYZ colors to RGB that could
+  raise a `NoMethodError` when constructing the RGB value. The conversion
+  incorrectly compared the absolute value of an intermediate value against
+  the 0.0031308 threshold instead of comparing the original value, causing
+  certain negative values to follow the wrong branch and return complex RGB
+  components.
+  
+  This also affected conversion from XYZ to CMYK, HSL, and YIK, and from CIELAB to RGB, HSL, YIQ, and grayscale -- all of which convert from XYZ to RGB as an intermediate step.
+
+  Reported by @alexwlchan in [#92][issue-92] and fixed in [#93][pr-93].
 
 ## 2.1.1 / 2025-08-08
 
@@ -343,9 +353,11 @@ ownership to contribute it to this project under the licence terms.
 [issue-10]: https://github.com/halostatue/color/issues/10
 [issue-30]: https://github.com/halostatue/color/issues/30
 [issue-45]: https://github.com/halostatue/color/issues/45
+[issue-92]: https://github.com/halostatue/color/issues/92
+[pr-8]: https://github.com/halostatue/color/pulls/8
 [pr-11]: https://github.com/halostatue/color/pull/11
 [pr-36]: https://github.com/halostatue/color/pull/36
-[pr-46]: https://github.com/halostatue/pull/46
-[pr-8]: https://github.com/halostatue/color/pulls/8
-[wp-std-illuminant]: https://en.wikipedia.org/wiki/Standard_illuminant#White_points_of_standard_illuminants
+[pr-46]: https://github.com/halostatue/color/pull/46
 [pr-69]: https://github.com/halostatue/color/pull/69
+[pr-93]: https://github.com/halostatue/color/pull/93
+[wp-std-illuminant]: https://en.wikipedia.org/wiki/Standard_illuminant#White_points_of_standard_illuminants
