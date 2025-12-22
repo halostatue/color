@@ -70,5 +70,26 @@ module TestColor
     def test_to_internal
       assert_equal([0.0, 0.0, 0.0], Color::XYZ.from_values(0, 0, 0).to_internal)
     end
+
+    # Regression test for https://github.com/halostatue/color/issues/92
+    #
+    # `Color::XYZ#to_rgb` branches on whether an intermediate value N is
+    # less than or equal to 0.0031308. A bug incorrectly used `N.abs`,
+    # which changes the behaviour for negative values below the threshold.
+    #
+    # This test ensures values like this are handled correctly and return
+    # valid RGB components.
+    def test_to_rgb_handles_negative_values
+      # For this XYZ color, the computed N is negative with an absolute value
+      # greater than 0.0031308 (≈ -0.00329). With the incorrect `abs`
+      # comparison, this followed the wrong branch and returned a complex
+      # green component, which raises a NoMethodError for `clamp` when
+      # constructing the RGB value.
+      xyz = Color::XYZ.from_values(0.33, 0, 0)
+      rgb = xyz.to_rgb
+      assert_in_tolerance(0.104243, rgb.r)
+      assert_in_tolerance(0, rgb.g)
+      assert_in_tolerance(0.002375, rgb.b)
+    end
   end
 end
