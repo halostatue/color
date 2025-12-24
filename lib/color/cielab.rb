@@ -140,7 +140,7 @@ class Color::CIELAB
     fx = a / 500.0 + fy
 
     xr = ((fx3 = fx**3) > Color::XYZ::E) ? fx3 : (116.0 * fx - 16) / Color::XYZ::K
-    yr = (l > Color::XYZ::EK) ? ((l + 16.0) / 116)**3 : l
+    yr = (l > Color::XYZ::EK) ? ((l + 16.0) / 116)**3 : l / Color::XYZ::K
     zr = ((fz3 = fz**3) > Color::XYZ::E) ? fz3 : (116.0 * fz - 16) / Color::XYZ::K
 
     ref = kwargs[:white] || args.first

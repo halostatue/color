@@ -58,6 +58,30 @@ module TestColor
       assert_equal(Color::XYZ.from_values(0, 0, 0), Color::CIELAB.from_values(0, 0, 0).to_xyz)
     end
 
+    # Regression test for https://github.com/halostatue/color/issues/95
+    #
+    # `Color::CIELAB#to_xyz` branches on whether the lightness L* is greater
+    # than `Color::XYZ::EK` (which is 8).
+    #
+    # A bug calculated an incorrect value if L* was less than `EK`, causing
+    # Y to be approximately 900 times larger than expected.
+    #
+    # This test ensures values like this are handled correctly and return
+    # the correct XYZ colour.
+    def test_to_xyz_handles_low_lightness
+      # This CIELAB colour is almost black. With the bug present, it's
+      # converted to an XYZ colour which is bright green.
+      lab = Color::CIELAB.from_values(7, 0, 0)
+
+      xyz = lab.to_xyz
+      assert_in_tolerance(0.007365, xyz.x)
+      assert_in_tolerance(0.007749, xyz.y)
+      assert_in_tolerance(0.008437, xyz.z)
+
+      hsl = lab.to_hsl
+      assert_equal(hsl.saturation, 0)
+    end
+
     def test_to_yiq
       yiq = @lab.to_yiq
       assert_kind_of(Color::YIQ, yiq)
