@@ -70,5 +70,21 @@ module TestColor
     def test_to_internal
       assert_equal([0.0, 0.0, 0.0], Color::CIELAB.from_values(0, 0, 0).to_internal)
     end
+
+    def test_from_percentage
+      assert_equal(
+        Color::CIELAB.from_percentage(100, -30, 30),
+        Color::CIELAB.from_values(100, -38.75, 37.75)
+      )
+      assert_equal(
+        Color::CIELAB.from_percentage(l: 100, a: -30, b: 30),
+        Color::CIELAB.from_values(100, -38.75, 37.75)
+      )
+    end
+
+    def test_css
+      assert_equal(@lab.css, "lab(10.00% 20.00 30.00)")
+      assert_equal(@lab.css(alpha: 40), "lab(10.00% 20.00 30.00 / 40%)")
+    end
   end
 end
