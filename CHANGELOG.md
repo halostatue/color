@@ -1,6 +1,6 @@
 # Changelog
 
-## NEXT / YYYY-MM-DD
+## 2.2.0 / 2025-12-30
 
 - Full coverage of conversion tests. Adds CIELAB `to_yiq` and Grayscale `to_xyz`
   methods. Only YIQ now lacks conversions support. Fixed in [#69][pr-69].
