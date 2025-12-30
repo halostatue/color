@@ -1,4 +1,4 @@
-# color Security
+# color Security Policy
 
 ## LLM-Generated Security Report Policy
 
@@ -8,32 +8,33 @@ agents.
 ## Supported Versions
 
 Security reports are accepted for the most recent major release and the previous
-version for a limited time after the initial major release version. After a
-major release, the previous version will receive full support for three months
-and security support for an additional three months (for a total of six months).
+version for a limited time after the initial major release version.
+
+After a major release, the previous version will receive full support for three
+months and security support for an additional three months (for a total of six
+months).
 
 Because color 1.x supports a wide range of Ruby versions that are themselves end
 of life, security reports will only be accepted when they can be demonstrated on
 Ruby 3.2 or higher.
 
-> | Version | Release Date | Support Ends   | Security Support Ends |
-> | ------- | ------------ | -------------- | --------------------- |
-> | 1.x     | 2015-10-26   | 2.x + 3 months | 2.x + 6 months        |
-> | 2.x     | 2025-MM-DD   | -              | -                     |
+> | Version | Release Date | Support Ends | Security Support Ends |
+> | ------- | ------------ | ------------ | --------------------- |
+> | 1.x     | 2015-10-26   | 2025-11-07   | 2026-02-07            |
+> | 2.x     | 2025-08-07   | -            | -                     |
 
 ## Reporting a Vulnerability
 
-By preference, use the [Tidelift security contact][tidelift]. Tidelift will
-coordinate the fix and disclosure.
-
-Alternatively, Send an email to [color@halostatue.ca][email] with the text
-`Color` in the subject. Emails sent to this address should be encrypted using
-[age][age] with the following public key:
+Prefer creating a [private vulnerability report][advisory] with GitHub.
+Alternatively, send an email to [security@ruby.halostatue.ca][email] with the
+text `Color` in the subject. Emails sent to this address should be encrypted
+using [age][age] with the following public key: [age][age] with the following
+public key:
 
 ```
 age1fc6ngxmn02m62fej5cl30lrvwmxn4k3q2atqu53aatekmnqfwumqj4g93w
 ```
 
-[tidelift]: https://tidelift.com/security
-[email]: mailto:color@halostatue.ca
+[advisory]: https://github.com/halostatue/color/security/advisories/new
 [age]: https://github.com/FiloSottile/age
+[email]: mailto:color@ruby.halostatue.ca
