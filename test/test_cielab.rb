@@ -84,7 +84,7 @@ module TestColor
 
     def test_css
       assert_equal(@lab.css, "lab(10.00% 20.00 30.00)")
-      assert_equal(@lab.css(alpha: 40), "lab(10.00% 20.00 30.00 / 40%)")
+      assert_equal(@lab.css(alpha: 40), "lab(10.00% 20.00 30.00 / 40.00)")
     end
   end
 end
