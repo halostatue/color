@@ -1,6 +1,9 @@
-# Changelog
+# color Changelog
 
-## 2.2.0 / 2025-12-30
+## 2.1.2 / 2025-12-30
+
+- Updated to Contributor Covenant 3.0 and applied updates to several support
+  documents.
 
 - Full coverage of conversion tests. Adds CIELAB `to_yiq` and Grayscale `to_xyz`
   methods. Only YIQ now lacks conversions support. Fixed in [#69][pr-69].
