@@ -25,7 +25,8 @@ I have several guidelines to contributing code through pull requests:
 - Use [Conventional Commits][conventional] with my
   [conventions](#commit-conventions).
 
-- Versions must not be updated in pull requests. This means that you must not:
+- Versions must not be updated in pull requests unless otherwise directed. This
+  means that you must not:
 
   - Modify `VERSION` in `lib/color/version.rb`. When your patch is accepted and
     a release is made, the version will be updated at that point.
