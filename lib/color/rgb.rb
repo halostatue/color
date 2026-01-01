@@ -144,7 +144,7 @@ class Color::RGB
   ##
   # Converts \RGB to Color::HSL.
   #
-  # The conversion here is based on formulas from http://www.easyrgb.com/math.php and
+  # The conversion here is based on formulas from https://www.easyrgb.com/math.php and
   # elsewhere.
   def to_hsl(...)
     min, max = [r, g, b].minmax
@@ -163,7 +163,7 @@ class Color::RGB
       end
 
       # This is based on the conversion algorithm from
-      # http://en.wikipedia.org/wiki/HSV_color_space#Conversion_from_RGB_to_HSL_or_HSV
+      # https://en.wikipedia.org/wiki/HSV_color_space#Conversion_from_RGB_to_HSL_or_HSV
       # Contributed by Adam Johnson
       sixth = 1 / 6.0
       if r == max # near_zero_or_less?(r - max)

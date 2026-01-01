@@ -98,8 +98,8 @@ class Color::HSL
   # - Saturation values <= 0 always translate to a shade of gray using luminance as
   #   a percentage of gray.
   #
-  # [1] http://bobpowell.net/RGBHSB.aspx
-  # [2] http://support.microsoft.com/kb/29240
+  # [1] https://web.archive.org/web/20150311023529/http://bobpowell.net/RGBHSB.aspx
+  # [2] https://support.microsoft.com/kb/29240
   def to_rgb(...)
     if near_zero_or_less?(l)
       Color::RGB::Black000

@@ -214,7 +214,7 @@ class Color::XYZ
     rel = scale(1.0 / ref.x, 1.0 / ref.y, 1.0 / ref.z)
 
     # And now transform
-    # http://en.wikipedia.org/wiki/Lab_color_space#Forward_transformation
+    # https://en.wikipedia.org/wiki/Lab_color_space#Forward_transformation
     # There is a brief explanation there as far as the nature of the calculations,
     # as well as a much nicer looking modeling of the algebra.
     f = rel.map { |t|

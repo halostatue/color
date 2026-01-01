@@ -6,7 +6,7 @@
   documents.
 
 - Full coverage of conversion tests. Adds CIELAB `to_yiq` and Grayscale `to_xyz`
-  methods. Only YIQ now lacks conversions support. Fixed in [#69][pr-69].
+  methods. Only YIQ now lacks conversions support. Fixed in [#69][pull-69].
 
 - Fix an incorrect conversion of CIELAB colors with low lightness to XYZ, which
   caused the Y component to be ~903 times larger than correct. In practice, this
@@ -15,7 +15,7 @@
   This also affected conversion from CIELAB to RGB, CMYK, HSL, YIQ, and
   grayscale, which convert from CIELAB to XYZ as an intermediate step.
 
-  Reported by @alexwlchan in [#95][issue-95] and fixed in [#96][pr-96].
+  Reported by @alexwlchan in [#95][issue-95] and fixed in [#96][pull-96].
 
 - Fix an incorrect comparison when converting CIE XYZ colors to RGB that could
   raise a `NoMethodError` when constructing the RGB value. The conversion
@@ -27,7 +27,7 @@
   to RGB, HSL, YIQ, and Grayscale -- all of which convert from XYZ to RGB as an
   intermediate step.
 
-  Reported by @alexwlchan in [#92][issue-92] and fixed in [#93][pr-93].
+  Reported by @alexwlchan in [#92][issue-92] and fixed in [#93][pull-93].
 
 ## 2.1.1 / 2025-08-08
 
@@ -44,7 +44,7 @@ and adds more Color::XYZ white points for standard illuminants.
   was seen in `Color::RGB#to_lab` since CIELAB conversions must go through the
   XYZ color model. Even though we were using the D65 white point, the Z value
   was being clamped to 1.0 instead of the correct value of ≅1.08. Reported by
-  @r-plus in [#45][issue-45] and fixed in [#45][pr-46].
+  @r-plus in [#45][issue-45] and fixed in [#45][pull-46].
 
   The resulting Color::LAB values are not _exactly_ the same values under Color
   1.8, but they are within fractional differences deemed acceptable.
@@ -128,8 +128,8 @@ this release without prior warning.
 ### 🚀 New Features
 
 - `Color::CIELAB` and `Color::XYZ` namespaces have been added. Separate
-  implementations were submitted by David Heitzman and @stiff (in [#8][pr-8] and
-  [#11][pr-11]), but I have reworked the code substantially. These
+  implementations were submitted by David Heitzman and @stiff (in [#8][pull-8]
+  and [#11][pull-11]), but I have reworked the code substantially. These
   implementations were originally as `Color::LAB` and include a new contrast
   calculation using the ΔE\*00 algorithm.
 
@@ -140,7 +140,7 @@ this release without prior warning.
   automated releases are enabled), full GitHub Actions, Dependabot, Standard
   Ruby, and more.
 
-- Charles Nutter re-added JRuby support in CI. [#36][pr-36]
+- Charles Nutter re-added JRuby support in CI. [#36][pull-36]
 
 ### Governance
 
@@ -169,16 +169,15 @@ ownership to contribute it to this project under the licence terms.
   by Eric Meyer. For purposes of backwards compatibility, the previous name is
   still permitted, but its use is strongly discouraged, and it will be removed
   in the Color 2.0 release.
-  <http://meyerweb.com/eric/thoughts/2014/06/19/rebeccapurple/>
+  <https://meyerweb.com/eric/thoughts/2014/06/19/rebeccapurple/>
 
 ## 1.7 / 2014-06-12
 
 - Added `Color::RGB::BeccaPurple` (#663399) in honour of Rebecca Meyer, the
-  daughter of Eric Meyer, who passed away on the 7 June 2014. Her favourite
-  color was purple. `#663399becca`
-  <https://twitter.com/meyerweb/status/476089708674428929>
-  <http://www.zeldman.com/2014/06/10/the-color-purple/>
-  <http://discourse.specifiction.org/t/name-663399-becca-purple-in-css4-color/225>
+  daughter of Eric Meyer, who passed away on 7 June 2014. Her favourite color
+  was purple. `#663399becca`
+  <https://www.zeldman.com/2014/06/10/the-color-purple/>
+  <https://discourse.wicg.io/t/name-663399-becca-purple-in-css4-color/225/>
 
 - Changed the homepage in the gem to point to GitHub instead of RubyForge, which
   has been shut down. Fixes [#10][issue-10], reported by @voxik.
@@ -367,13 +366,18 @@ ownership to contribute it to this project under the licence terms.
 [issue-10]: https://github.com/halostatue/color/issues/10
 [issue-30]: https://github.com/halostatue/color/issues/30
 [issue-45]: https://github.com/halostatue/color/issues/45
+[issue-4]: https://github.com/halostatue/color/issues/4
+[issue-5]: https://github.com/halostatue/color/issues/5
 [issue-92]: https://github.com/halostatue/color/issues/92
 [issue-95]: https://github.com/halostatue/color/issues/95
-[pr-8]: https://github.com/halostatue/color/pulls/8
-[pr-11]: https://github.com/halostatue/color/pull/11
-[pr-36]: https://github.com/halostatue/color/pull/36
-[pr-46]: https://github.com/halostatue/color/pull/46
-[pr-69]: https://github.com/halostatue/color/pull/69
-[pr-93]: https://github.com/halostatue/color/pull/93
-[pr-96]: https://github.com/halostatue/color/pull/96
+[pull-11]: https://github.com/halostatue/color/pull/11
+[pull-15]: https://github.com/halostatue/color/pull/15
+[pull-18]: https://github.com/halostatue/color/pull/18
+[pull-24]: https://github.com/halostatue/color/pull/24
+[pull-36]: https://github.com/halostatue/color/pull/36
+[pull-46]: https://github.com/halostatue/color/pull/46
+[pull-69]: https://github.com/halostatue/color/pull/69
+[pull-8]: https://github.com/halostatue/color/pulls/8
+[pull-93]: https://github.com/halostatue/color/pull/93
+[pull-96]: https://github.com/halostatue/color/pull/96
 [wp-std-illuminant]: https://en.wikipedia.org/wiki/Standard_illuminant#White_points_of_standard_illuminants
