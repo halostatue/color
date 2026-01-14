@@ -25,15 +25,6 @@ Ruby 3.2 or higher.
 
 ## Reporting a Vulnerability
 
-Prefer creating a [private vulnerability report][advisory] with GitHub.
-Alternatively, send an email to [security@ruby.halostatue.ca][email] with the
-text `Color` in the subject. Emails sent to this address should be encrypted
-using [age][age] with the following public key:
-
-```
-age1fc6ngxmn02m62fej5cl30lrvwmxn4k3q2atqu53aatekmnqfwumqj4g93w
-```
+Create a [private vulnerability report][advisory] with GitHub.
 
 [advisory]: https://github.com/halostatue/color/security/advisories/new
-[age]: https://github.com/FiloSottile/age
-[email]: mailto:security@ruby.halostatue.ca
