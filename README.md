@@ -1,12 +1,12 @@
 # Color -- Color Math in Ruby
 
+[![RubyGems Version][shield-gems]][rubygems] ![Coveralls][shield-coveralls]
+[![Build Status][shield-ci]][ci-workflow]
+
 - code :: <https://github.com/halostatue/color>
 - issues :: <https://github.com/halostatue/color/issues>
+- docs :: <https://halostatue.github.io/color/>
 - changelog :: <https://github.com/halostatue/color/blob/main/CHANGELOG.md>
-- continuous integration ::
-  [![Build Status](https://github.com/halostatue/color/actions/workflows/ci.yml/badge.svg)][ci-workflow]
-- test coverage ::
-  [![Coverage](https://coveralls.io/repos/halostatue/color/badge.svg?branch=main&service=github)][coveralls]
 
 ## Description
 
@@ -50,5 +50,16 @@ end
 c.to_rgb
 ```
 
+## Color Semantic Versioning
+
+The Color library uses a [Semantic Versioning][semver] scheme with one change:
+
+- When PATCH is zero (`0`), it will be omitted from version references.
+
 [ci-workflow]: https://github.com/halostatue/color/actions/workflows/ci.yml
 [coveralls]: https://coveralls.io/github/halostatue/color?branch=main
+[rubygems]: https://rubygems.org/gems/color
+[semver]: https://semver.org/
+[shield-ci]: https://img.shields.io/github/actions/workflow/status/halostatue/color/ci.yml?style=for-the-badge "Build Status"
+[shield-coveralls]: https://img.shields.io/coverallsCoverage/github/halostatue/color?style=for-the-badge
+[shield-gems]: https://img.shields.io/gem/v/color?style=for-the-badge "Version"
