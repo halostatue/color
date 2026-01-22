@@ -139,8 +139,8 @@ module TestColor
     def test_by_hex
       assert_same(Color::RGB::Cyan, Color::RGB.by_hex("#0ff"))
       assert_same(Color::RGB::Cyan, Color::RGB.by_hex("#00ffff"))
-      assert_equal("RGB [#333333]", Color::RGB.by_hex("#333").inspect)
-      assert_equal("RGB [#333333]", Color::RGB.by_hex("333").inspect)
+      assert_equal("RGB [#333333] {tungsten}", Color::RGB.by_hex("#333").inspect)
+      assert_equal("RGB [#333333] {tungsten}", Color::RGB.by_hex("333").inspect)
       assert_raises(ArgumentError) { Color::RGB.by_hex("5555555") }
       assert_raises(ArgumentError) { Color::RGB.by_hex("#55555") }
     end
@@ -170,11 +170,41 @@ module TestColor
     end
 
     def test_inspect
-      assert_equal("RGB [#000000]", Color::RGB::Black.inspect)
-      assert_equal("RGB [#0000ff]", Color::RGB::Blue.inspect)
-      assert_equal("RGB [#00ff00]", Color::RGB::Lime.inspect)
-      assert_equal("RGB [#ff0000]", Color::RGB::Red.inspect)
-      assert_equal("RGB [#ffffff]", Color::RGB::White.inspect)
+      assert_equal("RGB [#000000] {black}", Color::RGB::Black.inspect)
+      assert_equal("RGB [#0000ff] {blue}", Color::RGB::Blue.inspect)
+      assert_equal("RGB [#00ff00] {lime}", Color::RGB::Lime.inspect)
+      assert_equal("RGB [#ff0000] {red}", Color::RGB::Red.inspect)
+      assert_equal("RGB [#ffffff] {white}", Color::RGB::White.inspect)
+      assert_equal("RGB [#708090] {slategray slategrey}", Color::RGB::SlateGrey.inspect)
+    end
+
+    def test_pretty_print
+      assert_pretty_inspect("RGB\n[#000000]\n{black}\n", Color::RGB::Black)
+      assert_pretty_inspect("RGB\n[#0000ff]\n{blue}\n", Color::RGB::Blue)
+      assert_pretty_inspect("RGB\n[#00ff00]\n{lime}\n", Color::RGB::Lime)
+      assert_pretty_inspect("RGB\n[#ff0000]\n{red}\n", Color::RGB::Red)
+      assert_pretty_inspect("RGB\n[#ffffff]\n{white}\n", Color::RGB::White)
+      assert_pretty_inspect("RGB\n[#708090]\n{slategray\n  slategrey}\n", Color::RGB::SlateGrey)
+    end
+
+    def test_name
+      assert_equal("black", Color::RGB::Black.name)
+      assert_equal("blue", Color::RGB::Blue.name)
+      assert_equal("lime", Color::RGB::Lime.name)
+      assert_equal("red", Color::RGB::Red.name)
+      assert_equal("white", Color::RGB::White.name)
+
+      assert_equal("black", Color::RGB.from_values(0, 0, 0).name)
+      assert_equal("blue", Color::RGB.from_values(0, 0, 0xff).name)
+      assert_equal("lime", Color::RGB.from_values(0, 0xff, 0).name)
+      assert_equal("red", Color::RGB.from_values(0xff, 0, 0).name)
+      assert_equal("white", Color::RGB.from_values(0xff, 0xff, 0xff).name)
+
+      assert_equal("000", Color::RGB.from_values(0, 0, 0, ["000"]).name)
+      assert_equal("00f", Color::RGB.from_values(0, 0, 0xff, ["00f"]).name)
+      assert_equal("0f0", Color::RGB.from_values(0, 0xff, 0, ["0f0"]).name)
+      assert_equal("f00", Color::RGB.from_values(0xff, 0, 0, ["f00"]).name)
+      assert_equal("fff", Color::RGB.from_values(0xff, 0xff, 0xff, ["fff"]).name)
     end
 
     def test_delta_e2000

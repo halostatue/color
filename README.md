@@ -22,9 +22,11 @@ reliably converted to relative color spaces (like RGB) without color profiles.
 When necessary for conversions, Color provides D65 and D50 reference white
 values in Color::XYZ.
 
-Color 2.1 fixes multiple Color::XYZ bugs. It builds on the Color 2.0 major
-release, dropping support for all versions of Ruby prior to 3.2 as well as
-removing or renaming a number of features. The main breaking changes are:
+Color 2.2 adds a minor feature where an RGB color created from values can
+silently inherit the `#name` of a predefined color if `color/rgb/colors` has
+already been loaded. It builds on the Color 2.0 major release, dropping support
+for all versions of Ruby prior to 3.2 as well as removing or renaming a number
+of features. The main breaking changes are:
 
 - Color classes are immutable Data objects; they are no longer mutable.
 - RGB named colors are no longer loaded on gem startup, but must be required

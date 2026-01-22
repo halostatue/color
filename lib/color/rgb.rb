@@ -69,13 +69,21 @@ class Color::RGB
   ##
   # :attr_reader: name
   # The primary name for this \RGB color.
+  #
+  # If there are no defined names, the color will be checked in the name registry and if
+  # there's a match, it will be returned.
 
   ##
   # :attr_reader: names
-  # The names for this \RGB color.
+  # The defined names for this \RGB color.
 
   ##
-  def name = names&.first # :nodoc:
+  def name # :nodoc:
+    name = names&.first
+    return name if name
+
+    self.class.send(:__by_hex)[hex]&.name if defined?(Color::RGB::Metallic)
+  end
 
   ##
   # Coerces the other Color object into \RGB.
@@ -192,7 +200,7 @@ class Color::RGB
   # other \RGB color spaces are currently supported.
   #
   # :call-seq:
-  #   to_xyz(color_space: :srgb)
+  #   to_xyz(color_space: :sRGB)
   def to_xyz(*args, **kwargs)
     color_space = kwargs[:color_space] || args.first || :sRGB
 
@@ -430,7 +438,7 @@ class Color::RGB
   def max_rgb_as_grayscale = Color::Grayscale.from_fraction([r, g, b].max)
 
   ##
-  def inspect = "RGB [#{html}]" # :nodoc:
+  def inspect = names ? "RGB [#{html}] {#{names.join(" ")}}" : "RGB [#{html}]" # :nodoc:
 
   ##
   def pretty_print(q) # :nodoc:
@@ -438,6 +446,17 @@ class Color::RGB
     q.breakable
     q.group 2, "[", "]" do
       q.text html
+    end
+
+    if names
+      q.breakable
+      q.group 2, "{", "}" do
+        last = names.last
+        names.each {
+          q.text _1
+          q.fill_breakable unless _1 == last
+        }
+      end
     end
   end
 

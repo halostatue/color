@@ -1,5 +1,32 @@
 # color Changelog
 
+## 2.2.0 / 2026-01-DD
+
+- When `color/rgb/colors` is loaded and the RGB color does not have defined
+  names, a fallback lookup to named RGB colors will be performed to use that
+  name.
+
+  ```ruby
+  simple_black = Color.from_values(r: 0, g: 0, b: 0)
+  stuart_black = Color.from_values(r: 0, g: 0, b: 0, names: ["semple-black-4.0"])
+
+  simple_black.name # => nil
+  stuart_black.name # => "semple-black-4.0"
+
+  require 'color/rgb/colors'
+
+  simple_black.name # => "black"
+  stuart_black.name # => "semple-black-4.0"
+  ```
+
+  This was suggested by [@akicho8][gh-user-akicho8] in [#89][gh-issue-89].
+
+- The RGB inspect and pretty print formats have been modified to include defined
+  names. This was suggested by @akicho8 in #89.
+
+- Added unit tests for `#pretty_print` implementations. Fixed some bugs found in
+  the implementations.
+
 ## 2.1.2 / 2025-12-30
 
 - Updated to Contributor Covenant 3.0 and applied updates to several support
@@ -15,7 +42,7 @@
   This also affected conversion from CIELAB to RGB, CMYK, HSL, YIQ, and
   grayscale, which convert from CIELAB to XYZ as an intermediate step.
 
-  Reported by @alexwlchan in [#95][issue-95] and fixed in [#96][pull-96].
+  Reported by [@alexwlchan][gh-user-alexwlchan] in [#95][issue-95] and fixed in [#96][pull-96].
 
 - Fix an incorrect comparison when converting CIE XYZ colors to RGB that could
   raise a `NoMethodError` when constructing the RGB value. The conversion
@@ -173,18 +200,18 @@ ownership to contribute it to this project under the licence terms.
 
 ## 1.7 / 2014-06-12
 
-- Added `Color::RGB::BeccaPurple` (#663399) in honour of Rebecca Meyer, the
+- Added `Color::RGB::BeccaPurple` ([#663399][gh-issue-663399]) in honour of Rebecca Meyer, the
   daughter of Eric Meyer, who passed away on 7 June 2014. Her favourite color
   was purple. `#663399becca`
   <https://www.zeldman.com/2014/06/10/the-color-purple/>
   <https://discourse.wicg.io/t/name-663399-becca-purple-in-css4-color/225/>
 
 - Changed the homepage in the gem to point to GitHub instead of RubyForge, which
-  has been shut down. Fixes [#10][issue-10], reported by @voxik.
+  has been shut down. Fixes [#10][issue-10], reported by [@voxik][gh-user-voxik].
 
 ## 1.6 / 2014-05-19
 
-- Aaron Hill (@armahillo) implemented the CIE Delta E 94 method by which an RGB
+- Aaron Hill ([@armahillo][gh-user-armahillo]) implemented the CIE Delta E 94 method by which an RGB
   color can be asked for the closest matching color from a list of provided
   colors. Fixes [#5][issue-5].
 
@@ -219,7 +246,7 @@ ownership to contribute it to this project under the licence terms.
   this work, color classes should `include` Color only need to implement
   `#coerce(other)`, `#to_a`, and supported conversion methods (e.g., `#to_rgb`).
 
-- Added @daveheitzman's initial implementation of a RGB contrast method as an
+- Added [@daveheitzman][gh-user-daveheitzman]'s initial implementation of a RGB contrast method as an
   extension file: `require 'color/rgb/contrast'`. This method and the value it
   returns should be considered experimental; it requires further examination to
   ensure that the results produced are consistent with the contrast comparisons
@@ -381,3 +408,10 @@ ownership to contribute it to this project under the licence terms.
 [pull-93]: https://github.com/halostatue/color/pull/93
 [pull-96]: https://github.com/halostatue/color/pull/96
 [wp-std-illuminant]: https://en.wikipedia.org/wiki/Standard_illuminant#White_points_of_standard_illuminants
+[gh-user-akicho8]: https://github.com/akicho8
+[gh-issue-89]: https://github.com/halostatue/color/issues/89
+[gh-user-alexwlchan]: https://github.com/alexwlchan
+[gh-issue-663399]: https://github.com/halostatue/color/issues/663399
+[gh-user-voxik]: https://github.com/voxik
+[gh-user-armahillo]: https://github.com/armahillo
+[gh-user-daveheitzman]: https://github.com/daveheitzman

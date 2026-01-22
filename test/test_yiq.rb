@@ -31,6 +31,10 @@ module TestColor
     def test_inspect
       assert_equal("YIQ [10.00% 20.00% 30.00%]", @yiq.inspect)
     end
+
+    def test_pretty_print
+      assert_pretty_inspect "YIQ\n[10.00%\n  20.00%\n  30.00%]\n", @yiq
+    end
   end
 
   class TestYIQConversions < Minitest::Test

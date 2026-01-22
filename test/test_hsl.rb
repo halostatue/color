@@ -82,6 +82,10 @@ module TestColor
     def test_inspect
       assert_equal "HSL [145.00deg 20.00% 30.00%]", @hsl.inspect
     end
+
+    def test_pretty_print
+      assert_pretty_inspect "HSL\n[145.00deg\n  20.00%\n  30.00%]\n", @hsl
+    end
   end
 
   class TestHSLConversions < Minitest::Test

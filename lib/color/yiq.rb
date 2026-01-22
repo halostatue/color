@@ -88,15 +88,15 @@ class Color::YIQ
 
   def inspect = "YIQ [%.2f%% %.2f%% %.2f%%]" % [y * 100, i * 100, q * 100] # :nodoc:
 
-  def pretty_print(q) # :nodoc:
-    q.text "YIQ"
-    q.breakable
-    q.group 2, "[", "]" do
-      q.text "%.2f%%" % y
-      q.fill_breakable
-      q.text "%.2f%%" % i
-      q.fill_breakable
-      q.text "%.2f%%" % q
+  def pretty_print(pq) # :nodoc:
+    pq.text "YIQ"
+    pq.breakable
+    pq.group 2, "[", "]" do
+      pq.text "%.2f%%" % (y * 100)
+      pq.fill_breakable
+      pq.text "%.2f%%" % (i * 100)
+      pq.fill_breakable
+      pq.text "%.2f%%" % (q * 100)
     end
   end
 
