@@ -34,6 +34,10 @@ module TestColor
       assert_equal("CMYK [10.00% 20.00% 30.00% 40.00%]", @cmyk.inspect)
     end
 
+    def test_pretty_print
+      assert_pretty_inspect "CMYK\n[10.00%\n  20.00%\n  30.00%\n  40.00%]\n", @cmyk
+    end
+
     def test_css
       assert_equal("device-cmyk(10.00% 20.00% 30.00% 40.00%, rgb(54.00% 48.00% 42.00%))", @cmyk.css)
       assert_equal("device-cmyk(10.00% 20.00% 30.00% 40.00% / 0.50, rgb(54.00% 48.00% 42.00% / 0.50))", @cmyk.css(alpha: 0.5))

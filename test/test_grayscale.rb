@@ -42,6 +42,10 @@ module TestColor
     def test_inspect
       assert_equal("Grayscale [33.00%]", @gs.inspect)
     end
+
+    def test_pretty_print
+      assert_pretty_inspect "Grayscale\n[33.00%]\n", @gs
+    end
   end
 
   class TestGrayscaleConversions < Minitest::Test

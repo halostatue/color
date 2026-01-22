@@ -255,14 +255,13 @@ class Color::CMYK
     q.text "CMYK"
     q.breakable
     q.group 2, "[", "]" do
-      q.text ".2f%%" % cyan
+      q.text "%.2f%%" % cyan
       q.fill_breakable
-      q.text ".2f%%" % magenta
+      q.text "%.2f%%" % magenta
       q.fill_breakable
-      q.text ".2f%%" % yellow
+      q.text "%.2f%%" % yellow
       q.fill_breakable
-      q.text ".2f%%" % key
-      q.fill_breakable
+      q.text "%.2f%%" % key
     end
   end
 

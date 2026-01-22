@@ -260,7 +260,7 @@ class Color::XYZ
 
   def to_internal = [x, y, z] # :nodoc:
 
-  def inspect = "XYZ [#{x} #{y} #{z}]" # :nodoc:
+  def inspect = "XYZ [%.4f %.4f %.4f]" % [x, y, z] # :nodoc:
 
   def pretty_print(q) # :nodoc:
     q.text "XYZ"

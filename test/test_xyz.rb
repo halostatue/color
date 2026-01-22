@@ -71,6 +71,14 @@ module TestColor
       assert_equal([0.0, 0.0, 0.0], Color::XYZ.from_values(0, 0, 0).to_internal)
     end
 
+    def test_inspect
+      assert_equal "XYZ [0.0010 0.0020 0.0030]", @xyz.inspect
+    end
+
+    def test_pretty_print
+      assert_pretty_inspect "XYZ\n[0.0010\n  0.0020\n  0.0030]\n", @xyz
+    end
+
     # Regression test for https://github.com/halostatue/color/issues/92
     #
     # `Color::XYZ#to_rgb` branches on whether an intermediate value N is

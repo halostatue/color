@@ -91,6 +91,14 @@ module TestColor
       assert_equal(Color::YIQ.from_values(0, 0, 0), Color::CIELAB.from_values(0, 0, 0).to_yiq)
     end
 
+    def test_inspect
+      assert_equal "CIELAB [10.0000 20.0000 30.0000]", @lab.inspect
+    end
+
+    def test_pretty_print
+      assert_pretty_inspect "CIELAB\n[10.0000\n  20.0000\n  30.0000]\n", @lab
+    end
+
     def test_to_internal
       assert_equal([0.0, 0.0, 0.0], Color::CIELAB.from_values(0, 0, 0).to_internal)
     end
