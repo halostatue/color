@@ -24,7 +24,7 @@ values in Color::XYZ.
 
 Color 2.2 adds a minor feature where an RGB color created from values can
 silently inherit the `#name` of a predefined color if `color/rgb/colors` has
-already been loaded. It builds on the Color 2.0 major release, dropping support
+already been loaded. It builds on the Color 2.0 major release, which drops support
 for all versions of Ruby prior to 3.2 as well as removing or renaming a number
 of features. The main breaking changes are:
 
