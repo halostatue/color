@@ -1,7 +1,8 @@
 # Color -- Color Math in Ruby
 
-[![RubyGems Version][shield-gems]][rubygems] ![Coveralls][shield-coveralls]
-[![Build Status][shield-ci]][ci-workflow]
+[![RubyGems Version](https://img.shields.io/gem/v/color?style=for-the-badge "Version")](https://rubygems.org/gems/color)
+[![Coveralls](https://img.shields.io/coverallsCoverage/github/halostatue/color?style=for-the-badge)](https://coveralls.io/github/halostatue/color?branch=main)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/halostatue/color/ci.yml?style=for-the-badge "Build Status")](https://github.com/halostatue/color/actions/workflows/ci.yml)
 
 - code :: <https://github.com/halostatue/color>
 - issues :: <https://github.com/halostatue/color/issues>
@@ -24,9 +25,11 @@ values in Color::XYZ.
 
 Color 2.2 adds a minor feature where an RGB color created from values can
 silently inherit the `#name` of a predefined color if `color/rgb/colors` has
-already been loaded. It builds on the Color 2.0 major release, dropping support
-for all versions of Ruby prior to 3.2 as well as removing or renaming a number
-of features. The main breaking changes are:
+already been loaded.
+
+It builds on the Color 2.0 major release, which dropped support for all versions
+of Ruby prior to 3.2 as well as removing or renaming a number of features. The
+main breaking changes are:
 
 - Color classes are immutable Data objects; they are no longer mutable.
 - RGB named colors are no longer loaded on gem startup, but must be required
@@ -58,10 +61,4 @@ The Color library uses a [Semantic Versioning][semver] scheme with one change:
 
 - When PATCH is zero (`0`), it will be omitted from version references.
 
-[ci-workflow]: https://github.com/halostatue/color/actions/workflows/ci.yml
-[coveralls]: https://coveralls.io/github/halostatue/color?branch=main
-[rubygems]: https://rubygems.org/gems/color
 [semver]: https://semver.org/
-[shield-ci]: https://img.shields.io/github/actions/workflow/status/halostatue/color/ci.yml?style=for-the-badge "Build Status"
-[shield-coveralls]: https://img.shields.io/coverallsCoverage/github/halostatue/color?style=for-the-badge
-[shield-gems]: https://img.shields.io/gem/v/color?style=for-the-badge "Version"

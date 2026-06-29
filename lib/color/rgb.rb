@@ -704,7 +704,7 @@ class << Color::RGB
     h = hex.to_s.downcase.scan(/\h/)
     case h.size
     when 3
-      h.map { |v| (v * 2) }.join
+      h.map { |v| v * 2 }.join
     when 6
       h.join
     else
