@@ -1,6 +1,6 @@
 # color Changelog
 
-## 2.2.0 / 2026-01-DD
+## 2.2.0 / 2026-01-21
 
 - When `color/rgb/colors` is loaded and the RGB color does not have defined
   names, a fallback lookup to named RGB colors will be performed to use that
@@ -42,7 +42,8 @@
   This also affected conversion from CIELAB to RGB, CMYK, HSL, YIQ, and
   grayscale, which convert from CIELAB to XYZ as an intermediate step.
 
-  Reported by [@alexwlchan][gh-user-alexwlchan] in [#95][issue-95] and fixed in [#96][pull-96].
+  Reported by [@alexwlchan][gh-user-alexwlchan] in [#95][issue-95] and fixed in
+  [#96][pull-96].
 
 - Fix an incorrect comparison when converting CIE XYZ colors to RGB that could
   raise a `NoMethodError` when constructing the RGB value. The conversion
@@ -200,20 +201,21 @@ ownership to contribute it to this project under the licence terms.
 
 ## 1.7 / 2014-06-12
 
-- Added `Color::RGB::BeccaPurple` ([#663399][gh-issue-663399]) in honour of Rebecca Meyer, the
-  daughter of Eric Meyer, who passed away on 7 June 2014. Her favourite color
-  was purple. `#663399becca`
+- Added `Color::RGB::BeccaPurple` ([#663399][gh-issue-663399]) in honour of
+  Rebecca Meyer, the daughter of Eric Meyer, who passed away on 7 June 2014. Her
+  favourite color was purple. `#663399becca`
   <https://www.zeldman.com/2014/06/10/the-color-purple/>
   <https://discourse.wicg.io/t/name-663399-becca-purple-in-css4-color/225/>
 
 - Changed the homepage in the gem to point to GitHub instead of RubyForge, which
-  has been shut down. Fixes [#10][issue-10], reported by [@voxik][gh-user-voxik].
+  has been shut down. Fixes [#10][issue-10], reported by
+  [@voxik][gh-user-voxik].
 
 ## 1.6 / 2014-05-19
 
-- Aaron Hill ([@armahillo][gh-user-armahillo]) implemented the CIE Delta E 94 method by which an RGB
-  color can be asked for the closest matching color from a list of provided
-  colors. Fixes [#5][issue-5].
+- Aaron Hill ([@armahillo][gh-user-armahillo]) implemented the CIE Delta E 94
+  method by which an RGB color can be asked for the closest matching color from
+  a list of provided colors. Fixes [#5][issue-5].
 
 - To implement `#closest_match` and `#delta_e94`, conversion methods for sRGB to
   XYZ and XYZ to L\*a\*b\* space were implemented. These should be considered
@@ -246,11 +248,11 @@ ownership to contribute it to this project under the licence terms.
   this work, color classes should `include` Color only need to implement
   `#coerce(other)`, `#to_a`, and supported conversion methods (e.g., `#to_rgb`).
 
-- Added [@daveheitzman][gh-user-daveheitzman]'s initial implementation of a RGB contrast method as an
-  extension file: `require 'color/rgb/contrast'`. This method and the value it
-  returns should be considered experimental; it requires further examination to
-  ensure that the results produced are consistent with the contrast comparisons
-  used in `Color::Palette::MonoContrast`.
+- Added [@daveheitzman][gh-user-daveheitzman]'s initial implementation of a RGB
+  contrast method as an extension file: `require 'color/rgb/contrast'`. This
+  method and the value it returns should be considered experimental; it requires
+  further examination to ensure that the results produced are consistent with
+  the contrast comparisons used in `Color::Palette::MonoContrast`.
 
 - Reducing duplicated code.
 

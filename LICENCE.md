@@ -2,7 +2,7 @@
 
 - SPDX-License-Identifier: [MIT][mit]
 
-- Copyright 2005-2025 Austin Ziegler, Matt Lyon, and other contributors.
+- Copyright 2005-2026 Austin Ziegler, Matt Lyon, and other contributors.
 
 The software in this repository is made available under the MIT license.
 
