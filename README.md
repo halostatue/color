@@ -3,6 +3,7 @@
 [![RubyGems Version](https://img.shields.io/gem/v/color?style=for-the-badge "Version")](https://rubygems.org/gems/color)
 [![Coveralls](https://img.shields.io/coverallsCoverage/github/halostatue/color?style=for-the-badge)](https://coveralls.io/github/halostatue/color?branch=main)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/halostatue/color/ci.yml?style=for-the-badge "Build Status")](https://github.com/halostatue/color/actions/workflows/ci.yml)
+[![MIT](https://img.shields.io/badge/licence-MIT-blue?style=for-the-badge "MIT")](https://github.com/halostatue/color/blob/main/LICENCE.md)
 
 - code :: <https://github.com/halostatue/color>
 - issues :: <https://github.com/halostatue/color/issues>
